@@ -1,0 +1,69 @@
+<div class="container-fluid" style="margin-top:40px;">
+	<div class="row">
+		<form class="form-horizontal" role="form" style="width:80%">
+		  <input type="hidden" id="brand.id" data-bind="value:brand().id">
+		  <div class="form-group">
+		    <label for="id" class="col-sm-2 control-label">品牌编号</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="brand.id" placeholder="id" data-bind="value:brand().id">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="brandName" class="col-sm-2 control-label">品牌名称</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="brandName" placeholder="brandName" data-bind="value:brand().brandName">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="brandPinyin" class="col-sm-2 control-label">拼音</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="brandPinyin" placeholder="brandPinyin" data-bind="value:brand().brandPinyin">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="brandLogo" class="col-sm-2 control-label">商标</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="brandLogo" placeholder="brandLogo" data-bind="value:brand().brandLogo">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="brandWeight" class="col-sm-2 control-label">重量</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="brandWeight" placeholder="brandWeight" data-bind="value:brand().brandWeight">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="status" class="col-sm-2 control-label">状态</label>
+		    <div class="col-sm-10">
+		      <select data-bind="value:brand().status">
+				  <option value="1" >1</option>
+				  <option value="-1" >-1</option>
+			  </select>
+		    </div>
+		  </div>	
+		  <div class="form-group" >
+		    <label for="isLocal" class="col-sm-2 control-label">是否是本地</label>
+		    <div class="col-sm-10">
+		      <input type="radio"  name="isLocal" value="1" data-bind="checked:brand().isLocal"> 是
+			  <input type="radio"  name="isLocal" value="2" data-bind="checked:brand().isLocal"> 否
+		    </div>	
+		    </div>  	
+		     <div class="form-group" >
+		    <label for="brandDesc" class="col-sm-2 control-label">描述</label>
+		    <div class="col-sm-10">
+		   <textarea type="text" class="form-control" id="brandDesc"
+      placeholder="brandDesc" rows="5" data-bind="value:brand().brandDesc">
+     </textarea>
+           </div>	
+		    </div>  		    
+		  <div class="form-group">
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button type="button" class="btn btn-primary" data-bind="click:submitForm">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+		      <button type="button" class="btn btn-primary" data-bind="click:function(){window.history.go(-1)}">&nbsp;&nbsp;返回&nbsp;&nbsp;</button>
+		    </div>
+		  </div>
+		   
+		  </div>
+		</form>
+	</div>
+</div>

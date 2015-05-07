@@ -1,0 +1,44 @@
+<div class="container-fluid" style="margin-top:40px;">
+	<div class="row">
+		
+		<form class="form-horizontal" role="form" style="width:80%">
+		  <div class="form-group" >
+		  	 <input type="hidden" id="id" data-bind="value:data().id">
+		    <label for="funcCode" class="col-sm-2 control-label">角色代号</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="roleName" placeholder="角色代号" data-bind="value:data().roleName">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="funcName" class="col-sm-2 control-label">角色名称</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="roleCode" placeholder="角色名称" data-bind="value:data().roleCode">
+		    </div>
+		  </div>
+		  
+		  <div class="form-group" >
+		    <label for="isActive" class="col-sm-2 control-label">角色状态</label>
+		    <div class="col-sm-10">
+				<select data-bind="value:data().isActive">
+					<option value="Y">激活</option>
+					<option value="N">未激活</option>				
+			  	</select>			    
+		    </div>
+		  </div>	
+		  
+		  <div class="form-group" >
+		    <label for="funcType" class="col-sm-2 control-label">角色类型</label>
+		    <div class="col-sm-10">
+	      <input type="text" class="form-control" id="roleType" placeholder="角色类型" data-bind="value:data().roleType">	    
+		    </div>
+		  </div>
+	  	  	  
+		  <div class="form-group">
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button type="button" class="btn btn-primary" data-bind="click:submitForm">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+		      <button type="button" class="btn btn-primary" data-bind="click:function(){window.history.go(-1)}">&nbsp;&nbsp;返回&nbsp;&nbsp;</button>
+		    </div>
+		  </div>
+		</form>
+	</div>
+</div>

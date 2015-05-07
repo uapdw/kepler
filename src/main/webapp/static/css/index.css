@@ -1,0 +1,142 @@
+.top {
+	margin-bottom: 0px;
+	position: fixed;
+	left: 0px;
+	right: 0px;
+	z-index: 999;
+}
+.top .navbar-brand {
+	color: #fff;
+	cursor: pointer;
+	top: 0px;
+}
+.top .navbar-brand:hover {
+	color: #fff;
+	background-color: #666666;
+}
+.right-nav {
+	padding-right: 20px;
+}
+.right-nav>li>a {
+	color: #fff !important;
+}
+.right-nav>li:hover {
+	background-color: #666666 !important;
+}
+.right-nav>.active {
+	background-color: #666666 !important;
+}
+.right-nav>.open {
+	background-color: #666666 !important;
+}
+.right-nav>.open>a {
+	background-color: #666666 !important;
+}
+.right-nav>li {
+	border-left: 1px solid #5E6264;
+}
+.leftpanel {
+	width: 220px;
+	height: 100%;
+	position: fixed;
+	top: 50px;
+	left: 0;
+	background: #464646;
+	overflow: hidden;
+}
+.leftpanel-collapse {
+	width: 60px;
+}
+.content {
+	padding-left: 220px;
+	padding-top: 50px;
+}
+.content-collapse {
+	padding-left: 60px;
+}
+
+
+/*left menu 要抽取成插件*/
+
+.left-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 220px;
+}
+.left-menu>li {
+	display: block;
+	margin: 0;
+	padding: 0;
+	border: 0px;
+	line-height: 20px;
+}
+.left-menu>li.open {
+	background-color: #666666;
+}
+.left-menu>li>a {
+	color: #8b91a0;
+	display: block;
+	position: relative;
+	margin: 0;
+	border: 0px;
+	padding: 11.5px 31px 11.5px 31px;
+	text-decoration: none;
+	font-size: 14px;
+	font-weight: normal;
+	cursor: pointer;
+}
+.left-menu li a:hover{
+	background-color: #666666;	
+}
+
+.left-menu>li>ul.sub-menu {
+	display: none;
+	list-style: none;
+	clear: both;
+	margin: 0px;
+	background-color: #22262e;
+	padding: 8px 0px 10px 0px;
+}
+.left-menu>li>ul.sub-menu>li {
+	background: none;
+	margin: 0px;
+	padding: 0px;
+	margin-top: 1px !important;
+}
+.left-menu>li>ul.sub-menu>li>a {
+	margin-left: 0px;
+	padding-left: 5px;
+	display: block;
+	margin: 0px 0px 0px 0px;
+	padding: 5px 0px;
+	padding-left: 53px !important;
+	color: #e1eaf1;
+	text-decoration: none;
+	text-shadow: 0 1px 1px #000;
+	font-size: 13px;
+	font-weight: 300;
+	background: none;
+	cursor: pointer;
+}
+.left-menu>li>ul.sub-menu>li>a:hover{
+	background-color: #666666;
+}
+
+.left-menu .arrow{
+	float:right;
+}
+
+
+.container-fixed{
+	margin:15px;
+}
+.container-fixed .row{
+	margin-left:0px;
+	margin-right:0px;
+}
+
+.container-fixed .row .ec-menu,.ec-search{
+	padding-left:0px;
+	padding-right:0px;
+}	
