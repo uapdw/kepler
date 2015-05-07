@@ -1,0 +1,55 @@
+<div class="container-fixed">
+	<div class="row" style="margin-bottom: 10px;">
+		<div class="ec-menu col-xs-8 col-md-8">
+			<div style="text-align: left;">
+				<button type="button" class="btn btn-primary btn-lg active"
+					data-bind="click:add">&nbsp;&nbsp;新增用户&nbsp;&nbsp;</button>
+			</div>
+		</div>
+		<div class="ec-search col-xs-4 col-md-4">
+			<div style="text-align: right;">
+				<form class="form-search" action="#">
+					<input type="text" name="search_LIKE_name" class="input-medium"
+						data-bind="value:searchText" />&nbsp;&nbsp;
+					<button type="submit" class="btn" id="search_btn"
+						data-bind="click: searchPage">搜索</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- 列表区域  -->
+	<div class="table-responsive">
+		<table id="contentTable"
+			class="table table-bordered table-condensed table-hover">
+			<thead>
+				<tr>
+					<th width="10%">id</th>
+					<th width="20%">登录名</th>
+					<th width="20%">用户名</th>
+					<th width="10%">角色</th>
+					<th width="25%">注册时间</th>
+					<th width="15%" align="center" style="text-align:center">操作</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: data.content">
+				<tr>
+					<td data-bind="text:id"></td>
+					<td data-bind="text:loginName"></td>
+					<td><strong><a href="#" data-bind="text:name,attr: {href: '#/mgr/account/accountinfo/' + id }"></a></strong></td>
+					<td data-bind="text:roles"></td>
+					<td data-bind="text:registerDate"></td>
+					<td align="center">
+						<strong>
+							<a href="#" data-bind="click: $parent.del">删除</a>
+						</strong>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- 分页区域  -->
+	<div style="text-align: center">
+		<ul class="pagination" id="pagination" style="margin: 0px">
+		</ul>
+	</div>
+</div>

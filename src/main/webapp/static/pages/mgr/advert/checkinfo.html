@@ -1,0 +1,57 @@
+<div class="container-fluid" style="margin-top:40px;">
+	<div class="row">
+		<form class="form-horizontal" role="form" style="width:80%">
+		<input type="hidden" id="id" data-bind="value:data().id">
+		  <div class="form-group" >
+		    <label for="shopName" class="col-sm-2 control-label">名称</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="adName" placeholder="名称" data-bind="value:data().name">
+		    </div>
+		  </div>		
+		  <div class="form-group" >
+		    <label for="title" class="col-sm-2 control-label">标题</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="title" placeholder="标题" data-bind="value:data().title">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="type" class="col-sm-2 control-label">类型</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="type" placeholder="类型" data-bind="value:data().type"></textarea>
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+				<label for="image" class="col-sm-2 control-label">图片</label>
+				<div class="col-sm-10">
+					<div style="height:350px">
+						<img class="img-responsive" data-bind="attr:{src:data().image}" width="450" height="300"/>
+					</div>
+					<span class="btn btn-success fileinput-button">
+				        <i class="glyphicon glyphicon-plus"></i>
+				        <span>上传图片</span>
+				        <input id="fileupload" type="file" name="files[]" multiple>
+				    </span>
+				    <div id="progress" class="progress">
+				        <div class="progress-bar progress-bar-success"></div>
+				    </div>
+					<input type="hidden" class="form-control" id="image" placeholder="上传图片" data-bind="value:data().image" >					
+				</div>
+			</div>
+			
+		  <div class="form-group" >
+		    <label for="isActive" class="col-sm-2 control-label">是否通过</label>
+		    <div class="col-sm-10">
+		      <input type="radio" class="" name="isActive" value="N" data-bind="checked:data().isActive"> 否
+			  <input type="radio" class="" name="isActive" value="Y" data-bind="checked:data().isActive"> 是
+		    </div>
+		  </div>		  
+		  <div class="form-group">
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button type="button" class="btn btn-primary" data-bind="click:submitForm">&nbsp;&nbsp;审核确认&nbsp;&nbsp;</button>
+		      <button type="button" class="btn btn-primary" data-bind="click:function(){window.history.go(-1)}">&nbsp;&nbsp;返回&nbsp;&nbsp;</button>
+		    </div>
+		  </div>
+		</form>
+	</div>
+</div>

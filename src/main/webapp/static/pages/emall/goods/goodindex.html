@@ -1,0 +1,57 @@
+<div class="container-fixed">
+	<div class="row" style="margin-bottom: 10px;">
+		<div class="ec-menu col-xs-8 col-md-8">
+			<div style="text-align: left;">
+				<button type="button" class="btn btn-primary btn-lg active"
+					data-bind="click:addGood">&nbsp;&nbsp;新增商品&nbsp;&nbsp;</button>
+			</div>
+		</div>
+		<div class="ec-search col-xs-4 col-md-4">
+			<div style="text-align: right;">
+				<form class="form-search" action="#">
+					<input type="text" name="search_LIKE_title" class="input-medium"
+						data-bind="value:searchText" />&nbsp;&nbsp;
+					<button type="submit" class="btn" id="search_btn"
+						data-bind="click: searchPage">搜索</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- 列表区域  -->
+	<div class="table-responsive">
+		<table id="contentTable"
+			class="table table-bordered table-condensed table-hover">
+			<thead>
+				<tr>
+					<th width="10%">id(测试)</th>
+					<th width="20%">类型编码</th>
+					<th width="30%">名称</th>
+					<th width="10%">品牌</th>
+					<th width="20%">图片</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: pageinfo.content">
+				<tr>
+					<td data-bind="text:id"></td>
+					<td data-bind="text:catCode"></td>
+					<td><strong><a href="#"
+							data-bind="text:title,attr: {href: '#/emall/goods/goodinfo/' + id }"></a></strong></td>
+					<td data-bind="text:brandId"></td>
+					<td data-bind="text:marketPrice"></td>
+					<td><strong>
+					<a href="#" data-bind="click: $parent.removeGood">删除</a>
+					<a href="#" data-bind="click: $parent.recommend">推荐</a>
+					</strong></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- 分页区域  -->
+	<div style="text-align: center">
+		<nav>
+			<ul class="pagination" id="goodpagenition" style="margin: 0px">
+			</ul>
+		</nav>
+	</div>
+</div>
