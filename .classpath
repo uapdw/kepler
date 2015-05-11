@@ -29,8 +29,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="G:/lib/pubaert_commonLevel-1.jar"/>
-	<classpathentry kind="lib" path="G:/lib/pubaert_coreLevel-1.jar"/>
-	<classpathentry kind="lib" path="G:/lib/pubaert_serviceLevel-1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
