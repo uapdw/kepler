@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import uap.ae.kepler.entity.DataSources;
@@ -40,4 +41,12 @@ public class AeDataSourceDao extends BaseJdbcDao<DataSources> {
 						BeanPropertyRowMapper.newInstance(DataSources.class));
 		return result;
 	}
+	
+	public DataSources findOne(Long id){
+		String sql = "select * from ae_datasources where id = ?";
+		RowMapper<DataSources> rowMapper = BeanPropertyRowMapper.newInstance(DataSources.class);
+		return jdbcTemplate.query(sql, rowMapper, id).get(0);
+		
+	}
+	
 }

@@ -1,7 +1,7 @@
 <div class="container-fixed">
 	<div>
 		<button class="btn btn-default" data-toggle="modal" data-target="#uploadPane">上传</button>
-		<button class="btn btn-default">查看</button>
+		<button class="btn btn-default" data-bind="click: info">查看</button>
 	</div>
 	<br/>
 	<div>
@@ -17,11 +17,11 @@
 							<th width="20%">类型</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
+					<tbody data-bind="foreach: listinfo">
+						<tr data-bind="click: $parent.setid">
+							<td data-bind="text:id"></td>
+							<td data-bind="text:name"></td>
+							<td data-bind="text:fileType"></td>
 						</tr>
 					</tbody>
 				</table>
@@ -30,10 +30,11 @@
 	</div>
 	<br/>
 	<div>
-		<div style="float: left; width: 60%">
+		<div style="float: left; width: 100%">
 		详细
-		<br/>
-		此表可定制
+			<br/>
+			<div id="detail" style="float: left;">
+			</div>
 		</div>
 	</div>
 	

@@ -1,11 +1,18 @@
 package uap.ae.kepler.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FilenameUtils;
@@ -13,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +46,8 @@ public class DataSourceController {
 	private static final String MSG_SUCCESS = "success";
 	private static final String MSG_ERROR = "error";
 	private static final String DATA = "data";
+	private static final String COLNUM = "colnum";
+	private static final String ROWNUM = "rownum";
 	private static final String MSG = "msg";
 	
 	/** 允许上传的扩展名*/
@@ -46,11 +56,74 @@ public class DataSourceController {
 	@Autowired
 	private AeDataSourceService service;
 	
+	@RequestMapping(value = "list", method = RequestMethod.GET)
+	public @ResponseBody JSONObject list(HttpServletRequest request) {
+		List<DataSources> dbs = service.findAll();
+		JSONArray array = new JSONArray();
+		array.addAll(dbs);
+		JSONObject o = new JSONObject();
+		o.put(DATA, array);
+		o.put(MSG, MSG_SUCCESS);
+		return o;
+	}
+	
+	@RequestMapping(value = "info/{id}", method = RequestMethod.GET)
+	public @ResponseBody JSONObject info(@PathVariable("id") Long id, HttpServletRequest request) {
+		DataSources ds = service.findOne(id);
+		String fileName = ds.getFileName();
+		HttpSession session = request.getSession();
+		String curProjectPath = session.getServletContext().getRealPath("/");
+		String saveDirectoryPath = curProjectPath + "/" + uploadFolderName;
+		File saveDirectory = new File(saveDirectoryPath);
+		JSONObject json = new JSONObject();
+		if(!(saveDirectory.isDirectory() || saveDirectory.mkdir())){
+			json.put(MSG, MSG_ERROR);
+			return json;
+		}
+		
+		BufferedReader reader = null;
+		try {
+			File file = new File(saveDirectory, fileName);
+			reader = new BufferedReader(new FileReader(file));
+			String line = null;
+			List<String[]> datalist = new ArrayList();
+			int colnum = -1;
+			int rownum = 0;
+			String[] lineArr = null;
+			while((line = reader.readLine()) != null){
+				rownum++;
+				lineArr = line.split(",");
+				if(colnum == -1){
+					colnum = lineArr.length;
+				}else if(colnum < lineArr.length){
+					colnum = lineArr.length;
+				}
+				datalist.add(lineArr);
+			}
+			json.put(DATA, datalist);
+			json.put(COLNUM, colnum);
+			json.put(ROWNUM, rownum);
+			json.put(MSG, MSG_SUCCESS);
+		} catch (FileNotFoundException e) {
+			json.put(MSG, "文件不存在");
+		} catch (IOException e) {
+			json.put(MSG, "IO错误");
+		} finally{
+			if(reader != null){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					json.put(MSG, "IO错误");
+				}
+			}
+		}
+		return json;
+	}
+	
 	@RequestMapping(value = "upload", method = RequestMethod.POST)
 	public @ResponseBody JSONObject upload(@RequestParam("uploadfile") CommonsMultipartFile file, 
 			HttpServletRequest request) throws Exception{
 		HttpSession session = request.getSession();
-		//清除上次上传进度信息
 		String curProjectPath = session.getServletContext().getRealPath("/");
 		String saveDirectoryPath = curProjectPath + "/" + uploadFolderName;
 		File saveDirectory = new File(saveDirectoryPath);
@@ -89,7 +162,10 @@ public class DataSourceController {
 				json.put(MSG, MSG_ERROR);
 				return json;
 			}
-			json.put(DATA, newFileName);
+	    	List<DataSources> dbs = service.findAll();
+			JSONArray array = new JSONArray();
+			array.addAll(dbs);
+			json.put(DATA, array);
 			json.put(MSG, MSG_SUCCESS);
 		}else{
 			json.put(MSG, MSG_ERROR);

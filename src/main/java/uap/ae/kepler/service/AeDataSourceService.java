@@ -1,5 +1,7 @@
 package uap.ae.kepler.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,5 +22,12 @@ public class AeDataSourceService {
 		dao.addDataSource(db);
 	}
 	
+	public List<DataSources> findAll(){
+		return dao.findAll();
+	}
+	
+	public DataSources findOne(Long id){
+		return dao.findOne(id);
+	}
 	
 }
