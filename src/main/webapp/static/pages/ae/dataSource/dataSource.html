@@ -1,5 +1,68 @@
 <div class="container-fixed">
-Data Source
-<button data-bind="click:show">show</button>
-<label data-bind="text:showinfo"></label>
+	<div>
+		<button class="btn btn-default" data-toggle="modal" data-target="#uploadPane">上传</button>
+		<button class="btn btn-default">查看</button>
+	</div>
+	<br/>
+	<div>
+		<!-- 列表区域  -->
+		<div style="float: left; width: 58%">
+			<div class="table-responsive">
+				<table id="contentTable"
+					class="table table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th width="10%">编码</th>
+							<th width="80%">名称</th>
+							<th width="20%">类型</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<br/>
+	<div>
+		<div style="float: left; width: 60%">
+		详细
+		<br/>
+		此表可定制
+		</div>
+	</div>
+	
+	<div class="modal fade" id="uploadPane" tabindex="-1" role="dialog" aria-labelledby="uploadTitle" aria-hidden="true">
+		<div class="modal-dialog">
+		    <div class="modal-content">
+			    <form class="form-horizontal" role="form" style="width: 100%">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+			        <h4 class="modal-title" id="uploadTitle">上传文件</h4>
+			      </div>
+			      <div class="modal-body">
+			      		<div class="alert alert-info" id="uploadmsg">
+					    	请选择上传文件
+						</div>
+			      		<span class="btn btn-success fileinput-button">
+					        <i class="glyphicon glyphicon-plus"></i>
+					        <span>上传文件</span>
+					        <input id="fileupload" type="file" name="uploadfile" multiple>
+					    </span>
+					    <div id="progress" class="progress">
+					        <div class="progress-bar progress-bar-success"></div>
+					    </div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			      </div>
+			    </form>
+		    </div>
+		</div>
+	</div>
 </div>
