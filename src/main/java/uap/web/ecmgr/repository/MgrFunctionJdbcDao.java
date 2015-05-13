@@ -3,7 +3,6 @@ package uap.web.ecmgr.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Component;
 
 import uap.web.core.jdbc.BaseJdbcDao;
@@ -13,8 +12,8 @@ import uap.web.ecmgr.entity.MgrFunction;
 public class MgrFunctionJdbcDao extends BaseJdbcDao<MgrFunction> {
 
 	public List<MgrFunction> findAllFuncsByUserId(long userId) {
-		String sql = "select * from mgr_function where isactive='Y' and id in (select func_id from mgr_role_func where role_id in (select role_id from mgr_role_user where user_id = ?))";
-		List<MgrFunction> result = (List<MgrFunction>) this.getJdbcTemplate().query(sql, new Object[] { userId }, BeanPropertyRowMapper.newInstance(MgrFunction.class));
+//		String sql = "select * from mgr_function where isactive='Y' and id in (select func_id from mgr_role_func where role_id in (select role_id from mgr_role_user where user_id = ?))";
+//		List<MgrFunction> result = (List<MgrFunction>) this.getJdbcTemplate().query(sql, new Object[] { userId }, BeanPropertyRowMapper.newInstance(MgrFunction.class));
 		
 		List<MgrFunction> list = new ArrayList<MgrFunction>();
 		MgrFunction root = new MgrFunction();
@@ -77,7 +76,7 @@ public class MgrFunctionJdbcDao extends BaseJdbcDao<MgrFunction> {
 		
 		List<MgrFunction> newList = new ArrayList<MgrFunction>();
 		newList.addAll(list);
-		newList.addAll(result.subList(1, result.size()));
+//		newList.addAll(result.subList(1, result.size()));
 		
 		return newList;
 	}
