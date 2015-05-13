@@ -13,7 +13,8 @@ require.config({
 		director:"static/lib/director/director",
 		'jquery.file.upload' : "static/lib/juqery-file-upload/9.9.2/js/jquery.fileupload",
 		'jquery.ui.widget':"static/lib/jquery-ui/jquery.ui.widget",
-		'jquery.iframe.transport':"static/lib/jquery-iframe-transport/jquery.iframe-transport"
+		'jquery.iframe.transport':"static/lib/jquery-iframe-transport/jquery.iframe-transport",
+		echarts:"static/lib/echarts/echarts-all",
 	},
 	shim: {
 		'u.base':{
