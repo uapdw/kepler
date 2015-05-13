@@ -56,10 +56,10 @@ define(
 				var m0percent = obj["M0.PERCENT"];
 
 				for (var i = 1; i <= year.length; i++) {
-					dm0.push([ new Date(year[i], month[i], 1, 0, 0), m1[i],
-							m1percent[i] ]);
-					dm1.push([ new Date(year[i], month[i], 1, 0, 0), m0[i],
-							m0percent[i] ]);
+					dm0.push([ new Date(year[i], month[i], 1, 0, 0), 
+							m1percent[i],m1[i] ]);
+					dm1.push([ new Date(year[i], month[i], 1, 0, 0), 
+							m0percent[i],m0[i] ]);
 				}
 
 			}
@@ -149,7 +149,7 @@ define(
 												showAllSymbol : true,
 												symbolSize : function(value) {
 													return Math
-															.round(value[2] / 10) + 2;
+															.round(value[2] / 100000);
 												},
 												data : dm0
 											},
@@ -159,7 +159,7 @@ define(
 												showAllSymbol : true,
 												symbolSize : function(value) {
 													return Math
-															.round(value[2] / 10) + 2;
+															.round(value[2] / 10000);
 												},
 												data : dm1
 											} ]
