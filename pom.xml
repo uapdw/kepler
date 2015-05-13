@@ -647,6 +647,16 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<!-- 资源 -->
+		<resources>
+			<resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.json</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+		</resources>
 	</build>
 
 	<profiles>
