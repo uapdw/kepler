@@ -3,7 +3,7 @@ define(
 		function($, ko, template) {
 
 			var infoUrl = "/ae/dataSource/dataSource";
-
+			
 			// 添加详细信息页路由
 			addRouter(infoUrl);
 
@@ -17,8 +17,27 @@ define(
 				dsViewModel.fileid(id);
 			}
 			
+			dsViewModel.del = function() {
+				$.ajax({
+					type : 'DELETE',
+					dataType : 'json',
+					async : false,
+					url : 'ae/dataSource/delete/' + this.id,
+					success : function(data) {
+						if (data){
+							jAlert('删除成功!');
+						}
+					},
+					error : function(req, textStatus, errorThrown) {
+						jAlert("调用删除服务报错!!");
+					}
+				});
+				
+			}
+			
 			dsViewModel.info = function(){
-				var id = dsViewModel.fileid();
+				//var id = dsViewModel.fileid();
+				var id = this.id;
 				if(id > 0){
 					$.ajax({
 						type : 'GET',

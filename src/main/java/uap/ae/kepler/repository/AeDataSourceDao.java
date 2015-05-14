@@ -49,4 +49,9 @@ public class AeDataSourceDao extends BaseJdbcDao<DataSources> {
 		
 	}
 	
+	public void deleteOne(Long id) {
+		String sql = " DELETE FROM ae_datasources WHERE id=?";
+		jdbcTemplate.update(sql, id);
+	}
+	
 }
