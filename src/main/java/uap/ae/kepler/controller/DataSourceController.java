@@ -120,6 +120,29 @@ public class DataSourceController {
 		return json;
 	}
 	
+	@RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
+	public @ResponseBody JSONObject delete(@PathVariable("id") Long id, HttpServletRequest request) {
+		DataSources ds = service.findOne(id);
+		String fileName = ds.getFileName();
+		service.deleteOne(id);
+		HttpSession session = request.getSession();
+		String curProjectPath = session.getServletContext().getRealPath("/");
+		String saveDirectoryPath = curProjectPath + "/" + uploadFolderName;
+		File saveDirectory = new File(saveDirectoryPath);
+		JSONObject json = new JSONObject();
+		if(!(saveDirectory.isDirectory() || saveDirectory.mkdir())){
+			json.put(MSG, MSG_ERROR);
+			return json;
+		}
+		File file = new File(saveDirectory, fileName);
+		if(file.delete()){
+			json.put(MSG, MSG_SUCCESS);
+		}else{
+			json.put(MSG, MSG_ERROR);
+		}
+		return json;
+	}
+	
 	@RequestMapping(value = "upload", method = RequestMethod.POST)
 	public @ResponseBody JSONObject upload(@RequestParam("uploadfile") CommonsMultipartFile file, 
 			HttpServletRequest request) throws Exception{

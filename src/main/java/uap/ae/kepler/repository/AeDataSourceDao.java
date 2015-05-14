@@ -1,5 +1,6 @@
 package uap.ae.kepler.repository;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -49,4 +50,8 @@ public class AeDataSourceDao extends BaseJdbcDao<DataSources> {
 		
 	}
 	
+	public void deleteOne(Long id) {
+		String sql = " DELETE FROM ae_datasources WHERE id=?";
+		jdbcTemplate.update(sql, id);
+	}
 }
