@@ -70,7 +70,39 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-
+		<!-- solr -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<version>5.1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-httpclient</groupId>
+		  			<artifactId>commons-httpclient</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.noggit</groupId>
+			<artifactId>noggit</artifactId>
+			<version>0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+		
 		<!-- spring data access -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -81,6 +113,16 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-solr</artifactId>
 			<version>${spring-data-solr.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-httpclient</groupId>
+		  			<artifactId>commons-httpclient</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- spring aop -->
 		<dependency>
@@ -259,14 +301,6 @@
 			<version>${guava.version}</version>
 		</dependency>
 		<!-- GENERAL UTILS end -->
-		
-		<!-- solr -->
-		<dependency>
-	    	<groupId>org.apache.solr</groupId>
-	    	<artifactId>solr-solrj</artifactId>
-	    	<version>4.7.0</version>
-		</dependency>
-		<!-- solr end-->
 
 		<!-- JMS begin -->
 		<dependency>

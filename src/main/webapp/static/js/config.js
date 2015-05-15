@@ -15,6 +15,17 @@ require.config({
 		'jquery.ui.widget':"static/lib/jquery-ui/jquery.ui.widget",
 		'jquery.iframe.transport':"static/lib/jquery-iframe-transport/jquery.iframe-transport",
 		echarts:"static/lib/echarts/echarts-all",
+		
+		'solr.core':"static/lib/ajax-solr-master/core/Core",
+		'AbstractManager':"static/lib/ajax-solr-master/core/AbstractManager",
+		'manager.jquery':"static/lib/ajax-solr-master/managers/Manager.jquery",
+		'Parameter':"static/lib/ajax-solr-master/core/Parameter",
+		'ParameterStore':"static/lib/ajax-solr-master/core/ParameterStore",
+		'AbstractWidget':"static/lib/ajax-solr-master/core/AbstractWidget",
+		'utils':"static/lib/ajax-solr-master/utils",
+		'bootstrap.min':"static/lib/ajax-solr-master/bootstrap.min",
+		'docs.min':"static/lib/ajax-solr-master/docs.min",
+		'jquery-ui.min':"static/lib/ajax-solr-master/jquery-ui.min",
 	},
 	shim: {
 		'u.base':{

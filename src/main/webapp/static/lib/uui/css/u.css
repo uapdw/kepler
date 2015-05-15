@@ -13086,6 +13086,11 @@ code:hover {
 }
 .table > thead > tr > th {
   border-bottom: 0px;
+  font-size: 14px;
+}
+.table-striped tbody > tr > td{
+	font-size: 14px;
+	padding: 8px; 
 }
 .table th {
   border-top: 1px solid #e8edf1;
