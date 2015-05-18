@@ -1,27 +1,22 @@
 <div class="container-fixed">
-	<h2 class="sub-header">新闻列表</h2>
-	<button type="button" class="btn btn-default" id="saveToCSV" data-bind="click:savetocsv" style="position:absolute;right:20px;top:63px">下一步</button>
-	<div class="table-responsive">
-		<form class="form-inline" id="frmSearch" role="form">
-			<label class="key">关键词：</label> 
-			<input type="text" class="form-control" placeholder="请输入关键词" id="txtKeyword">
-			<button type="submit" class="btn btn-default" id="btnSearch"
-					data-bind="click:search">搜索</button>
-			
-		</form>
-		<div class="row" style="height: 20px;"></div>
-		<div class="row" style="height: 20px;"></div>
-		<div class="" id="dataList"></div>
-		<table class="table table-striped" id="dataTable">
-			<thead>
-				<tr>
-					<th>标题</th>
-					<th>网站名称</th>
-					<th>发布时间</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
+	<ul class="nav nav-pills nav-justified">
+		<li class="active"><a href="#tab-selectDataSource"
+			data-toggle="pill">选择数据源</a></li>
+		<li><a href="#tab-dataAnalysis" data-toggle="pill">数据分析</a></li>
+		<li><a href="#tab-dataVisualization" data-toggle="pill">可视化</a></li>
+	</ul>
+	<div style="height: 50px; padding: 5px 50px 5px 5px">
+		<div style="float: right">
+			<button id="lastStep" type="button" class="btn btn-warning"
+				style="width: 120px">上一步</button>
+			&nbsp;&nbsp;
+			<button id="nextStep" type="button" class="btn btn-warning"
+				style="width: 120px">下一步</button>
+		</div>
+	</div>
+	<div class="tab-content first_level_tab">
+		<div class="first-level-tab-pane tab-pane active" id="tab-selectDataSource"></div>
+		<div class="first-level-tab-pane tab-pane" id="tab-dataAnalysis"></div>
+		<div class="first-level-tab-pane tab-pane" id="tab-dataVisualization"></div>
 	</div>
 </div>
