@@ -1,39 +1,49 @@
 <div class="container-fixed">
 	<div>
-		<button class="btn btn-default" data-toggle="modal" data-target="#uploadPane">上传</button>
-		<button class="btn btn-default" data-bind="click: info">查看</button>
+		<button class="btn btn-default" data-toggle="modal" data-target="#uploadPane" style="width:200px;height:50px
+		;position:relative;left:5%;">上传</button>
+		
 	</div>
 	<br/>
 	<div>
 		<!-- 列表区域  -->
-		<div style="float: left; width: 58%">
-			<div class="table-responsive">
+		<div style="float: left; width:100%; text-align:-webkit-center">
+			<div class="table-responsive" style="overflow-y:scroll;height:350px;width:90%;
+			border:1px solid black; border-right-width:0px;">
 				<table id="contentTable"
 					class="table table-bordered table-condensed table-hover">
 					<thead>
 						<tr>
-							<th width="10%">编码</th>
-							<th width="80%">名称</th>
-							<th width="20%">类型</th>
+							<th width="10%"  style="background-color:#B0C4DE">编码</th>
+							<th width="55%"  style="background-color:#B0C4DE">名称</th>
+							<th width="15%"  style="background-color:#B0C4DE">类型</th>
+							<th width="25%"  style="background-color:#B0C4DE">操作</th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach: listinfo">
-						<tr data-bind="click: $parent.setid">
-							<td data-bind="text:id"></td>
-							<td data-bind="text:name"></td>
-							<td data-bind="text:fileType"></td>
-						</tr>
-					</tbody>
+					   <tbody data-bind="foreach: listinfo"; height="100px">
+						  <tr data-bind="click: $parent.setid">
+							 <td data-bind="text:id"></td>
+							 <td data-bind="text:name"></td>
+							 <td data-bind="text:fileType"></td>
+							 <td><strong>
+					              <a href="#" data-bind="click: $parent.del">删除</a>
+					              <a href="#" data-bind="click: $parent.info">查看</a>
+					             </strong>
+					         </td>
+						 </tr>
+					  </tbody>
 				</table>
 			</div>
 		</div>
+		
 	</div>
 	<br/>
-	<div>
-		<div style="float: left; width: 100%">
-		详细
-			<br/>
-			<div id="detail" style="float: left;">
+	 <div>
+		<div style="float: left; width: 100%;">   
+		<hr style="border-top:2px solid #464646" />                  
+		 <h5>&nbsp&nbsp&nbsp&nbsp详细:</h5>
+			<div id="detail" style=" width:90% ;overflow-y:scroll;height:350px;border-top:1px solid black;
+			border-left:1px solid black;border-bottom:1px solid black;position:relative;left:5%;right:5%">
 			</div>
 		</div>
 	</div>
@@ -41,7 +51,7 @@
 	<div class="modal fade" id="uploadPane" tabindex="-1" role="dialog" aria-labelledby="uploadTitle" aria-hidden="true">
 		<div class="modal-dialog">
 		    <div class="modal-content">
-			    <form class="form-horizontal" role="form" style="width: 100%">
+			    <form class="form-horizontal" role="form" style="width:100%">
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
 			        <h4 class="modal-title" id="uploadTitle">上传文件</h4>
