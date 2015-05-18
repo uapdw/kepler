@@ -30,8 +30,4 @@ public class AeDataSourceService {
 		return dao.findOne(id);
 	}
 	
-	public void deleteOne(Long id){
-		dao.deleteOne(id);
-	}
-	
 }
