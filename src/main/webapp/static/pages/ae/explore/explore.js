@@ -84,6 +84,21 @@ define(
 				});
 
 				function activeTabPane(index) {
+					var lastIndex = 0;
+					$.each($(".first_level_tab .first-level-tab-pane"), function(i, element) {
+						if ($(this).hasClass('active')) {
+							lastIndex = i;
+							return;
+						}
+					});
+					if (lastIndex == 0) {
+						saveDataSource();
+					} else if (lastIndex == 1) {
+						saveAnalysisModel();
+					} else if (lastIndex == 2) {
+						saveVisualization();
+					}
+					
 					var selectedDiv = $(".first_level_tab .first-level-tab-pane")
 							.eq(index);
 					$(".first_level_tab .first-level-tab-pane").removeClass("active");
@@ -110,6 +125,21 @@ define(
 							module.init();
 						}
 					});
+				}
+				
+				// 第一步选择数据源后，保存逻辑
+				function saveDataSource() {
+					
+				}
+				
+				// 第二步数据分析后，保存逻辑
+				function saveAnalysisModel() {
+					
+				}
+				
+				// 第三步数据可视化后，保存逻辑
+				function saveVisualization() {
+					
 				}
 			}
 			return {
