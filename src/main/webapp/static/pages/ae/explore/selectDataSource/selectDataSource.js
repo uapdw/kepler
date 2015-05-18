@@ -5,9 +5,7 @@ define(
 		
 		function($, ko, template) {
 			
-			var searchViewModel = {
-					showSearchResults: ko.observable("")
-			}
+			var searchViewModel = {}
 			
 			$.extend({
 
