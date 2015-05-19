@@ -96,7 +96,9 @@ define(
 						}
 					});
 					if (lastIndex == 0) {
-						saveDataSource();
+						if($("a#news").parent().attr('class') == "active"){
+							saveDataSource();
+						}
 					} else if (lastIndex == 1) {
 						saveAnalysisModel();
 					} else if (lastIndex == 2) {
@@ -135,10 +137,8 @@ define(
 				
 				// 第一步选择数据源后，保存逻辑
 				function saveDataSource() {
-					if($("#txtKeyword").val() == ''){
-						alert("没有可保存的查询结果！");	
-					}else{
-						alert("保存为CSV文件需要一些时间，请稍后。");
+					if($("#txtKeyword").val() != ''){
+						//alert("保存为CSV文件需要一些时间，请稍后。");
 						keyword = $("#txtKeyword").val();
 						keyword = $.keywordSeg(keyword);
 						$.ajax({
@@ -148,8 +148,8 @@ define(
 								},
 							url : 'ae/explore/savetocsv',
 							success : function(data) {
-								exploreViewModel.showSearchResults(data);
-								alert(data);
+								//exploreViewModel.showSearchResults(data);
+								//alert(data);
 							},
 							error : function(XMLHttpRequest, textStatus, errorThrown) {
 								jAlert(errorThrown, "错误");

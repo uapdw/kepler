@@ -39,7 +39,7 @@ public class ExploreController {
 		query.set("q", _query);
 		
 	    // 分页，start=0就是从0开始，，rows=5当前返回5条记录，第二页就是变化start这个值为5就可以了。
-		query.set("rows", Integer.MAX_VALUE);
+		query.set("rows", 1000);
 		
 		query.set("sort", "other_articles_publishtime desc");
 	    	

@@ -175,7 +175,7 @@ define(
 			var init = function() {
 				inited = true;
 				loadData();
-				$.search('*:*');			
+				//$.search('*:*');			
 				$('#btnSearch').click(function() {
 					if($("#txtKeyword").val() == ''){
 						alert("请输入关键词！");	
