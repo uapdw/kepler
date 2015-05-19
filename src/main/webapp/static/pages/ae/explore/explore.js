@@ -20,6 +20,8 @@ define(
 						function(module) {
 							initDiv.html('');
 							initDiv.html(module.template);
+							
+							ko.applyBindings(module.model, $(".tab-content .tab-pane").eq(0)[0]);
 
 							if (!module.inited) {
 								module.init();
@@ -122,6 +124,8 @@ define(
 					require([ subJs ], function(module) {
 						selectedDiv.html('');
 						selectedDiv.html(module.template);
+						
+						ko.applyBindings(module.model, selectedDiv[0]);
 
 						if (!module.inited) {
 							module.init();
