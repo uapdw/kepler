@@ -105,7 +105,7 @@ define(
 					$.ajax({
 						type : 'GET',
 						dataType : 'json',
-						url : 'ae/dataSource/info/' + id,
+						url : 'ae/dataSource/select/' + id,
 						success : function(data) {
 							if(data.msg == 'success'){
 								var detailContent = "<div class=\"table-responsive\"><table class=\"table table-bordered table-condensed table-hover\">";
