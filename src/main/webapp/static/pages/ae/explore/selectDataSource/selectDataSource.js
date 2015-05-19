@@ -61,6 +61,8 @@ define(
 				  //获取检索结果数据
 				  afterRequest: function () {		 
 					$("#dataTable tbody tr").remove();
+					$("#dataTable thead tr").remove();
+					$("thead").append("<tr><th>标题</th><th>网站名称</th><th>发布时间</th></tr>");
 				    if(this.manager.highlighting != undefined){
 				      for (var i = 0, l = this.manager.response.docs.length; i < l; i++) {
 				        var doc = this.manager.response.docs[i];
@@ -151,6 +153,15 @@ define(
 				}
 			};
 			
+			searchViewModel.search = function(){
+				if($("#txtKeyword").val() == ''){
+					alert("请输入关键词！");	
+				}else{
+					keyword = $("#txtKeyword").val();
+					$.search($.keywordSeg(keyword));
+				}
+			}
+			
 			var loadData = function() {
 				var infoUrl = 'ae/dataSource/list';
 				$.ajax({
@@ -173,17 +184,8 @@ define(
 			var inited = false;
 			
 			var init = function() {
+				loadData();					
 				inited = true;
-				loadData();
-				//$.search('*:*');			
-				$('#btnSearch').click(function() {
-					if($("#txtKeyword").val() == ''){
-						alert("请输入关键词！");	
-					}else{
-						keyword = $("#txtKeyword").val();
-						$.search($.keywordSeg(keyword));
-					}
-				});	
 			}
 			
 			return {
