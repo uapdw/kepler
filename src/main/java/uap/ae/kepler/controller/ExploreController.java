@@ -54,7 +54,8 @@ public class ExploreController {
 	      SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	      String dateinfo,other_articles_sitename,other_articles_title;
 	      Date other_articles_publishtime;
-	      
+	      bw.write("标题,网站名称,发布时间");
+	      bw.newLine();  
 			for (SolrDocument solrdoc : docList){						
 				other_articles_publishtime = (Date)solrdoc.getFieldValue("other_articles_publishtime");
 				dateinfo = foo.format(other_articles_publishtime);				
