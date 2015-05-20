@@ -18,7 +18,7 @@ define(
 				 **************************************************************************/
 				search: function(query){			
 					Manager = new AjaxSolr.Manager({
-				      solrUrl: 'http://172.20.8.84:8983/solr/other_articles/'
+				      solrUrl: 'http://172.20.8.123:8983/solr/other_articles/'
 				    });
 					Manager.addWidget(new AjaxSolr.ResultWidget({
 				      id: 'result',
