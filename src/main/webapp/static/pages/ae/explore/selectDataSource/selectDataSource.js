@@ -18,7 +18,7 @@ define(
 				 **************************************************************************/
 				search: function(query){			
 					Manager = new AjaxSolr.Manager({
-				      solrUrl: 'http://172.20.8.84:8983/solr/other_articles/'
+				      solrUrl: 'http://172.20.8.123:8983/solr/other_articles/'
 				    });
 					Manager.addWidget(new AjaxSolr.ResultWidget({
 				      id: 'result',
@@ -61,6 +61,8 @@ define(
 				  //获取检索结果数据
 				  afterRequest: function () {		 
 					$("#dataTable tbody tr").remove();
+					$("#dataTable thead tr").remove();
+					$("thead").append("<tr><th>标题</th><th>网站名称</th><th>发布时间</th></tr>");
 				    if(this.manager.highlighting != undefined){
 				      for (var i = 0, l = this.manager.response.docs.length; i < l; i++) {
 				        var doc = this.manager.response.docs[i];
@@ -103,7 +105,7 @@ define(
 					$.ajax({
 						type : 'GET',
 						dataType : 'json',
-						url : 'ae/dataSource/info/' + id,
+						url : 'ae/dataSource/select/' + id,
 						success : function(data) {
 							if(data.msg == 'success'){
 								var detailContent = "<div class=\"table-responsive\"><table class=\"table table-bordered table-condensed table-hover\">";
@@ -151,6 +153,15 @@ define(
 				}
 			};
 			
+			searchViewModel.search = function(){
+				if($("#txtKeyword").val() == ''){
+					alert("请输入关键词！");	
+				}else{
+					keyword = $("#txtKeyword").val();
+					$.search($.keywordSeg(keyword));
+				}
+			}
+			
 			var loadData = function() {
 				var infoUrl = 'ae/dataSource/list';
 				$.ajax({
@@ -173,17 +184,8 @@ define(
 			var inited = false;
 			
 			var init = function() {
+				loadData();					
 				inited = true;
-				loadData();
-				//$.search('*:*');			
-				$('#btnSearch').click(function() {
-					if($("#txtKeyword").val() == ''){
-						alert("请输入关键词！");	
-					}else{
-						keyword = $("#txtKeyword").val();
-						$.search($.keywordSeg(keyword));
-					}
-				});	
 			}
 			
 			return {

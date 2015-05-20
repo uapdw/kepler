@@ -262,9 +262,3 @@ em.hlt1{
 .txt-green{
   color:#008000;
 }
-
-.searchresults{
-	overflow:auto;
-	width:100%;
-	height:180px;
-}

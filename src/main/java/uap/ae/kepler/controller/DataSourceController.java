@@ -143,6 +143,60 @@ public class DataSourceController {
 		return json;
 	}
 	
+	@RequestMapping(value = "select/{id}", method = RequestMethod.GET)
+	public @ResponseBody JSONObject select(@PathVariable("id") Long id, HttpServletRequest request) {
+		DataSources ds = service.findOne(id);
+		String fileName = ds.getFileName();
+		HttpSession session = request.getSession();
+		String curProjectPath = session.getServletContext().getRealPath("/");
+		String saveDirectoryPath = curProjectPath + "/" + uploadFolderName;
+		File saveDirectory = new File(saveDirectoryPath);
+		JSONObject json = new JSONObject();
+		if(!(saveDirectory.isDirectory() || saveDirectory.mkdir())){
+			json.put(MSG, MSG_ERROR);
+			return json;
+		}
+		
+		BufferedReader reader = null;
+		try {
+			File file = new File(saveDirectory, fileName);
+			reader = new BufferedReader(new FileReader(file));
+			String line = null;
+			List<String[]> datalist = new ArrayList();
+			int colnum = -1;
+			int rownum = 0;
+			String[] lineArr = null;
+			while((line = reader.readLine()) != null){
+				rownum++;
+				lineArr = line.split(",");
+				if(colnum == -1){
+					colnum = lineArr.length;
+				}else if(colnum < lineArr.length){
+					colnum = lineArr.length;
+				}
+				datalist.add(lineArr);
+			}
+			json.put(DATA, datalist);
+			json.put(COLNUM, colnum);
+			json.put(ROWNUM, rownum);
+			json.put(MSG, MSG_SUCCESS);
+			session.setAttribute("SelectedDataSource", ds); //设置SESSION
+		} catch (FileNotFoundException e) {
+			json.put(MSG, "文件不存在");
+		} catch (IOException e) {
+			json.put(MSG, "IO错误");
+		} finally{
+			if(reader != null){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					json.put(MSG, "IO错误");
+				}
+			}
+		}
+		return json;
+	}
+	
 	@RequestMapping(value = "upload", method = RequestMethod.POST)
 	public @ResponseBody JSONObject upload(@RequestParam("uploadfile") CommonsMultipartFile file, 
 			HttpServletRequest request) throws Exception{
