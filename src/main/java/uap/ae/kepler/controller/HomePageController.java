@@ -32,7 +32,7 @@ public class HomePageController extends BaseController {
 	public @ResponseBody JSONArray page(
 			@RequestParam(value = "param", defaultValue = "1") String param, HttpServletRequest request) {
 		JSONArray resultJsons = new JSONArray();
-		
+
 		String mJsonStr = readFile(HomePageController.class.getResource("datam.json").getPath());
 		JSONObject mJsonObject = JSONObject.fromObject(mJsonStr);
 		resultJsons.add(mJsonObject);
@@ -40,6 +40,10 @@ public class HomePageController extends BaseController {
 		mJsonStr = readFile(HomePageController.class.getResource("datagdp.json").getPath());
 		JSONArray jsonArray = JSONArray.fromObject(mJsonStr);
 		resultJsons.add(jsonArray);
+		
+		mJsonStr = readFile(HomePageController.class.getResource("weibo.json").getPath());
+		JSONObject jsonWeibo= JSONObject.fromObject(mJsonStr);
+		resultJsons.add(jsonWeibo);
 		
 		return resultJsons;
 	}

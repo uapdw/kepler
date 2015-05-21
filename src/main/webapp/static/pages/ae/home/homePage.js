@@ -74,8 +74,7 @@ define(
 			}
 
 			var init = function() {
-				$
-						.ajax({
+				$.ajax({
 							type : 'GET',
 							dataType : 'json',
 							data : {
@@ -83,8 +82,10 @@ define(
 							},
 							url : 'ae/homepage/initInfo',
 							success : function(data) {
+								console.log(data);
 								var myChart = echarts.init($("#main")[0],'macarons');
 								var gdpChart = echarts.init($("#gdp")[0],'macarons');
+								var weiboChart = echarts.init($("#weibo")[0],'macarons');
 
 								dataFormatter(data[0]);
 
@@ -565,6 +566,98 @@ define(
 											} ]
 								};
 								gdpChart.setOption(optionGDP);
+								
+								var weiboOption = {
+									    title : {
+									        text: '微博关系网络',
+									        subtext: '数据来自网络',
+									        x:'right',
+									        y:'bottom'
+									    },
+									    tooltip : {
+									        trigger: 'item',
+									        formatter : "{b}"
+									    },
+									    toolbox: {
+									        show : true,
+									        feature : {
+									            restore : {show: true},
+									            magicType: {
+									                show: true,
+									                type: ['force', 'chord'],
+									                option: {
+									                    chord: {
+									                        minRadius : 8,
+									                        maxRadius : 15,
+									                        ribbonType: false,
+									                        itemStyle: {
+									                            normal: {
+									                                label: {
+									                                    show: true,
+									                                    rotate: true
+									                                },
+									                                chordStyle: {
+									                                    opacity: 0.2
+									                                }
+									                            }
+									                        }
+									                    },
+									                    force: {
+									                        minRadius : 5,
+									                        maxRadius : 8,
+									                        itemStyle : {
+									                            normal : {
+									                                label: {
+									                                    show: false
+									                                },
+									                                linkStyle : {
+									                                    opacity : 0.5
+									                                }
+									                            }
+									                        }
+									                    }
+									                }
+									            },
+									            saveAsImage : {show: true}
+									        }
+									    },
+									    legend : {
+									        data : ['跑男官微', '跑男成员', '其他人'],
+									        orient : 'vertical',
+									        x : 'left'
+									    },
+									    noDataEffect: 'none',
+									    series :[{
+									        //FIXME No data
+									        type: 'force',
+									    }],
+									};
+									weiboOption.series[0] = {
+							            type: 'force',
+							            name: 'webkit-dep',
+							            itemStyle: {
+							                normal : {
+							                    linkStyle : {
+							                        opacity : 0.5
+							                    }
+							                }
+							            },
+							            categories: data[2].category,
+							            nodes: data[2].node,
+							            links: data[2].link,
+							            minRadius: 15,
+							            maxRadius: 28,
+							            gravity: 1.1,
+							            scaling: 2.3,
+							            steps: 20,
+							            large: true,
+							            useWorker: true,
+							            coolDown: 0.995,
+							            ribbonType: false
+									}
+								
+								weiboChart.setOption(weiboOption);
+								//weiboChart.hideLoading();
 
 							},
 							error : function(XMLHttpRequest, textStatus,
