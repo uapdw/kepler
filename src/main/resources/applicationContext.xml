@@ -97,6 +97,10 @@
 		<property name="defaultAutoCommit" value="true" />
 	</bean>
 	
+	<bean id="solrService" class="uap.ae.kepler.solr.SolrService">
+		<constructor-arg value="${solr.cloud.hosts}" />
+	</bean>
+	
 	<!-- production环境 -->
  	<beans profile="production">
  		<context:property-placeholder ignore-unresolvable="true"

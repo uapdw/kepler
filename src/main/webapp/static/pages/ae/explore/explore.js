@@ -147,10 +147,7 @@ define(
 								data: keyword
 								},
 							url : 'ae/explore/savetocsv',
-							success : function(data) {
-								//exploreViewModel.showSearchResults(data);
-								//alert(data);
-							},
+							success : function(data) {},
 							error : function(XMLHttpRequest, textStatus, errorThrown) {
 								jAlert(errorThrown, "错误");
 							}
