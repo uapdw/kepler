@@ -32,7 +32,11 @@ public class AeDemoQuickStart {
 		} catch (Exception e1) {
 			System.out.println("rJava连接有异常");
 			e1.printStackTrace();
+		} catch (Throwable t){
+			System.out.println("rJava连接有错误,如未安装R请忽略.");
+			t.printStackTrace();
 		}
+		
 
 		try {
 			server.start();
