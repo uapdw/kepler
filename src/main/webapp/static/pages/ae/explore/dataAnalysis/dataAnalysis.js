@@ -2,15 +2,77 @@ define(
 		[ 'jquery', 'knockout',
 				'text!static/pages/ae/explore/dataAnalysis/dataAnalysis.html' ],
 		function($, ko, template) {
-			var exploreViewModel = {}
-			
+			var analysisViewModel = {}
+
 			var inited = false;
 
 			var init = function() {
 				inited = true;
+
+				$('#btnov')
+						.click(
+								function() {
+									$
+											.ajax({
+												type : 'GET',
+												dataType : 'json',
+												url : 'ae/explore/stat',
+												data : {
+													field : $('#field').val(),
+													maxNumber : $('#maxnumber')
+															.val()
+												},
+												success : function(data) {
+													if (data.msg == 'success') {
+														debugger
+														var detailContent = "<div class=\"table-responsive\"><table class=\"table table-bordered table-condensed table-hover\">";
+														// header
+														detailContent += "<thead><tr>";
+														for (var i = 0; i < data.colnum; i++) {
+															detailContent += "<th style='background-color:#51A2A2'>";
+															if (data.data[0][i]) {
+																detailContent += data.data[0][i];
+															} else {
+																detailContent += "#null";
+															}
+															detailContent += "</th>";
+														}
+														detailContent += "</tr></thead>";
+														// body
+														detailContent += "<tbody>";
+														for (var i = 1; i < data.rownum; i++) {
+															detailContent += "<tr>";
+															for (var j = 0; j < data.colnum; j++) {
+																detailContent += "<td>";
+																if (data.data[i][j]) {
+																	detailContent += data.data[i][j];
+																} else {
+																	detailContent += "#null";
+																}
+																detailContent += "</td>"
+															}
+															detailContent += "</tr>";
+														}
+														detailContent += "</tbody>";
+														detailContent += "</table></div>";
+
+														$("#statresult").html(
+																detailContent);
+													} else {
+														jAlert(data.msg, "错误");
+													}
+												},
+												error : function(
+														XMLHttpRequest,
+														textStatus, errorThrown) {
+													jAlert("获取详细信息失败!", "错误");
+												},
+											});
+
+								});
 			}
 			return {
-				'model' : exploreViewModel,
+				'model' : analysisViewModel,
 				'template' : template,
 				'init' : init,
 				'inited' : inited
