@@ -1,10 +1,13 @@
 package uap.ae.kepler.controller;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -279,5 +282,40 @@ public class ExploreController {
 		}
 
 		return jsonObject;
+	}
+	
+	/**
+	 * 处理用于可视化的数据
+	 * @param request
+	 * @return JSONObject
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getViewedData", method = RequestMethod.GET)
+	public @ResponseBody JSONObject getViewedData(HttpServletRequest request) throws Exception{
+		String statPath = getStatPath(request);
+		JSONObject jsonObject = new JSONObject();
+		try {
+			ArrayList<String> titleList = new ArrayList<String>();
+			ArrayList<Integer> freqList = new ArrayList<Integer>();
+			FileInputStream fileInputStream = new FileInputStream(statPath);
+			InputStreamReader inputStreamReader = new InputStreamReader(
+					fileInputStream, "UTF-8");
+			BufferedReader reader = new BufferedReader(inputStreamReader);
+			String line = reader.readLine();
+			while ((line = reader.readLine()) != null) {
+				String[] words = line.split("\",");
+				String title = words[1].substring(words[1].indexOf("\"")+1,words[1].length());
+				int freq = Integer.parseInt(words[2]);
+				titleList.add(title);
+				freqList.add(freq);
+			}
+			reader.close();
+			jsonObject.put("title", titleList);
+			jsonObject.put("freq", freqList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+        return jsonObject;
 	}
 }
