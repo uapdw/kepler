@@ -1,7 +1,7 @@
 require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'], function($, ko) {
 
 	window.addRouter = function(path, func) {
-		debugger;
+
 		var pos = path.indexOf('/:')
 		var truePath = path
 		if (pos != -1)

@@ -6,8 +6,10 @@ define(
 		function($, ko, template) {
 			
 			var searchViewModel = {
-				listinfo : ko.observableArray([])
+				listinfo : ko.observableArray([]),
+				showSearchResults: ko.observable("")
 			}
+			
 			
 			$.extend({
 
@@ -16,9 +18,9 @@ define(
 				 * 参数说明： q: 查询， hl: 是否高亮显示查询词， sort: 定义排序的域及排序方式， hl.fl: 高亮的域，
 				 * hl.simple.pre: 高亮词前的添加(样式)， hl.simple.post: 高亮词后的添加， rows: 检索结果显示的行数。
 				 **************************************************************************/
-				search: function(query){			
+				search: function(solrurl, query){			
 					Manager = new AjaxSolr.Manager({
-				      solrUrl: 'http://172.20.8.123:8983/solr/other_articles/'
+				      solrUrl: solrurl
 				    });
 					Manager.addWidget(new AjaxSolr.ResultWidget({
 				      id: 'result',
@@ -158,7 +160,22 @@ define(
 					alert("请输入关键词！");	
 				}else{
 					keyword = $("#txtKeyword").val();
-					$.search($.keywordSeg(keyword));
+					keyword = $.keywordSeg(keyword);
+					var solrUrl = null;
+					$.ajax({
+						type : 'GET',
+						url : 'ae/explore/gethostinfo',
+						data: {
+							data : keyword
+						},
+						success : function(data) {	
+							solrUrl = data;
+							$.search(solrUrl+"/other_articles_shard1_replica1/", keyword);
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							jAlert(errorThrown, "获取详细信息失败!")
+						}
+					});
 				}
 			}
 			

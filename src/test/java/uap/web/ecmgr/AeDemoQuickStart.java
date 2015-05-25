@@ -1,6 +1,8 @@
 package uap.web.ecmgr;
 
 import org.eclipse.jetty.server.Server;
+import org.rosuda.REngine.REngine;
+import org.rosuda.REngine.REngineStdOutput;
 import org.springside.modules.test.jetty.JettyFactory;
 import org.springside.modules.test.spring.Profiles;
 
@@ -23,6 +25,18 @@ public class AeDemoQuickStart {
 		// 启动Jetty
 		Server server = JettyFactory.createServerInSource(PORT, CONTEXT);
 		JettyFactory.setTldJarNames(server, TLD_JAR_NAMES);
+		
+		//主线程中启动R
+		try {
+			REngine.engineForClass("org.rosuda.REngine.JRI.JRIEngine", args, new REngineStdOutput(), false);
+		} catch (Exception e1) {
+			System.out.println("rJava连接有异常");
+			e1.printStackTrace();
+		} catch (Throwable t){
+			System.out.println("rJava连接有错误,如未安装R请忽略.");
+			t.printStackTrace();
+		}
+		
 
 		try {
 			server.start();
