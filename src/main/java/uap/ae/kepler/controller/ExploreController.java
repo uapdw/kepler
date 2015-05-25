@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONObject;
 
@@ -51,6 +52,7 @@ public class ExploreController {
 	final String  defaultCollection = "other_articles";  
     final int  zkClientTimeout = 20000;  
     final int zkConnectTimeout = 1000;
+    private static final String uploadFolderName = "uploads";
     
     /**
      * 设置CloudSolrClient
@@ -150,21 +152,24 @@ public class ExploreController {
 	@RequestMapping(value = "savetocsv", method = RequestMethod.GET)
 	public @ResponseBody String savetocsv(HttpServletRequest request) throws Exception{
 		try{	
-			CloudSolrClient cloudsolrclient = setCloudSolrClient();
 			
+			CloudSolrClient cloudsolrclient = setCloudSolrClient();			
 			String query = request.getParameter("data");
 			SolrDocumentList docList = searchDataInSolr(cloudsolrclient,query);
 			if(docList.getNumFound()==0){
-				return "没有查找到结果数据";
+				return "没有找到结果数据";
 			}
 			String sessionId = request.getRequestedSessionId();
 			SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 			String dateinfo = foo.format(new Date());
 			dateinfo = dateinfo.substring(0, dateinfo.indexOf(" "));
-			File csv = new File("csv/"+sessionId+"_"+dateinfo+".csv"); // CSV数据文件 
+			HttpSession session = request.getSession();
+			String curProjectPath = session.getServletContext().getRealPath("/");
+			String saveDirectoryPath = curProjectPath + "/uploads/" + sessionId+"_"+dateinfo+".csv";
+			File csv = new File(saveDirectoryPath); // CSV数据文件 
 			if(csv.exists()){
 				csv.delete();
-				csv = new File("csv/"+sessionId+"_"+dateinfo+".csv");
+				csv = new File(saveDirectoryPath);
 			}
 			System.out.println(csv.getAbsolutePath());  
 			CSVWriter(csv, docList);	
@@ -294,6 +299,7 @@ public class ExploreController {
 	public @ResponseBody JSONObject getViewedData(HttpServletRequest request) throws Exception{
 		String statPath = getStatPath(request);
 		JSONObject jsonObject = new JSONObject();
+		String datatype = request.getParameter("data");
 		try {
 			ArrayList<String> titleList = new ArrayList<String>();
 			ArrayList<Integer> freqList = new ArrayList<Integer>();
@@ -310,6 +316,7 @@ public class ExploreController {
 				freqList.add(freq);
 			}
 			reader.close();
+			
 			jsonObject.put("title", titleList);
 			jsonObject.put("freq", freqList);
 		} catch (Exception e) {
