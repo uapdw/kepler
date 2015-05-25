@@ -1,4 +1,4 @@
-html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, address, big, cite, code, del, em, font, img, ins, small, strong, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend {
+﻿html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, address, big, cite, code, del, em, font, img, ins, small, strong, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend {
     margin: 0;
     padding: 0;
 }
@@ -133,6 +133,11 @@ a:link, a:visited {
 .free-regist a:link, .free-regist a:visited {
     color: #ffffff;
 }
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px rgb(82, 111, 125) inset
+}
+
 
 
 
