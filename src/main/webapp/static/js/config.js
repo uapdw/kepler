@@ -26,6 +26,7 @@ require.config({
 		'bootstrap.min':"static/lib/ajax-solr-master/bootstrap.min",
 		'docs.min':"static/lib/ajax-solr-master/docs.min",
 		'jquery-ui.min':"static/lib/ajax-solr-master/jquery-ui.min",
+		'd3.cloud':"static/lib/d3/d3",
 	},
 	shim: {
 		'u.base':{

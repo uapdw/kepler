@@ -16,6 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.solr.client.solrj.SolrQuery;
@@ -398,43 +399,70 @@ public class ExploreController {
 
 	}
 
+
 	/**
 	 * 处理用于可视化的数据
-	 * 
 	 * @param request
 	 * @return JSONObject
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "getViewedData", method = RequestMethod.GET)
-	public @ResponseBody JSONObject getViewedData(HttpServletRequest request)
-			throws Exception {
-		String statPath = getStatPath(request, "stat");
-		JSONObject jsonObject = new JSONObject();
+	public @ResponseBody JSONArray getViewedData(HttpServletRequest request) throws Exception{
+		String statPath = getStatPath(request,"");		
 		String datatype = request.getParameter("data");
-		try {
-			ArrayList<String> titleList = new ArrayList<String>();
-			ArrayList<Integer> freqList = new ArrayList<Integer>();
-			FileInputStream fileInputStream = new FileInputStream(statPath);
-			InputStreamReader inputStreamReader = new InputStreamReader(
-					fileInputStream, "UTF-8");
-			BufferedReader reader = new BufferedReader(inputStreamReader);
-			String line = reader.readLine();
-			while ((line = reader.readLine()) != null) {
-				String[] words = line.split("\",");
-				String title = words[1].substring(words[1].indexOf("\"") + 1,
-						words[1].length());
-				int freq = Integer.parseInt(words[2]);
-				titleList.add(title);
-				freqList.add(freq);
+		datatype=new String(datatype.getBytes("ISO-8859-1"),"UTF-8");
+		FileInputStream fileInputStream = new FileInputStream(statPath);
+		InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+		BufferedReader reader = new BufferedReader(inputStreamReader);
+		String line = "";
+		System.out.println(datatype);
+			if(datatype.equals("wordscloud")){
+				JSONObject jsonObject = new JSONObject();
+				JSONArray jsonArray= new JSONArray();
+				while ((line = reader.readLine()) != null) {
+					String[] words = line.split("\",");
+					String title = words[1].substring(words[1].indexOf("\"")+1,words[1].length());
+					int freq = Integer.parseInt(words[2]);
+					jsonObject = new JSONObject();
+					jsonObject.put("text", title);
+					jsonObject.put("size", freq);
+					jsonArray.add(jsonObject);
+				}				
+				reader.close();
+				return jsonArray;
+			}else if(datatype.equals("pie")){
+				JSONObject jsonObject = new JSONObject();
+				JSONArray jsonArray= new JSONArray();
+				while ((line = reader.readLine()) != null) {
+					String[] words = line.split("\",");
+					String title = words[1].substring(words[1].indexOf("\"")+1,words[1].length());
+					int freq = Integer.parseInt(words[2]);
+					jsonObject = new JSONObject();
+					jsonObject.put("value", freq);
+					jsonObject.put("name", title);
+					jsonArray.add(jsonObject);
+				}				
+				reader.close();
+				return jsonArray;
+			}else{
+				JSONObject jsonObject = new JSONObject();
+				JSONArray jsonArray= new JSONArray();
+				ArrayList<String> titleList = new ArrayList<String>();
+				ArrayList<Integer> freqList = new ArrayList<Integer>();								
+				while ((line = reader.readLine()) != null) {
+					String[] words = line.split("\",");
+					String title = words[1].substring(words[1].indexOf("\"")+1,words[1].length());
+					int freq = Integer.parseInt(words[2]);
+					titleList.add(title);
+					freqList.add(freq);
+				}
+				reader.close();			
+				jsonObject.put("title", titleList);
+				jsonObject.put("freq", freqList);
+				jsonArray.add(jsonObject);
+				return jsonArray;
+				
 			}
-			reader.close();
-
-			jsonObject.put("title", titleList);
-			jsonObject.put("freq", freqList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return jsonObject;
+		        
 	}
 }
