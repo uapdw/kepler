@@ -118,8 +118,8 @@
 				-->
 			</ul>
 		</div>
-		<!-- content -->
-		<div class="content">内容区</div>
+		<!-- content内容区 -->
+		<div class="content"></div>
 
 		<script src="${ctx}/static/lib/requirejs/require.debug.js"></script>
 		<script src="${ctx}/static/js/config.js"></script>
