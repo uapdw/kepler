@@ -54,15 +54,15 @@ public class MgrFunctionJdbcDao extends BaseJdbcDao<MgrFunction> {
 		explore.setChildren(new ArrayList<MgrFunction>());
 		list.add(explore);
 		
-		MgrFunction publish = new MgrFunction();
-		publish.setId(113);
-		publish.setParentId(100);
-		publish.setFuncCode("publish");
-		publish.setFuncName("发布");
-		publish.setFuncType("0");
-		publish.setFuncUrl("/ae/publish/publish");
-		publish.setChildren(new ArrayList<MgrFunction>());
-		list.add(publish);
+//		MgrFunction publish = new MgrFunction();
+//		publish.setId(113);
+//		publish.setParentId(100);
+//		publish.setFuncCode("publish");
+//		publish.setFuncName("发布");
+//		publish.setFuncType("0");
+//		publish.setFuncUrl("/ae/publish/publish");
+//		publish.setChildren(new ArrayList<MgrFunction>());
+//		list.add(publish);
 		
 		
 		List<MgrFunction> children = root.getChildren();
@@ -72,7 +72,7 @@ public class MgrFunctionJdbcDao extends BaseJdbcDao<MgrFunction> {
 		
 		dmDemo.getChildren().add(dataSource);
 		dmDemo.getChildren().add(explore);
-		dmDemo.getChildren().add(publish);
+//		dmDemo.getChildren().add(publish);
 		
 		List<MgrFunction> newList = new ArrayList<MgrFunction>();
 		newList.addAll(list);
