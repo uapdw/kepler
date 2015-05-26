@@ -26,6 +26,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.cloud.ClusterState;
 import org.apache.solr.common.cloud.ZkStateReader;
 import org.rosuda.REngine.REXP;
+import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngine;
 import org.rosuda.REngine.RList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,21 +192,28 @@ public class ExploreController {
 	}
 
 	private String getCurrentCSVPath(HttpServletRequest request) {
+		
 		String sessionId = request.getRequestedSessionId();
 		SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		String dateinfo = foo.format(new Date());
 		dateinfo = dateinfo.substring(0, dateinfo.indexOf(" "));
-		File csv = new File("csv/" + sessionId + "_" + dateinfo + ".csv");
+		HttpSession session = request.getSession();
+		String curProjectPath = session.getServletContext().getRealPath("/");
+		String saveDirectoryPath = curProjectPath + "/uploads/" + sessionId+"_"+dateinfo+".csv";
+		File csv = new File(saveDirectoryPath);
 
 		return csv.getAbsolutePath().replace("\\", "/");
 	}
 
-	private String getStatPath(HttpServletRequest request) {
+	private String getStatPath(HttpServletRequest request,String stat) {
 		String sessionId = request.getRequestedSessionId();
 		SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		String dateinfo = foo.format(new Date());
 		dateinfo = dateinfo.substring(0, dateinfo.indexOf(" "));
-		File csv = new File("csv/" + sessionId + "_" + dateinfo + "_stat.csv");
+		HttpSession session = request.getSession();
+		String curProjectPath = session.getServletContext().getRealPath("/");
+		String saveDirectoryPath = curProjectPath + "/uploads/" + sessionId+"_"+dateinfo+".csv";
+		File csv = new File(saveDirectoryPath);
 
 		return csv.getAbsolutePath().replace("\\", "/");
 	}
@@ -247,24 +255,14 @@ public class ExploreController {
 	private static final String COLNUM = "colnum";
 	private static final String ROWNUM = "rownum";
 	private static final String MSG = "msg";
-
-	@RequestMapping(value = "stat", method = RequestMethod.GET)
-	public  @ResponseBody JSONObject stat(
-			@RequestParam(value = "field", defaultValue = "1") String field,
-			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
-			HttpServletRequest request) throws NoSuchMethodException {
-
-		String csvPath = getCurrentCSVPath(request);
-		String statPath = getStatPath(request);
-		REngine lastEngine = REngine.getLastEngine();
+	
+	private JSONObject toJson(REXP repResult){
+		int colnum = -1;
+		int rownum = 0;
+		RList asList;
 		JSONObject jsonObject = new JSONObject();
 		try {
-			REXP repResult = lastEngine.parseAndEval(getStatRScript(csvPath, statPath, field,
-					maxNumber));
-			
-			int colnum = -1;
-			int rownum = 0;
-			RList asList = repResult.asList();
+			asList = repResult.asList();
 			String[] keys = asList.keys();
 			colnum = keys.length;
 			List<String[]> datalist = new ArrayList<String[]>();
@@ -281,12 +279,91 @@ public class ExploreController {
 			jsonObject.put(COLNUM, colnum);
 			jsonObject.put(ROWNUM, rownum);
 			jsonObject.put(MSG, MSG_SUCCESS);
-			
-		} catch (Exception e1) {
-			e1.printStackTrace();
+		} catch (REXPMismatchException e) {
+			e.printStackTrace();
+			jsonObject.put(MSG, e.getMessage());
 		}
-
+		
 		return jsonObject;
+	}
+
+	@RequestMapping(value = "stat", method = RequestMethod.GET)
+	public  @ResponseBody JSONObject stat(
+			@RequestParam(value = "field", defaultValue = "1") String field,
+			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
+			HttpServletRequest request) throws NoSuchMethodException {
+
+		String csvPath = getCurrentCSVPath(request);
+		String statPath = getStatPath(request,"stat");
+		REngine lastEngine = REngine.getLastEngine();
+		REXP repResult;
+		try {
+			repResult = lastEngine.parseAndEval(getStatRScript(csvPath, statPath, field,
+					maxNumber));
+		} catch (Exception e) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put(MSG, e.getMessage());
+			return jsonObject;
+		} 
+		
+		return toJson(repResult);
+
+	}
+	
+	private String getWordRScript(String filePath, String statPath,
+			String index, String maxNumber) {
+		StringBuffer script = new StringBuffer();
+		script.append("data <- read.csv(\"" + filePath + "\",fileEncoding = \"UTF-8\");");
+		script.append("field <- \"" + index +"\";");
+		String field = "";
+		if(index.equals("标题")){
+			field = "data[,1]";
+		}
+		if(index.equals("网站名称")){
+			field = "data[,2]";
+		}
+		if(index.equals("发布时间")){
+			field = "data[,3]";
+		}
+		script.append("word.data <- " + field +";");
+		script.append("library(Rwordseg);");
+		
+		script.append("colnames(result) <- c(field,\"数量\");");
+		script.append("result <- result[order(result$数量,decreasing = TRUE),];");
+		
+		if (!maxNumber.equals("不限定")) {
+			script.append("maxnumber <- "+ maxNumber+ ";");
+			script.append("if(length(result[,1]) < " + maxNumber
+					+ "){maxnumber <- length(result[,1]);};");
+			script.append("result <- result[1:maxnumber,];");
+		}
+		script.append("write.csv(result,\"" + statPath + "\");");
+		script.append("result;");
+
+		return script.toString();
+	}
+	
+	@RequestMapping(value = "wordStat", method = RequestMethod.GET)
+	public  @ResponseBody JSONObject wordStat(
+			@RequestParam(value = "field", defaultValue = "1") String field,
+			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
+			HttpServletRequest request) throws NoSuchMethodException {
+
+		String csvPath = getCurrentCSVPath(request);
+		String statPath = getStatPath(request,"word");
+		REngine lastEngine = REngine.getLastEngine();
+		REXP repResult;
+		try {
+			repResult = lastEngine.parseAndEval(getWordRScript(csvPath, statPath, field,
+					maxNumber));
+		} catch (Exception e) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put(MSG, e.getMessage());
+			return jsonObject;
+		} 
+		
+		return toJson(repResult);
+
 	}
 	
 	/**
@@ -297,7 +374,7 @@ public class ExploreController {
 	 */
 	@RequestMapping(value = "getViewedData", method = RequestMethod.GET)
 	public @ResponseBody JSONObject getViewedData(HttpServletRequest request) throws Exception{
-		String statPath = getStatPath(request);
+		String statPath = getStatPath(request,"stat");
 		JSONObject jsonObject = new JSONObject();
 		String datatype = request.getParameter("data");
 		try {
