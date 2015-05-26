@@ -1,82 +1,194 @@
 define(
 		[ 'jquery', 'knockout',
-				'text!static/pages/ae/explore/dataVisualization/dataVisualization.html','echarts' ],
+				'text!static/pages/ae/explore/dataVisualization/dataVisualization.html','echarts', 'd3.cloud' ],
 		function($, ko, template) {
 			var dataViewModel = {
 					info : ko.observable("")
 			}
 			
 			var inited = false;
+			
+			//柱状图和折线图展示
+			function successGetView(datatype, data){
+				$("#newscharts div").remove();
+				$("#newscharts").append("<div style='height:500px'></div>")
+				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
+				var option = {
+					    title : {
+					        text: '网站发布新闻数量分析',
+					    },
+					    tooltip : {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					        data:['网站发布频率']
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            dataView : {show: true, readOnly: false},
+					            //magicType : {show: true, type: ['line', 'bar']},
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    calculable : true,
+					    xAxis : [
+					        {
+					            type : 'category',
+					            data : data.title,
+					            axisLabel : {
+					                show:true,
+					                interval: 'auto',    // {number}
+					                rotate: 45,
+					                margin: 8,
+					                textStyle: {
+					                    color: 'blue',
+					                    fontFamily: 'sans-serif',
+					                    fontSize: 15,
+					                    fontStyle: 'italic',
+					                    fontWeight: 'bold'
+					                }
+					            }
+					        }
+					    ],
+					    yAxis : [
+					        {
+					            type : 'value'
+					        }
+					    ],
+					    series : [
+					        {
+					            name:'网站发布频率',
+					            type: datatype,
+					            data: data.freq					            
+					        }
+					    ]
+					};
+				newsChart.setOption(option);
+			}
+			
+			//饼图展示
+			function successGetPieView(datatype, data){
+				$("#newscharts div").remove();
+				$("#newscharts").append("<div style='height:500px'></div>")
+				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
+				var option = {
+					    title : {
+					        text: '发布新闻网站数量分析',
+					        x:'center'
+					    },
+					    tooltip : {
+					        trigger: 'item',
+					        formatter: "{a} <br/>{b} : {c} ({d}%)"
+					    },
+					    legend: {
+					        orient : 'vertical',
+					        x : 'left',
+					        data: data.map(function(d) {
+						        return d.name;
+						      })
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            dataView : {show: true, readOnly: false},
+					            magicType : {
+					                show: true, 
+					                type: ['pie', 'funnel'],
+					                option: {
+					                    funnel: {
+					                        x: '25%',
+					                        width: '50%',
+					                        funnelAlign: 'left',
+					                        max: 1548
+					                    }
+					                }
+					            },
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    calculable : true,
+					    series : [
+					        {
+					            name:'访问来源',
+					            type:'pie',
+					            radius : '55%',
+					            center: ['50%', '60%'],
+					            data: data
+					        }
+					    ]
+					};
+				newsChart.setOption(option);
+			}
+			
+			//词云图展示
+			function successGetWordsCloudView(datatype, data){
+				$("#newscharts div").remove();
+				$("#newscharts").append("<div style='height:500px'></div>")
+				 var fill = d3.scale.category20();
+				  d3.layout.cloud().size([1500, 500])
+				      .words(data.map(function(d) {
+				        return {text: d.text, size:d.size>10? d.size:(d.size+20)};
+				      }))
+				      .padding(0)
+				      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+				      .font("Impact")
+				      .fontSize(function(d) { return d.size; })
+				      .on("end", draw)
+				      .start();
 
-			function getView(datatype){
-				var newsChart = echarts.init($("#newscharts")[0],'macarons');
+				  function draw(words) {
+				    d3.select("#newscharts div").append("svg")
+				        .attr("width", 1500)
+				        .attr("height", 500)
+				      .append("g")
+				        .attr("transform", "translate(680,250)")
+				      .selectAll("text")
+				        .data(words)
+				      .enter().append("text")
+				        .style("font-size", function(d) { return d.size*0.9 + "px"; })
+				        .style("font-family", "Courier")
+				        .style("font-weight", "bold")
+				        .style("fill", function(d, i) { return fill(i); })
+				        .attr("text-anchor", "middle")
+				        .attr("transform", function(d) {
+				          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+				        })
+				        .text(function(d) { return d.text; });
+				  }
+			}
+			
+			//通过已选择的展示类型从后台获取相应的数据格式
+			function getView(datatype){				
 				$.ajax({
 					type : 'GET',
 					url : 'ae/explore/getViewedData',
 					data: {
-						data : "uap"
+						data : datatype
 					},
-					success : function(data) {	
-						var option = {
-							    title : {
-							        text: '网站发布新闻数量分析',
-							    },
-							    tooltip : {
-							        trigger: 'axis'
-							    },
-							    legend: {
-							        data:['网站发布频率']
-							    },
-							    toolbox: {
-							        show : true,
-							        feature : {
-							            mark : {show: true},
-							            dataView : {show: true, readOnly: false},
-							            magicType : {show: true, type: ['line', 'bar']},
-							            restore : {show: true},
-							            saveAsImage : {show: true}
-							        }
-							    },
-							    calculable : true,
-							    xAxis : [
-							        {
-							            type : 'category',
-							            data : data.title,
-							            axisLabel : {
-							                show:true,
-							                interval: 'auto',    // {number}
-							                rotate: 45,
-							                margin: 8,
-							                textStyle: {
-							                    color: 'blue',
-							                    fontFamily: 'sans-serif',
-							                    fontSize: 15,
-							                    fontStyle: 'italic',
-							                    fontWeight: 'bold'
-							                }
-							            }
-							        }
-							    ],
-							    yAxis : [
-							        {
-							            type : 'value'
-							        }
-							    ],
-							    series : [
-							        {
-							            name:'网站发布频率',
-							            type: datatype,
-							            data: data.freq					            
-							        }
-							    ]
-							};
-						newsChart.setOption(option);			
+					success : function(data) {
+						if(datatype == "line" ||datatype == "bar"){
+							successGetView(datatype, data[0]);	
+						}else if(datatype == "wordscloud"){
+							successGetWordsCloudView(datatype, data);
+						}else if(datatype == "pie"){
+							successGetPieView(datatype, data);
+						}else{
+							$("#newscharts div").remove();
+							$("#newscharts").append("<div style='height:500px'>数据不支持此图</div>")
+						}
 					},
 					error : function(XMLHttpRequest, textStatus, errorThrown) {
 						jAlert(errorThrown, "获取详细信息失败!")
 					}
 				});
 			}
+			
+			
 			var init = function() {
 				var datatype = "bar";
 				$("#checkZZ").attr('checked',true);
@@ -91,6 +203,12 @@ define(
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
 								datatype = "scatter";
+							}else if($("#checkCY").is(':checked')){
+								datatype = "wordscloud";
+							}else if($("#checkBT").is(':checked')){
+								datatype = "pie";
+							}else{
+								datatype = "map";
 							}
 							getView(datatype);
 						}else{
