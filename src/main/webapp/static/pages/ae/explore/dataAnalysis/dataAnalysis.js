@@ -8,7 +8,7 @@ define(
 
 			var init = function() {
 				inited = true;
-				$('#cluster')
+				$('#btncluster')
 				.click(
 						function() {
 							$
@@ -17,8 +17,8 @@ define(
 										dataType : 'json',
 										url : 'ae/explore/cluster',
 										data : {
-											field : $('#field').val(),
-											maxNumber : $('#maxnumber')
+											field : $('#fieldcluster').val(),
+											maxNumber : $('#maxnumcluster')
 													.val()
 										},
 										success : function(data) {
@@ -55,7 +55,7 @@ define(
 												detailContent += "</tbody>";
 												detailContent += "</table></div>";
 
-												$("#statresult").html(
+												$("#clusterresult").html(
 														detailContent);
 											} else {
 												jAlert(data.msg, "错误");
@@ -71,7 +71,7 @@ define(
 						});
 
 
-				$('#wordresults')
+				$('#btnword')
 						.click(
 								function() {
 									$
@@ -80,8 +80,8 @@ define(
 												dataType : 'json',
 												url : 'ae/explore/wordStat',
 												data : {
-													field : $('#field').val(),
-													maxNumber : $('#maxnumber')
+													field : $('#fieldword').val(),
+													maxNumber : $('#maxnumword')
 															.val()
 												},
 												success : function(data) {
@@ -118,7 +118,7 @@ define(
 														detailContent += "</tbody>";
 														detailContent += "</table></div>";
 
-														$("#statresult").html(
+														$("#wordresults").html(
 																detailContent);
 													} else {
 														jAlert(data.msg, "错误");
