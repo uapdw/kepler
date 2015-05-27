@@ -7,6 +7,26 @@
 <input name="dataview" type="checkbox" id="checkCY" />词云图&nbsp;&nbsp;&nbsp;&nbsp;
 <input name="dataview" type="checkbox" id="checkDT" />地图
 </form>
+	<div>
+		<button class="btn btn-default" data-bind="click:sharemail">邮件分享</button>
+		<html xmlns:wb="http://open.weibo.com/wb">
+			<head>
+				<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+			</head>
+			<body>
+				<!-- TODO 图片地址需要绑定 --><br/>
+				<wb:publish action="pubilish" type="web" language="zh_cn" button_type="red" button_size="middle" button_text="分享到微博" refer="y" appkey="5E4yWv" default_text="请填写内容" default_image="https://theitawanderer.files.wordpress.com/2014/08/explore-dream-discover.png"></wb:publish>
+			</body>
+		</html>
+	</div>
+	<div id="sharemailPane">
+		<!-- TODO 浮动框会出问题，暂时没有UI --><br/>
+		收件人：<input value="" name="tolist" id="tolist" data-bind="value:mailinfo().toList" type="text"/><br/>
+		标&nbsp;题：<input value="" name="title" id="title" data-bind="value:mailinfo().title" type="text"/><br/>
+		内&nbsp;容：<br/>
+		<input value="" name="content" id="content" data-bind="value:mailinfo().content" type="textarea"/>
+		<button class="btn btn-primary" data-bind="click:sendmail">发送邮件</button>
+	</div>
 <br/><br/>
 <div id="newscharts" >
 	<div style="height:500px"></div>	

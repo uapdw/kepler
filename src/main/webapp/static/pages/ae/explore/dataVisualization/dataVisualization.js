@@ -3,10 +3,46 @@ define(
 				'text!static/pages/ae/explore/dataVisualization/dataVisualization.html','echarts', 'd3.cloud' ],
 		function($, ko, template) {
 			var dataViewModel = {
-					info : ko.observable("")
+					info : ko.observable(""),
+					mailinfo : ko.observable({})
 			}
 			
 			var inited = false;
+			
+			dataViewModel.sharemail = function(){
+				var pane = $("#sharemailPane");
+				if(pane.is(":hidden")){
+					pane.show();
+				}else{
+					pane.hide();
+				}
+			}
+			
+			dataViewModel.sendmail = function(){
+				if(this.mailinfo().toList == null || this.mailinfo().toList == ''){
+					jAlert("收件人未填写", "错误");
+					return;
+				}
+				var sendUrl = "ae/explore/sendmail";
+				$.ajax({
+					type : 'POST',
+					contentType : 'application/json',
+					url : sendUrl,
+					data : JSON.stringify(dataViewModel.mailinfo()),
+					dataType : 'json',
+					success : function(data) {
+						if (data == null || data.msg != 'success') {
+							jAlert("发送失败!", "错误");
+						}else{
+							jAlert("发送成功!", "提示");
+						}
+					},
+					error : function() {
+						jAlert("发送失败!", "错误");
+					}
+				});
+				
+			}
 			
 			//柱状图和折线图展示
 			function successGetView(datatype, data){
@@ -191,6 +227,7 @@ define(
 			
 			var init = function() {
 				var datatype = "bar";
+				$("#sharemailPane").hide();
 				$("#checkZZ").attr('checked',true);
 				getView(datatype);
 				$(':checkbox[name=dataview]').each(function(){ 

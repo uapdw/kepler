@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -32,11 +33,14 @@ import org.rosuda.REngine.REngine;
 import org.rosuda.REngine.RList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uap.ae.kepler.entity.MailInfo;
+import uap.ae.kepler.service.MailService;
 import uap.ae.kepler.solr.SolrService;
 
 /**
@@ -54,8 +58,22 @@ public class ExploreController {
 	final String defaultCollection = "other_articles";
 	final int zkClientTimeout = 20000;
 	final int zkConnectTimeout = 1000;
+	
+	@Autowired
+	private MailService mailService;
+	
+	/**
+	 * 此路径需与上传路径保持一致
+	 */
+	private static final String resultofImagefolder = "resultimgs";
 	private static final String uploadFolderName = "uploads";
 	public static final String CURFILEURL = "curFileUrl";
+	private static final String MSG_SUCCESS = "success";
+	private static final String DATA = "data";
+	private static final String COLNUM = "colnum";
+	private static final String ROWNUM = "rownum";
+	private static final String MSG = "msg";
+	private static final String MSG_ERROR = "error";
 
 	/**
 	 * 设置CloudSolrClient
@@ -69,6 +87,27 @@ public class ExploreController {
 		cloudsolrclient.setZkConnectTimeout(zkConnectTimeout);
 		return cloudsolrclient;
 	}
+	
+	@RequestMapping(value = "sendmail", method = RequestMethod.POST)
+	public @ResponseBody JSONObject sendmail(@RequestBody MailInfo mailInfo, HttpServletRequest request) throws Exception{
+    	JSONObject o = new JSONObject();
+    	if(ArrayUtils.isEmpty(mailInfo.getToList())){
+    		o.put(MSG, MSG_ERROR); 
+    	}
+    	//TODO 邮箱地址正则验证
+    	HttpSession session = request.getSession();
+		String curProjectPath = session.getServletContext().getRealPath("/");
+		String saveDirectoryPath = curProjectPath + "/" + resultofImagefolder;
+		//TODO 暂时使用假img
+		//mailInfo.setFileUrl(saveDirectoryPath + "/" + mailInfo.getFileUrl);
+    	mailInfo.setFileUrl(saveDirectoryPath + "/joy.jpg");
+    	if(mailService.sendNotificationMail(mailInfo)){
+    		o.put(MSG, MSG_SUCCESS);
+    	}else{
+    		o.put(MSG, MSG_ERROR);
+    	}
+    	return o;
+    }
 
 	/**
 	 * 查询索引
@@ -272,12 +311,6 @@ public class ExploreController {
 
 		return script.toString();
 	}
-
-	private static final String MSG_SUCCESS = "success";
-	private static final String DATA = "data";
-	private static final String COLNUM = "colnum";
-	private static final String ROWNUM = "rownum";
-	private static final String MSG = "msg";
 
 	private JSONObject toJson(REXP repResult) {
 		int colnum = -1;
