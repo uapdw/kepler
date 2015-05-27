@@ -384,8 +384,8 @@ public class ExploreController {
 		}
 		script.append("t <- " + field + ";");
 		script.append("library(Rwordseg);library(tm);");
-		script.append("temp <- paste(data,collapse=\" \");");
-		script.append("txt <- Corpus(temp);txt <- Corpus(VectorSource(temp));"
+		script.append("temp <- paste(t,collapse=\" \");");
+		script.append("txt <- Corpus(VectorSource(temp));"
 				+ "txt <- tm_map(txt,removeNumbers);"
 				+ "txt <- tm_map(txt,stripWhitespace);"
 				+ "txt <- tm_map(txt,removePunctuation);"
