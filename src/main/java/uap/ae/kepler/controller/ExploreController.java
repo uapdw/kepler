@@ -193,7 +193,7 @@ public class ExploreController {
 				.getProperties().get("shards").toString();
 		String hostInfo = clusterInfo.substring(
 				clusterInfo.indexOf("base_url") + 9,
-				clusterInfo.indexOf("leader") - 2);
+				clusterInfo.lastIndexOf("solr") + 4);
 
 		return hostInfo;
 	}
