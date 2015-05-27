@@ -55,6 +55,7 @@ public class ExploreController {
 	final int zkClientTimeout = 20000;
 	final int zkConnectTimeout = 1000;
 	private static final String uploadFolderName = "uploads";
+	public static final String CURFILEURL = "curFileUrl";
 
 	/**
 	 * 设置CloudSolrClient
@@ -192,6 +193,7 @@ public class ExploreController {
 			}
 			System.out.println(csv.getAbsolutePath());
 			CSVWriter(csv, docList);
+			session.setAttribute(CURFILEURL, csv.getPath());
 		} catch (FileNotFoundException e) {
 			// File对象的创建过程中的异常捕获
 			e.printStackTrace();
