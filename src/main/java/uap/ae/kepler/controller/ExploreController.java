@@ -273,7 +273,7 @@ public class ExploreController {
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
 		String saveDirectoryPath = curProjectPath + "/uploads/" + sessionId
-				+ "_" + dateinfo + ".csv";
+				+ "_" + dateinfo +"_"+ stat + ".csv";
 		File csv = new File(saveDirectoryPath);
 
 		return csv.getAbsolutePath().replace("\\", "/");
