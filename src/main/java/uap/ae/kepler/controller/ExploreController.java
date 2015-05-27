@@ -432,7 +432,71 @@ public class ExploreController {
 
 		return toJson(repResult);
 
+	}@RequestMapping(value = "cluster", method = RequestMethod.GET)
+	public @ResponseBody JSONObject cluster(
+			@RequestParam(value = "field", defaultValue = "1") String field,
+			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
+			HttpServletRequest request) throws NoSuchMethodException {
+
+		String csvPath = getCurrentCSVPath(request);
+		String statPath = getStatPath(request, "cluster");
+		REngine lastEngine = REngine.getLastEngine();
+		REXP repResult;
+		try {
+			repResult = lastEngine.parseAndEval(getClusterScript(csvPath,
+					statPath, field, maxNumber));
+		} catch (Exception e) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put(MSG, e.getMessage());
+			return jsonObject;
+		}
+
+		return toJson(repResult);
+
 	}
+
+	private String getClusterScript(String filePath, String statPath,
+			String index, String maxNumber) {
+		StringBuffer script = new StringBuffer();
+		script.append("data <- read.csv(\"" + filePath
+				+ "\",fileEncoding = \"UTF-8\");");
+		script.append("field <- \"" + index + "\";");
+		String field = "";
+		if (index.equals("标题")) {
+			field = "data[,1]";
+		}
+		if (index.equals("网站名称")) {
+			field = "data[,2]";
+		}
+		if (index.equals("发布时间")) {
+			field = "data[,3]";
+		}
+		script.append("t <- " + field + ";");
+		script.append("library(tm);library(rmmseg4j);");
+		script.append("cluster.result <- data.frame(\""
+				+ field
+				+ "\"= data);"
+				+ "seg <- Corpus(DataframeSource(cluster.result));"
+				+ "term <- TermDocumentMatrix(seg, control = list(stopwords = TRUE));"
+				+ "term <- t(as.matrix(term));"
+				+ "model.kmeans <- kmeans(term, 7);"
+				+ "cluster.result$类别 <- model.kmeans$cluster;"
+				+ "result <- cluster.result;");
+
+		if (!maxNumber.equals("不限定")) {
+			script.append("maxnumber <- " + maxNumber + ";");
+			script.append("if(length(result[,1]) < " + maxNumber
+					+ "){maxnumber <- length(result[,1]);};");
+			script.append("result <- result[1:maxnumber,];");
+		}
+		script.append("write.csv(result,\"" + statPath + "\");");
+		script.append("result;");
+
+		return script.toString();
+	}
+
+	
+	
 
 
 	/**

@@ -2,6 +2,7 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="#tab1" data-toggle="tab" id="news">分类统计</a></li>
 		<li><a href="#tab2" data-toggle="tab">词频统计</a></li>
+		<li><a href="#tab3" data-toggle="tab">文本聚类</a></li>
 	</ul>
 	<div class="tab-content">
 		<div class="tab-pane active" id="tab1">
@@ -47,6 +48,31 @@
 						</form>
 					</div>
 					<div id="wordresults"
+						style="width: 90%; overflow-y: scroll; height: 350px; border-top: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; position: relative; left: 5%; right: 5%">
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="tab-pane" id="tab3">
+			<div class="tab-pane active" id="tab1">
+				<div class="table-responsive">
+					<div>
+						<form class="form-inline" id="frmSearch" role="form">
+							<label class="key">聚类字段：</label> <select id="fieldword">
+								<option>标题</option>
+							</select> <label class="key">最大条数：</label> <select id="maxnumword">
+								<option>不限定</option>
+								<option>5</option>
+								<option>10</option>
+								<option>20</option>
+								<option>50</option>
+								<option>100</option>
+							</select>
+							<button type="submit" class="btn btn-default" id="btnrun">预览</button>
+						</form>
+					</div>
+					<div id="cluster"
 						style="width: 90%; overflow-y: scroll; height: 350px; border-top: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; position: relative; left: 5%; right: 5%">
 					</div>
 				</div>
