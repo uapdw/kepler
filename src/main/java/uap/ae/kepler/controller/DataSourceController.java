@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import uap.ae.kepler.csv.CsvReader;
 import uap.ae.kepler.entity.DataSources;
 import uap.ae.kepler.service.AeDataSourceService;
 
@@ -108,20 +109,14 @@ public class DataSourceController {
 		try {
 			File file = new File(saveDirectory, fileName);
 			reader = new BufferedReader(new FileReader(file));
-			String line = null;
 			List<String[]> datalist = new ArrayList();
-			int colnum = -1;
 			int rownum = 0;
-			String[] lineArr = null;
-			while((line = reader.readLine()) != null){
+			int colnum = -1;
+			CsvReader csvReader = new CsvReader(reader);
+			while(csvReader.readRecord()){
+				colnum = (colnum < csvReader.getColumnCount())? csvReader.getColumnCount() : colnum;
+				datalist.add(csvReader.getValues());
 				rownum++;
-				lineArr = line.split(",");
-				if(colnum == -1){
-					colnum = lineArr.length;
-				}else if(colnum < lineArr.length){
-					colnum = lineArr.length;
-				}
-				datalist.add(lineArr);
 			}
 			json.put(DATA, datalist);
 			json.put(COLNUM, colnum);
@@ -161,20 +156,14 @@ public class DataSourceController {
 		try {
 			File file = new File(saveDirectory, fileName);
 			reader = new BufferedReader(new FileReader(file));
-			String line = null;
 			List<String[]> datalist = new ArrayList();
 			int colnum = -1;
 			int rownum = 0;
-			String[] lineArr = null;
-			while((line = reader.readLine()) != null){
+			CsvReader csvReader = new CsvReader(reader);
+			while(csvReader.readRecord()){
+				colnum = (colnum < csvReader.getColumnCount())? csvReader.getColumnCount() : colnum;
+				datalist.add(csvReader.getValues());
 				rownum++;
-				lineArr = line.split(",");
-				if(colnum == -1){
-					colnum = lineArr.length;
-				}else if(colnum < lineArr.length){
-					colnum = lineArr.length;
-				}
-				datalist.add(lineArr);
 			}
 			json.put(DATA, datalist);
 			json.put(COLNUM, colnum);
