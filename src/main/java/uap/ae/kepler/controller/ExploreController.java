@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -58,10 +59,10 @@ public class ExploreController {
 	final String defaultCollection = "other_articles";
 	final int zkClientTimeout = 20000;
 	final int zkConnectTimeout = 1000;
-	
+
 	@Autowired
 	private MailService mailService;
-	
+
 	/**
 	 * 此路径需与上传路径保持一致
 	 */
@@ -87,27 +88,28 @@ public class ExploreController {
 		cloudsolrclient.setZkConnectTimeout(zkConnectTimeout);
 		return cloudsolrclient;
 	}
-	
+
 	@RequestMapping(value = "sendmail", method = RequestMethod.POST)
-	public @ResponseBody JSONObject sendmail(@RequestBody MailInfo mailInfo, HttpServletRequest request) throws Exception{
-    	JSONObject o = new JSONObject();
-    	if(ArrayUtils.isEmpty(mailInfo.getToList())){
-    		o.put(MSG, MSG_ERROR); 
-    	}
-    	//TODO 邮箱地址正则验证
-    	HttpSession session = request.getSession();
+	public @ResponseBody JSONObject sendmail(@RequestBody MailInfo mailInfo,
+			HttpServletRequest request) throws Exception {
+		JSONObject o = new JSONObject();
+		if (ArrayUtils.isEmpty(mailInfo.getToList())) {
+			o.put(MSG, MSG_ERROR);
+		}
+		// TODO 邮箱地址正则验证
+		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
 		String saveDirectoryPath = curProjectPath + "/" + resultofImagefolder;
-		//TODO 暂时使用假img
-		//mailInfo.setFileUrl(saveDirectoryPath + "/" + mailInfo.getFileUrl);
-    	mailInfo.setFileUrl(saveDirectoryPath + "/joy.jpg");
-    	if(mailService.sendNotificationMail(mailInfo)){
-    		o.put(MSG, MSG_SUCCESS);
-    	}else{
-    		o.put(MSG, MSG_ERROR);
-    	}
-    	return o;
-    }
+		// TODO 暂时使用假img
+		// mailInfo.setFileUrl(saveDirectoryPath + "/" + mailInfo.getFileUrl);
+		mailInfo.setFileUrl(saveDirectoryPath + "/joy.jpg");
+		if (mailService.sendNotificationMail(mailInfo)) {
+			o.put(MSG, MSG_SUCCESS);
+		} else {
+			o.put(MSG, MSG_ERROR);
+		}
+		return o;
+	}
 
 	/**
 	 * 查询索引
@@ -273,7 +275,7 @@ public class ExploreController {
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
 		String saveDirectoryPath = curProjectPath + "/uploads/" + sessionId
-				+ "_" + dateinfo +"_"+ stat + ".csv";
+				+ "_" + dateinfo + "_" + stat + ".csv";
 		File csv = new File(saveDirectoryPath);
 
 		return csv.getAbsolutePath().replace("\\", "/");
@@ -432,7 +434,9 @@ public class ExploreController {
 
 		return toJson(repResult);
 
-	}@RequestMapping(value = "cluster", method = RequestMethod.GET)
+	}
+
+	@RequestMapping(value = "cluster", method = RequestMethod.GET)
 	public @ResponseBody JSONObject cluster(
 			@RequestParam(value = "field", defaultValue = "1") String field,
 			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
@@ -455,6 +459,37 @@ public class ExploreController {
 
 	}
 
+	@RequestMapping(value = "metadata", method = RequestMethod.GET)
+	public @ResponseBody JSONObject getMetaData(HttpServletRequest request)
+			throws NoSuchMethodException {
+		JSONObject jsonObject = new JSONObject();
+
+		HttpSession session = request.getSession();
+		Object dataPath = session.getAttribute(CURFILEURL);
+		if (dataPath == null) {
+			jsonObject.put(MSG, "目标数据文件不存在！");
+			return jsonObject;
+		}
+
+		REngine lastEngine = REngine.getLastEngine();
+		REXP repResult;
+		try {
+			repResult = lastEngine.parseAndEval("data <- read.csv(\""
+					+ dataPath.toString().replace("\\", "/") + "\",fileEncoding = \"UTF-8\");"
+					+ "result.names <- colnames(data);result.names;");
+			String[] colNames = repResult.asStrings();
+			jsonObject.put(DATA, Arrays.asList(colNames));
+			jsonObject.put(COLNUM, 1);
+			jsonObject.put(ROWNUM, colNames.length);
+			jsonObject.put(MSG, MSG_SUCCESS);
+		} catch (Exception e) {
+			jsonObject.put(MSG, e.getMessage());
+			return jsonObject;
+		}
+
+		return jsonObject;
+	}
+
 	private String getClusterScript(String filePath, String statPath,
 			String index, String maxNumber) {
 		StringBuffer script = new StringBuffer();
@@ -474,14 +509,15 @@ public class ExploreController {
 		script.append("t <- " + field + ";");
 		script.append("library(tm);library(rmmseg4j);");
 		script.append("cluster.result <- data.frame(\""
-				+ field
-				+ "\"= data);"
+				+ index
+				+ "\"= t);"
 				+ "seg <- Corpus(DataframeSource(cluster.result));"
 				+ "term <- TermDocumentMatrix(seg, control = list(stopwords = TRUE));"
 				+ "term <- t(as.matrix(term));"
 				+ "model.kmeans <- kmeans(term, 7);"
 				+ "cluster.result$类别 <- model.kmeans$cluster;"
-				+ "result <- cluster.result;");
+				+ "result <- cluster.result;"
+				+ "result <- result[order(result$类别),];");
 
 		if (!maxNumber.equals("不限定")) {
 			script.append("maxnumber <- " + maxNumber + ";");
@@ -495,73 +531,75 @@ public class ExploreController {
 		return script.toString();
 	}
 
-	
-	
-
-
 	/**
 	 * 处理用于可视化的数据
+	 * 
 	 * @param request
 	 * @return JSONObject
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "getViewedData", method = RequestMethod.GET)
-	public @ResponseBody JSONArray getViewedData(HttpServletRequest request) throws Exception{
-		String statPath = getStatPath(request,"");		
+	public @ResponseBody JSONArray getViewedData(HttpServletRequest request)
+			throws Exception {
+		String statPath = getStatPath(request, "");
 		String datatype = request.getParameter("data");
-		datatype=new String(datatype.getBytes("ISO-8859-1"),"UTF-8");
+		datatype = new String(datatype.getBytes("ISO-8859-1"), "UTF-8");
 		FileInputStream fileInputStream = new FileInputStream(statPath);
-		InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+		InputStreamReader inputStreamReader = new InputStreamReader(
+				fileInputStream, "UTF-8");
 		BufferedReader reader = new BufferedReader(inputStreamReader);
 		String line = "";
 		System.out.println(datatype);
-			if(datatype.equals("wordscloud")){
-				JSONObject jsonObject = new JSONObject();
-				JSONArray jsonArray= new JSONArray();
-				while ((line = reader.readLine()) != null) {
-					String[] words = line.split("\",");
-					String title = words[1].substring(words[1].indexOf("\"")+1,words[1].length());
-					int freq = Integer.parseInt(words[2]);
-					jsonObject = new JSONObject();
-					jsonObject.put("text", title);
-					jsonObject.put("size", freq);
-					jsonArray.add(jsonObject);
-				}				
-				reader.close();
-				return jsonArray;
-			}else if(datatype.equals("pie")){
-				JSONObject jsonObject = new JSONObject();
-				JSONArray jsonArray= new JSONArray();
-				while ((line = reader.readLine()) != null) {
-					String[] words = line.split("\",");
-					String title = words[1].substring(words[1].indexOf("\"")+1,words[1].length());
-					int freq = Integer.parseInt(words[2]);
-					jsonObject = new JSONObject();
-					jsonObject.put("value", freq);
-					jsonObject.put("name", title);
-					jsonArray.add(jsonObject);
-				}				
-				reader.close();
-				return jsonArray;
-			}else{
-				JSONObject jsonObject = new JSONObject();
-				JSONArray jsonArray= new JSONArray();
-				ArrayList<String> titleList = new ArrayList<String>();
-				ArrayList<Integer> freqList = new ArrayList<Integer>();								
-				while ((line = reader.readLine()) != null) {
-					String[] words = line.split("\",");
-					String title = words[1].substring(words[1].indexOf("\"")+1,words[1].length());
-					int freq = Integer.parseInt(words[2]);
-					titleList.add(title);
-					freqList.add(freq);
-				}
-				reader.close();			
-				jsonObject.put("title", titleList);
-				jsonObject.put("freq", freqList);
+		if (datatype.equals("wordscloud")) {
+			JSONObject jsonObject = new JSONObject();
+			JSONArray jsonArray = new JSONArray();
+			while ((line = reader.readLine()) != null) {
+				String[] words = line.split("\",");
+				String title = words[1].substring(words[1].indexOf("\"") + 1,
+						words[1].length());
+				int freq = Integer.parseInt(words[2]);
+				jsonObject = new JSONObject();
+				jsonObject.put("text", title);
+				jsonObject.put("size", freq);
 				jsonArray.add(jsonObject);
-				return jsonArray;
-				
 			}
-		        
+			reader.close();
+			return jsonArray;
+		} else if (datatype.equals("pie")) {
+			JSONObject jsonObject = new JSONObject();
+			JSONArray jsonArray = new JSONArray();
+			while ((line = reader.readLine()) != null) {
+				String[] words = line.split("\",");
+				String title = words[1].substring(words[1].indexOf("\"") + 1,
+						words[1].length());
+				int freq = Integer.parseInt(words[2]);
+				jsonObject = new JSONObject();
+				jsonObject.put("value", freq);
+				jsonObject.put("name", title);
+				jsonArray.add(jsonObject);
+			}
+			reader.close();
+			return jsonArray;
+		} else {
+			JSONObject jsonObject = new JSONObject();
+			JSONArray jsonArray = new JSONArray();
+			ArrayList<String> titleList = new ArrayList<String>();
+			ArrayList<Integer> freqList = new ArrayList<Integer>();
+			while ((line = reader.readLine()) != null) {
+				String[] words = line.split("\",");
+				String title = words[1].substring(words[1].indexOf("\"") + 1,
+						words[1].length());
+				int freq = Integer.parseInt(words[2]);
+				titleList.add(title);
+				freqList.add(freq);
+			}
+			reader.close();
+			jsonObject.put("title", titleList);
+			jsonObject.put("freq", freqList);
+			jsonArray.add(jsonObject);
+			return jsonArray;
+
+		}
+
 	}
 }
