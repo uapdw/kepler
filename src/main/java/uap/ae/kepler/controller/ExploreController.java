@@ -69,6 +69,7 @@ public class ExploreController {
 	private static final String resultofImagefolder = "resultimgs";
 	private static final String uploadFolderName = "uploads";
 	public static final String CURFILEURL = "curFileUrl";
+	public static final String CURANAURL = "anaFileUrl";
 	private static final String MSG_SUCCESS = "success";
 	private static final String DATA = "data";
 	private static final String COLNUM = "colnum";
@@ -251,20 +252,15 @@ public class ExploreController {
 
 		return "结果已保存为CSV文件！";
 	}
-
+	
 	private String getCurrentCSVPath(HttpServletRequest request) {
-
-		String sessionId = request.getRequestedSessionId();
-		SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-		String dateinfo = foo.format(new Date());
-		dateinfo = dateinfo.substring(0, dateinfo.indexOf(" "));
 		HttpSession session = request.getSession();
-		String curProjectPath = session.getServletContext().getRealPath("/");
-		String saveDirectoryPath = curProjectPath + "/uploads/" + sessionId
-				+ "_" + dateinfo + ".csv";
-		File csv = new File(saveDirectoryPath);
-
-		return csv.getAbsolutePath().replace("\\", "/");
+		Object dataPath = session.getAttribute(CURFILEURL);
+		if (dataPath == null) {
+			return null;
+		}
+		
+		return dataPath.toString().replace("\\", "/");
 	}
 
 	private String getStatPath(HttpServletRequest request, String stat) {
@@ -364,6 +360,8 @@ public class ExploreController {
 			return jsonObject;
 		}
 
+		HttpSession session = request.getSession();
+		session.setAttribute(CURANAURL, statPath);
 		return toJson(repResult);
 
 	}
@@ -431,6 +429,9 @@ public class ExploreController {
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
 		}
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(CURANAURL, statPath);
 
 		return toJson(repResult);
 
@@ -454,7 +455,10 @@ public class ExploreController {
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
 		}
-
+		
+		HttpSession session = request.getSession();
+		session.setAttribute(CURANAURL, statPath);
+		
 		return toJson(repResult);
 
 	}

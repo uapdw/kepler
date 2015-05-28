@@ -14,18 +14,14 @@ define(
 					dataType : 'json',
 					success : function(data) {
 						if (data.msg == 'success') {
-							debugger;
 							for (var i = 0; i < data.rownum; i++) {
-//								var option = "<option value='Value'>"
-//									+ data.data[i]
-//								+ "</option>";
-								$("#field").append("<option value='Value'>"
+								$("#field").append("<option>"
 										+ data.data[i]
 										+ "</option>");
-								$("#fieldword").append("<option value='Value'>"
+								$("#fieldword").append("<option>"
 								+ data.data[i]
 								+ "</option>");
-								$("#fieldcluster").append("<option value='Value'>"
+								$("#fieldcluster").append("<option>"
 										+ data.data[i]
 										+ "</option>");
 							}
@@ -41,7 +37,8 @@ define(
 
 			var init = function() {
 				inited = true;
-				 loadData();
+				loadData();
+				
 				$('#btncluster')
 						.click(
 								function() {

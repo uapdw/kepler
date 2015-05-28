@@ -9,7 +9,7 @@ define(
 			addRouter(infoUrl);
 
 			var exploreViewModel = {
-					showSearchResults: ko.observable("")
+				showSearchResults : ko.observable("")
 			}
 
 			var init = function() {
@@ -20,8 +20,9 @@ define(
 						function(module) {
 							initDiv.html('');
 							initDiv.html(module.template);
-							
-							ko.applyBindings(module.model, $(".tab-content .tab-pane").eq(0)[0]);
+
+							ko.applyBindings(module.model, $(
+									".tab-content .tab-pane").eq(0)[0]);
 
 							if (!module.inited) {
 								module.init();
@@ -89,14 +90,15 @@ define(
 
 				function activeTabPane(index) {
 					var lastIndex = 0;
-					$.each($(".first_level_tab .first-level-tab-pane"), function(i, element) {
-						if ($(this).hasClass('active')) {
-							lastIndex = i;
-							return;
-						}
-					});
+					$.each($(".first_level_tab .first-level-tab-pane"),
+							function(i, element) {
+								if ($(this).hasClass('active')) {
+									lastIndex = i;
+									return;
+								}
+							});
 					if (lastIndex == 0) {
-						if($("a#news").parent().attr('class') == "active"){
+						if ($("a#news").parent().attr('class') == "active") {
 							saveDataSource();
 						}
 					} else if (lastIndex == 1) {
@@ -104,10 +106,11 @@ define(
 					} else if (lastIndex == 2) {
 						saveVisualization();
 					}
-					
-					var selectedDiv = $(".first_level_tab .first-level-tab-pane")
-							.eq(index);
-					$(".first_level_tab .first-level-tab-pane").removeClass("active");
+
+					var selectedDiv = $(
+							".first_level_tab .first-level-tab-pane").eq(index);
+					$(".first_level_tab .first-level-tab-pane").removeClass(
+							"active");
 					selectedDiv.addClass("active");
 
 					var subJs = null;
@@ -120,13 +123,20 @@ define(
 						subJs = "static/pages/ae/explore/dataVisualization/dataVisualization.js";
 					}
 
+					var updataFlag = false;
 					if (selectedDiv.html() != null && selectedDiv.html() != '') {
-						return;
+						if(updataFlag){
+							return;
+						}
+						if (index != 2) {
+							return;
+						}
 					}
+					
 					require([ subJs ], function(module) {
 						selectedDiv.html('');
 						selectedDiv.html(module.template);
-						
+
 						ko.applyBindings(module.model, selectedDiv[0]);
 
 						if (!module.inited) {
@@ -134,35 +144,39 @@ define(
 						}
 					});
 				}
-				
+
 				// 第一步选择数据源后，保存逻辑
 				function saveDataSource() {
-					if($("#txtKeyword").val() != ''){
-						//alert("保存为CSV文件需要一些时间，请稍后。");
+					if ($("#txtKeyword").val() != '') {
+						// alert("保存为CSV文件需要一些时间，请稍后。");
 						keyword = $("#txtKeyword").val();
 						keyword = $.keywordSeg(keyword);
 						$.ajax({
 							type : 'GET',
+							async : false,
 							data : {
-								data: keyword
-								},
+								data : keyword
+							},
 							url : 'ae/explore/savetocsv',
-							success : function(data) {},
-							error : function(XMLHttpRequest, textStatus, errorThrown) {
+							success : function(data) {
+								updataFlag = true;
+							},
+							error : function(XMLHttpRequest, textStatus,
+									errorThrown) {
 								jAlert(errorThrown, "错误");
 							}
 						});
 					}
 				}
-				
+
 				// 第二步数据分析后，保存逻辑
 				function saveAnalysisModel() {
-					
+
 				}
-				
+
 				// 第三步数据可视化后，保存逻辑
 				function saveVisualization() {
-					
+
 				}
 			}
 			return {
