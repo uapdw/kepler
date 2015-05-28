@@ -19,10 +19,10 @@
 			window.$ctx = '${ctx}';
 		</script>
 	</head>
-
-	<body>
+	<body style="background-color:#F1F1F1">
 		<!-- top -->
 		<div class="top navbar navbar-default" role="navigation" style="background-color:#464646;">
+		
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
 					<span class="sr-only">切换导航</span>
@@ -63,7 +63,8 @@
 			</div>
 		</div>
 		<!-- left -->
-		<div class="leftpanel">
+		<!--<div class="leftpanel">-->
+		<div class="leftpanel" style="background-color:#E7E7E7;">
 			<ul class="left-menu">
 				<!--
 				<li class="">
@@ -118,8 +119,8 @@
 				-->
 			</ul>
 		</div>
-		<!-- content内容区 -->
-		<div class="content"></div>
+		<!-- content -->
+		<div class="content">内容区</div>
 
 		<script src="${ctx}/static/lib/requirejs/require.debug.js"></script>
 		<script src="${ctx}/static/js/config.js"></script>

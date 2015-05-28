@@ -1,4 +1,4 @@
-.top {
+﻿.top {
 	margin-bottom: 0px;
 	position: fixed;
 	left: 0px;
@@ -72,8 +72,20 @@
 	line-height: 20px;
 }
 .left-menu>li.open {
-	background-color: #666666;
+	background-color: #DFDFDF;
 }
+.left-menu>li.open>a {
+	font-weight:700;
+}
+.left-menu>li.open>a>span{
+	color: #555;
+}
+.left-menu>li.open>a>i{
+	color: #555;
+}
+//.left-menu>li.open {
+//	background-color: #666666;
+//}
 .left-menu>li>a {
 	color: #8b91a0;
 	display: block;
@@ -87,8 +99,11 @@
 	cursor: pointer;
 }
 .left-menu li a:hover{
-	background-color: #666666;	
+	background-color: #DFDFDF;	
 }
+//.left-menu li a:hover{
+//	background-color: #666666;	
+//}
 
 .left-menu>li>ul.sub-menu {
 	display: none;
@@ -110,7 +125,8 @@
 	display: block;
 	margin: 0px 0px 0px 0px;
 	padding: 5px 0px;
-	padding-left: 53px !important;
+	//padding-left: 53px !important;
+        padding-left: 46px !important;
 	color: #e1eaf1;
 	text-decoration: none;
 	text-shadow: 0 1px 1px #000;
@@ -120,8 +136,11 @@
 	cursor: pointer;
 }
 .left-menu>li>ul.sub-menu>li>a:hover{
-	background-color: #666666;
+	background-color:  #DFDFDF;
 }
+//.left-menu>li>ul.sub-menu>li>a:hover{
+//	background-color:  #DFDFDF;
+//}
 
 .left-menu .arrow{
 	float:right;
@@ -261,14 +280,4 @@ em.hlt1{
 }
 .txt-green{
   color:#008000;
-}
-
-.node {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-
-.link {
-  stroke: #999;
-  stroke-opacity: .6;
 }

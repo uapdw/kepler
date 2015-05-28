@@ -98,21 +98,27 @@ require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'
 		if(menuData.id == 0){
 			var rootMenuArray = menuData.children;
 			
-			var liObj = $("<li class=''>");
+			//var liObj = $("<li class=''");
+			var liObj = $("<li class='' style='border-bottom:1px solid #FFFFFF'>");
 			var aObj = $("<a href='#/ae/home/homePage'> <i class='fa fa-file-text'>" +
-					"</i> <span class='title'>首页</span> <span class='arrow glyphicon glyphicon-chevron-left'></span> </a>");
+					"</i> <span class='title'  style=\"color:#555;font-family: 微软雅黑,宋体; font-size: 0.9em\">首页</span> <span class='arrow glyphicon glyphicon-chevron-left'></span> </a>");
+			//var aObj = $("<a href='#/ae/home/homePage'> <i class='fa fa-file-text'>" +
+					//"</i> <span class='title'>首页</span> <span class='arrow glyphicon glyphicon-chevron-left'></span> </a>");
 			$(liObj).append(aObj);
 			$(".left-menu").append(liObj);
 			
 			for (var i = 0; i < rootMenuArray.length; i++) {
 				var menu = rootMenuArray[i];
 				var liObj = $("<li class=\"\">");
-				var aObj = $("<a href=\"javascript:;\"> <i class=\"fa fa-file-text\"></i> <span class=\"title\">"+menu.funcName+"</span> <span class=\"arrow glyphicon glyphicon-chevron-left\"></span> </a>");
-				var ulObj = $("<ul class=\"sub-menu\">");
+				//var aObj = $("<a href=\"javascript:;\"> <i class=\"fa fa-file-text\"></i> <span class=\"title\">"+menu.funcName+"</span> <span class=\"arrow glyphicon glyphicon-chevron-left\"></span> </a>");
+				var aObj = $("<a href=\"javascript:;\"> <i class=\"fa fa-file-text\"></i> <span class=\"title\" style=\"color:#555;  font-size: 0.9em;font-family: 微软雅黑,宋体\">"+menu.funcName+"</span> <span class=\"arrow glyphicon glyphicon-chevron-left\"></span> </a>");
+				//var ulObj = $("<ul class=\"sub-menu\">");
+				var ulObj = $("<ul class=\"sub-menu\" style=\"background-color:#E7E7E7;padding-top:0px\">");
 				if(menu.children.length > 0){
 					for (var j = 0; j < menu.children.length; j++) {
 						var subMenuObj = menu.children[j];
-						var subLiObj = $("<li> <a href=\"#"+ subMenuObj.funcUrl +"\" >"+ subMenuObj.funcName +"</a> </li>");
+						//var subLiObj = $("<li> <a href=\"#"+ subMenuObj.funcUrl +"\">"+ subMenuObj.funcName +"</a> </li>");
+						var subLiObj = $("<li style=\"border-top:1px solid #FFFFFF; line-height: 32px;\"> <a href=\"#"+ subMenuObj.funcUrl +"\" style=\"color:#555;  font-size: 0.9em;font-family: 微软雅黑,宋体\">"+ subMenuObj.funcName +"</a> </li>");
 						$(ulObj).append(subLiObj);
 						
 //						recursionInitTreeNode($(ulObj), subMenuObj);
