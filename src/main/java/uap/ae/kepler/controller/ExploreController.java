@@ -212,9 +212,9 @@ public class ExploreController {
 	public @ResponseBody String savetocsv(HttpServletRequest request)
 			throws Exception {
 		try {
-
 			CloudSolrClient cloudsolrclient = setCloudSolrClient();
 			String query = request.getParameter("data");
+			query = new String(query.getBytes("ISO-8859-1"), "UTF-8");
 			SolrDocumentList docList = searchDataInSolr(cloudsolrclient, query);
 			if (docList.getNumFound() == 0) {
 				return "没有找到结果数据";

@@ -45,6 +45,14 @@ public class HomePageController extends BaseController {
 		JSONObject jsonWeibo= JSONObject.fromObject(mJsonStr);
 		resultJsons.add(jsonWeibo);
 		
+		
+		mJsonStr = readFile(HomePageController.class.getResource("pm_25.json").getPath());
+		JSONObject jsonPm25= JSONObject.fromObject(mJsonStr);
+		resultJsons.add(jsonPm25);
+		
+		mJsonStr = readFile(HomePageController.class.getResource("geo.json").getPath());
+		JSONObject jsonGeo= JSONObject.fromObject(mJsonStr);
+		resultJsons.add(jsonGeo);
 		return resultJsons;
 	}
 	

@@ -18,6 +18,7 @@ define(
 			}
 			
 			dsViewModel.del = function() {
+				var thisid = this.id;
 				$.ajax({
 					type : 'DELETE',
 					dataType : 'json',
@@ -28,7 +29,11 @@ define(
 					   
 						if (data){
 							alert('删除成功!' );
-							location.reload();
+							$("#contentTable tbody").children().each(function(){
+								if($(this).children().get(0).innerHTML == thisid){
+									$(this).remove();
+								}
+							});
 						}
 					},
 					error : function(req, textStatus, errorThrown) {

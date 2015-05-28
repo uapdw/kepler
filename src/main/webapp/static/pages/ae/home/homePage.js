@@ -1,6 +1,6 @@
 define(
 		[ 'jquery', 'knockout', 'text!static/pages/ae/home/homePage.html',
-				'echarts' ],// ,'echarts.line'
+				'echarts', 'd3.v3.min' ],// ,'echarts.line'
 		function($, ko, template) {
 			var dm0 = [];
 			var dm1 = [];
@@ -73,7 +73,58 @@ define(
 				info : ko.observable("")
 			}
 
+			function getForceView(){
+				var width = 1500,
+			    height = 800;
+
+				var color = d3.scale.category20();
+	
+				var force = d3.layout.force()
+				    .charge(-50)
+				    .linkDistance(200)
+				    .size([width, height])
+					.gravity(.05);
+	
+				var svg = d3.select("#weibo").append("svg")
+				    .attr("width", width)
+				    .attr("height", height);
+	
+				d3.json("static/json/weibo.json", function(error, graph) {
+				  force
+				      .nodes(graph.nodes)
+				      .links(graph.links)
+				      .start();
+	
+				  var link = svg.selectAll(".link")
+				      .data(graph.links)
+				    .enter().append("line")
+				      .attr("class", "link")
+				      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+	
+				  var node = svg.selectAll(".node")
+				      .data(graph.nodes)
+				    .enter().append("circle")
+				      .attr("class", "node")
+				      .attr("r", 7)
+				      .style("fill", function(d) { return color(d.group); })
+				      .call(force.drag);
+	
+				  node.append("title")
+				      .text(function(d) { return d.name; });
+	
+				  force.on("tick", function() {
+				    link.attr("x1", function(d) { return d.source.x; })
+				        .attr("y1", function(d) { return d.source.y; })
+				        .attr("x2", function(d) { return d.target.x; })
+				        .attr("y2", function(d) { return d.target.y; });
+	
+				    node.attr("cx", function(d) { return d.x; })
+				        .attr("cy", function(d) { return d.y; });
+				  });
+				});
+			}
 			var init = function() {
+				getForceView();
 				$.ajax({
 							type : 'GET',
 							dataType : 'json',
@@ -85,8 +136,8 @@ define(
 								console.log(data);
 								var myChart = echarts.init($("#main")[0],'macarons');
 								var gdpChart = echarts.init($("#gdp")[0],'macarons');
-								var weiboChart = echarts.init($("#weibo")[0],'macarons');
-
+								//var weiboChart = echarts.init($("#weibo")[0],'macarons');
+								var pm25Chart = echarts.init($("#pm25map")[0],'macarons');
 								dataFormatter(data[0]);
 
 								var option = {
@@ -567,7 +618,7 @@ define(
 								};
 								gdpChart.setOption(optionGDP);
 								
-								var weiboOption = {
+								/*var weiboOption = {
 									    title : {
 									        text: '微博关系网络',
 									        subtext: '数据来自网络',
@@ -576,7 +627,7 @@ define(
 									    },
 									    tooltip : {
 									        trigger: 'item',
-									        formatter : "{b}"
+									        formatter : '{b}'
 									    },
 									    toolbox: {
 									        show : true,
@@ -645,20 +696,116 @@ define(
 							            categories: data[2].category,
 							            nodes: data[2].node,
 							            links: data[2].link,
-							            minRadius: 15,
+							            minRadius: 8,
 							            maxRadius: 28,
-							            gravity: 1.1,
-							            scaling: 2.3,
+							            gravity: 2,
+							            scaling: 3.5,
 							            steps: 20,
 							            large: true,
 							            useWorker: true,
 							            coolDown: 0.995,
+							            centripetal: 0.1,
+							            attractiveness: 10,
 							            ribbonType: false
 									}
 								
 								weiboChart.setOption(weiboOption);
-								//weiboChart.hideLoading();
-
+								weiboChart.hideLoading();*/
+								var Pm25_option = {
+									    title : {
+									        text: '全国主要城市空气质量（pm2.5）',
+									        subtext: 'data from PM25.in',
+									        sublink: 'http://www.pm25.in',
+									        x:'center'
+									    },
+									    tooltip : {
+									        trigger: 'item'
+									    },
+									    legend: {
+									        orient: 'vertical',
+									        x:'left',
+									        data:['pm2.5']
+									    },
+									    dataRange: {
+									        min : 0,
+									        max : 700,
+									        calculable : true,
+									        color: ['black','brown', 'maroon','purple','red','orange','yellow','lightgreen']
+									    },
+									    toolbox: {
+									        show : true,
+									        orient : 'vertical',
+									        x: 'right',
+									        y: 'center',
+									        feature : {
+									            mark : {show: true},
+									            dataView : {show: true, readOnly: false},
+									            restore : {show: true},
+									            saveAsImage : {show: true}
+									        }
+									    },
+									    series : [
+									        {
+									            name: 'pm2.5',
+									            type: 'map',
+									            mapType: 'china',
+									            hoverable: false,
+									            roam:true,
+									            data : [],
+									            markPoint : {
+									                symbolSize: 5,       // 标注大小，半宽（半径）参数，当图形为方向或菱形则总宽度为symbolSize * 2
+									                itemStyle: {
+									                    normal: {
+									                        borderColor: '#87cefa',
+									                        borderWidth: 1,            // 标注边线线宽，单位px，默认为1
+									                        label: {
+									                            show: false
+									                        }
+									                    },
+									                    emphasis: {
+									                        borderColor: '#1e90ff',
+									                        borderWidth: 5,
+									                        label: {
+									                            show: false
+									                        }
+									                    }
+									                },
+									                data : data[3].pm_25
+									            },
+									            geoCoord: data[4]
+									        },
+									        {
+									            name: 'Top5',
+									            type: 'map',
+									            mapType: 'china',
+									            data:[],
+									            markPoint : {
+									                symbol:'emptyCircle',
+									                symbolSize : function (v){
+									                    return 10 + v/100
+									                },
+									                effect : {
+									                    show: true,
+									                    shadowBlur : 0
+									                },
+									                itemStyle:{
+									                    normal:{
+									                        label:{show:false}
+									                    }
+									                },
+									                data : [
+									                    {name: "银川", value: 617},
+									                    {name: "兰州", value: 607},
+									                    {name: "唐山", value: 602},
+									                    {name: "呼和浩特", value: 473},
+									                    {name: "芜湖", value: 401}
+									                ]
+									            }
+									        }
+									    ]
+									};
+									                    
+								pm25Chart.setOption(Pm25_option);
 							},
 							error : function(XMLHttpRequest, textStatus,
 									errorThrown) {
