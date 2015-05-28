@@ -1,7 +1,7 @@
 define(
 		[ 'jquery', 'knockout',
 				'text!static/pages/ae/explore/selectDataSource/selectDataSource.html', 'ParameterStore',
-				'manager.jquery', 'AbstractWidget', 'bootstrap.min' ],
+				'manager.jquery', 'AbstractWidget' ],
 		
 		function($, ko, template) {
 			
@@ -19,7 +19,7 @@ define(
 				 * hl.simple.pre: 高亮词前的添加(样式)， hl.simple.post: 高亮词后的添加， rows: 检索结果显示的行数。
 				 **************************************************************************/
 				search: function(solrurl, query){			
-					Manager = new AjaxSolr.Manager({
+					var Manager = new AjaxSolr.Manager({
 				      solrUrl: solrurl
 				    });
 					Manager.addWidget(new AjaxSolr.ResultWidget({
