@@ -74,7 +74,7 @@ define(
 			}
 
 			function getForceView(){
-				var width = 1500,
+				var width = 850,
 			    height = 800;
 
 				var color = d3.scale.category20();
@@ -713,9 +713,7 @@ define(
 								weiboChart.hideLoading();*/
 								var Pm25_option = {
 									    title : {
-									        text: '全国主要城市空气质量（pm2.5）',
-									        subtext: 'data from PM25.in',
-									        sublink: 'http://www.pm25.in',
+									        text: '全国主要城市空气质量（pm2.5）',									   
 									        x:'center'
 									    },
 									    tooltip : {
@@ -750,7 +748,6 @@ define(
 									            type: 'map',
 									            mapType: 'china',
 									            hoverable: false,
-									            roam:true,
 									            data : [],
 									            markPoint : {
 									                symbolSize: 5,       // 标注大小，半宽（半径）参数，当图形为方向或菱形则总宽度为symbolSize * 2
