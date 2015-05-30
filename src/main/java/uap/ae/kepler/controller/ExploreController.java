@@ -263,6 +263,7 @@ public class ExploreController {
 		HttpSession session = request.getSession();
 		Object dataPath = session.getAttribute(CURFILEURL);
 		if (dataPath == null) {
+			System.out.println("得不到当前数据文件，Session中不存在");
 			return null;
 		}
 		
@@ -352,7 +353,7 @@ public class ExploreController {
 			@RequestParam(value = "field", defaultValue = "1") String field,
 			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
 			HttpServletRequest request) throws NoSuchMethodException {
-
+		System.out.println("stat start~~~~~~~~~~~~");
 		String csvPath = getCurrentCSVPath(request);
 		String statPath = getStatPath(request, "stat");
 		REngine lastEngine = REngine.getLastEngine();
@@ -361,11 +362,13 @@ public class ExploreController {
 			repResult = lastEngine.parseAndEval(getStatRScript(csvPath,
 					statPath, field, maxNumber));
 		} catch (Exception e) {
+			System.out.println(e);
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
-		}
-
+		}	
+		
+		System.out.println("stat sucess~~~~~~~~~~~~");
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
 		return toJson(repResult);
@@ -422,7 +425,8 @@ public class ExploreController {
 			@RequestParam(value = "field", defaultValue = "1") String field,
 			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
 			HttpServletRequest request) throws NoSuchMethodException {
-
+		System.out.println("stat start~~~~~~~~~~~~");
+		
 		String csvPath = getCurrentCSVPath(request);
 		String statPath = getStatPath(request, "word");
 		REngine lastEngine = REngine.getLastEngine();
@@ -431,11 +435,13 @@ public class ExploreController {
 			repResult = lastEngine.parseAndEval(getWordRScript(csvPath,
 					statPath, field, maxNumber));
 		} catch (Exception e) {
+			e.printStackTrace();
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
 		}
 		
+		System.out.println("wordstat sucess~~~~~~~~~~~~");
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
 
@@ -448,7 +454,7 @@ public class ExploreController {
 			@RequestParam(value = "field", defaultValue = "1") String field,
 			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
 			HttpServletRequest request) throws NoSuchMethodException {
-
+		System.out.println("cluster start~~~~~~~~~~~~");
 		String csvPath = getCurrentCSVPath(request);
 		String statPath = getStatPath(request, "cluster");
 		REngine lastEngine = REngine.getLastEngine();
@@ -457,10 +463,12 @@ public class ExploreController {
 			repResult = lastEngine.parseAndEval(getClusterScript(csvPath,
 					statPath, field, maxNumber));
 		} catch (Exception e) {
+			e.printStackTrace();
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
 		}
+		System.out.println("cluster sucess~~~~~~~~~~~~");
 		
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
@@ -472,27 +480,34 @@ public class ExploreController {
 	@RequestMapping(value = "metadata", method = RequestMethod.GET)
 	public @ResponseBody JSONObject getMetaData(HttpServletRequest request)
 			throws NoSuchMethodException {
+		System.out.println("stat start~~~~~~~~~~~~");
 		JSONObject jsonObject = new JSONObject();
 
 		HttpSession session = request.getSession();
 		Object dataPath = session.getAttribute(CURFILEURL);
 		if (dataPath == null) {
+			System.out.println("目标数据文件不存在！");
 			jsonObject.put(MSG, "目标数据文件不存在！");
 			return jsonObject;
 		}
+		System.out.println(dataPath.toString());
 
 		REngine lastEngine = REngine.getLastEngine();
 		REXP repResult;
 		try {
+			System.out.println("获取元数据信息");
 			repResult = lastEngine.parseAndEval("data <- read.csv(\""
 					+ dataPath.toString().replace("\\", "/") + "\",fileEncoding = \"UTF-8\");"
 					+ "result.names <- colnames(data);result.names;");
 			String[] colNames = repResult.asStrings();
+			System.out.println(colNames[0]);
 			jsonObject.put(DATA, Arrays.asList(colNames));
 			jsonObject.put(COLNUM, 1);
 			jsonObject.put(ROWNUM, colNames.length);
 			jsonObject.put(MSG, MSG_SUCCESS);
 		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getStackTrace());
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
 		}
