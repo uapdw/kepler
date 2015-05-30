@@ -347,6 +347,7 @@ define(
 				$('#btnstat')
 						.click(
 								function() {
+									$('#progessbar').show();
 									$
 											.ajax({
 												type : 'GET',
@@ -358,8 +359,9 @@ define(
 															.val()
 												},
 												success : function(data) {
+													
 													if (data.msg == 'success') {
-														debugger
+														
 														var detailContent = "<div class=\"table-responsive\"><table class=\"table table-bordered table-condensed table-hover\">";
 														// header
 														detailContent += "<thead><tr>";
@@ -396,6 +398,7 @@ define(
 													} else {
 														jAlert(data.msg, "错误");
 													}
+													$('#progessbar').hide(); 
 												},
 												error : function(
 														XMLHttpRequest,
