@@ -281,3 +281,13 @@ em.hlt1{
 .txt-green{
   color:#008000;
 }
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
