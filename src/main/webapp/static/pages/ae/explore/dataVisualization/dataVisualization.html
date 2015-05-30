@@ -7,8 +7,7 @@
 <input name="dataview" type="checkbox" id="checkCY" />词云图&nbsp;&nbsp;&nbsp;&nbsp;
 <input name="dataview" type="checkbox" id="checkDT" />地图
 </form>
-	<div>
-		<button class="btn btn-default" data-bind="click:sharemail">邮件分享</button>
+	<div style="float:right;margin-top:-50px;">
 		<html xmlns:wb="http://open.weibo.com/wb">
 			<head>
 				<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
@@ -19,8 +18,11 @@
 			</body>
 		</html>
 	</div>
+	<div style="float:right;margin-top:-6px;">
+		<button style="width:111px; height:24px; background-color:green; color:white;" data-bind="click:sharemail">分享到邮件</button>
+	</div>
 	<div id="sharemailPane">
-		<!-- TODO 浮动框会出问题，暂时没有UI --><br/>
+		<br/>
 		收件人：<input value="" name="tolist" id="tolist" data-bind="value:mailinfo().toList" type="text"/><br/>
 		标&nbsp;题：<input value="" name="title" id="title" data-bind="value:mailinfo().title" type="text"/><br/>
 		内&nbsp;容：<br/>

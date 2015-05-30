@@ -10,12 +10,7 @@ define(
 			var inited = false;
 			
 			dataViewModel.sharemail = function(){
-				var pane = $("#sharemailPane");
-				if(pane.is(":hidden")){
-					pane.show();
-				}else{
-					pane.hide();
-				}
+				window.open("#/ae/explore/dataVisualization/sendmail", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no");
 			}
 			
 			dataViewModel.sendmail = function(){
@@ -226,6 +221,10 @@ define(
 			
 			
 			var init = function() {
+				var infoUrl = "/ae/explore/dataVisualization/sendmail";
+				// 添加详细信息页路由
+				addRouter(infoUrl);
+				
 				var datatype = "bar";
 				$("#sharemailPane").hide();
 				$("#checkZZ").attr('checked',true);
