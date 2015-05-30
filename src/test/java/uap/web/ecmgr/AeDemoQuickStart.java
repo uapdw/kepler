@@ -27,15 +27,17 @@ public class AeDemoQuickStart {
 		JettyFactory.setTldJarNames(server, TLD_JAR_NAMES);
 		
 		//主线程中启动R
-		try {
-			REngine.engineForClass("org.rosuda.REngine.JRI.JRIEngine", args, new REngineStdOutput(), false);
-		} catch (Exception e1) {
-			System.out.println("rJava连接有异常");
-			e1.printStackTrace();
-		} catch (Throwable t){
-			System.out.println("rJava连接有错误,如未安装R请忽略.");
-			t.printStackTrace();
-		}
+//		try {
+//			System.out.println("rJava开始连接");
+//			REngine.engineForClass("org.rosuda.REngine.JRI.JRIEngine", args, new REngineStdOutput(), false);
+//			System.out.println("rJava连接成功");
+//		} catch (Exception e1) {
+//			System.out.println("rJava连接有异常");
+//			e1.printStackTrace();
+//		} catch (Throwable t){
+//			System.out.println("rJava连接有错误,如未安装R请忽略.");
+//			t.printStackTrace();
+//		}
 		
 
 		try {
