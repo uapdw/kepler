@@ -80,18 +80,18 @@ require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'
 				initFuncTree(data);
 				window.router.init();
 				
-				require(['static/pages/ae/home/homePage.js'], function(module) {
-					app.baseModel.data.content = ko.observableArray([]);
-					ko.cleanNode($('.content')[0]);
-					
-					$('.content').html('');
-					$('.content').html(module.template);
-					
-					ko.applyBindings(module.model, $('.content')[0]);
-					module.init();
-				})
 			}
 		});
+		require(['static/pages/ae/home/homePage.js'], function(module) {
+			app.baseModel.data.content = ko.observableArray([]);
+			ko.cleanNode($('.content')[0]);
+			
+			$('.content').html('');
+			$('.content').html(module.template);
+			
+			ko.applyBindings(module.model, $('.content')[0]);
+			module.init();
+		})
 	})
 	
 	initFuncTree = function(menuData){
