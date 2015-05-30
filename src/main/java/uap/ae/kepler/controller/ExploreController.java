@@ -5,9 +5,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,8 +23,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -40,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import sun.misc.BASE64Decoder;
 import uap.ae.kepler.entity.MailInfo;
 import uap.ae.kepler.service.MailService;
 import uap.ae.kepler.solr.SolrService;
@@ -76,6 +81,7 @@ public class ExploreController {
 	private static final String ROWNUM = "rownum";
 	private static final String MSG = "msg";
 	private static final String MSG_ERROR = "error";
+	private static String SolrHost = "";
 
 	/**
 	 * 设置CloudSolrClient
@@ -115,13 +121,13 @@ public class ExploreController {
 	/**
 	 * 查询索引
 	 * 
-	 * @param cloudsolrclient
+	 * @param solrclient
 	 * @param _query
 	 * @return SolrDocumentList
 	 * @throws Exception
 	 */
 
-	public SolrDocumentList searchDataInSolr(CloudSolrClient cloudsolrclient,
+	public SolrDocumentList searchDataInSolr(SolrClient solrclient,
 			String _query) throws Exception {
 
 		// 构建一个Solr查询
@@ -135,7 +141,7 @@ public class ExploreController {
 
 		query.set("sort", "other_articles_publishtime desc");
 
-		QueryResponse queryResponse = cloudsolrclient.query(query);
+		QueryResponse queryResponse = solrclient.query(query);
 		// 返回结果
 		SolrDocumentList docList = queryResponse.getResults();
 
@@ -197,7 +203,7 @@ public class ExploreController {
 		String hostInfo = clusterInfo.substring(
 				clusterInfo.indexOf("base_url") + 9,
 				clusterInfo.lastIndexOf("solr") + 4);
-
+		SolrHost = hostInfo;
 		return hostInfo;
 	}
 
@@ -212,10 +218,10 @@ public class ExploreController {
 	public @ResponseBody String savetocsv(HttpServletRequest request)
 			throws Exception {
 		try {
-			CloudSolrClient cloudsolrclient = setCloudSolrClient();
+			SolrClient solrclient = new HttpSolrClient(SolrHost+"/"+defaultCollection+"_shard1_replica1");
 			String query = request.getParameter("data");
 			query = new String(query.getBytes("ISO-8859-1"), "UTF-8");
-			SolrDocumentList docList = searchDataInSolr(cloudsolrclient, query);
+			SolrDocumentList docList = searchDataInSolr(solrclient, query);
 			if (docList.getNumFound() == 0) {
 				return "没有找到结果数据";
 			}
@@ -604,6 +610,6 @@ public class ExploreController {
 			return jsonArray;
 
 		}
-
 	}
+
 }
