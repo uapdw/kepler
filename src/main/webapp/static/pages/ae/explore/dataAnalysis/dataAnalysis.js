@@ -344,7 +344,7 @@ define(
 
 								});
 
-				$('#btnov')
+				$('#btnstat')
 						.click(
 								function() {
 									$
