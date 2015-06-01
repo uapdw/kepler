@@ -6,10 +6,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import sun.misc.BASE64Decoder;
 import uap.ae.kepler.entity.MailInfo;
 import uap.ae.kepler.service.MailService;
 import uap.ae.kepler.solr.SolrService;
@@ -72,7 +71,7 @@ public class ExploreController {
 	 * 此路径需与上传路径保持一致
 	 */
 	private static final String resultofImagefolder = "resultimgs";
-	private static final String uploadFolderName = "uploads";
+//	private static final String uploadFolderName = "uploads";
 	public static final String CURFILEURL = "curFileUrl";
 	public static final String CURANAURL = "anaFileUrl";
 	private static final String MSG_SUCCESS = "success";
@@ -157,7 +156,12 @@ public class ExploreController {
 	 */
 
 	public void CSVWriter(File file, SolrDocumentList docList) throws Exception {
-		BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+		// BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+
+		OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(
+				file), "UTF-8");
+		BufferedWriter bw = new BufferedWriter(write);
+
 		SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		String dateinfo, other_articles_sitename, other_articles_title;
 		Date other_articles_publishtime;
@@ -218,7 +222,8 @@ public class ExploreController {
 	public @ResponseBody String savetocsv(HttpServletRequest request)
 			throws Exception {
 		try {
-			SolrClient solrclient = new HttpSolrClient(SolrHost+"/"+defaultCollection+"_shard1_replica1");
+			SolrClient solrclient = new HttpSolrClient(SolrHost + "/"
+					+ defaultCollection + "_shard1_replica1");
 			String query = request.getParameter("data");
 			query = new String(query.getBytes("ISO-8859-1"), "UTF-8");
 			SolrDocumentList docList = searchDataInSolr(solrclient, query);
@@ -258,7 +263,7 @@ public class ExploreController {
 
 		return "结果已保存为CSV文件！";
 	}
-	
+
 	private String getCurrentCSVPath(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		Object dataPath = session.getAttribute(CURFILEURL);
@@ -266,7 +271,7 @@ public class ExploreController {
 			System.out.println("得不到当前数据文件，Session中不存在");
 			return null;
 		}
-		
+
 		return dataPath.toString().replace("\\", "/");
 	}
 
@@ -313,8 +318,11 @@ public class ExploreController {
 		}
 		script.append("write.csv(result,\"" + statPath + "\");");
 		script.append("result;");
-
-		return script.toString();
+		script.append("rm(list = ls())");
+		
+		String result = script.toString();
+		System.out.println(result);
+		return result;
 	}
 
 	private JSONObject toJson(REXP repResult) {
@@ -354,20 +362,31 @@ public class ExploreController {
 			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
 			HttpServletRequest request) throws NoSuchMethodException {
 		System.out.println("stat start~~~~~~~~~~~~");
+		
+		
+		try {
+			field = new String(field.getBytes(request.getCharacterEncoding()), "UTF-8");
+			maxNumber = new String(maxNumber.getBytes(request.getCharacterEncoding()), "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		
 		String csvPath = getCurrentCSVPath(request);
 		String statPath = getStatPath(request, "stat");
 		REngine lastEngine = REngine.getLastEngine();
 		REXP repResult;
 		try {
-			repResult = lastEngine.parseAndEval(getStatRScript(csvPath,
-					statPath, field, maxNumber));
+			String statRScript = getStatRScript(csvPath,
+					statPath, field, maxNumber);
+			System.out.println(statRScript);
+			repResult = lastEngine.parseAndEval(statRScript);
 		} catch (Exception e) {
 			System.out.println(e);
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
-		}	
-		
+		}
+
 		System.out.println("stat sucess~~~~~~~~~~~~");
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
@@ -392,7 +411,7 @@ public class ExploreController {
 			field = "data[,3]";
 		}
 		script.append("t <- " + field + ";");
-		script.append("library(Rwordseg);library(tm);");
+		script.append("library(tm);library(rmmseg4j);");
 		script.append("temp <- paste(t,collapse=\" \");");
 		script.append("txt <- Corpus(VectorSource(temp));"
 				+ "txt <- tm_map(txt,removeNumbers);"
@@ -401,11 +420,10 @@ public class ExploreController {
 				+ "txt <- tm_map(txt,removeWords,stopwords(\"english\"));"
 				+ "txt <- tm_map(txt,PlainTextDocument);"
 				+ "t1 <- inspect(txt[1]);"
-				+ "t <- segmentCN(as.character(t1));" + "t <- t[nchar(t) >=2];"
+				+ "t <- mmseg4j(as.character(t1)); t <- strsplit(t,split  = \" \")[[1]];" + "t <- t[nchar(t) >=2];"
 				+ "result <- aggregate(t,by=list(t),length);"
 				+ "result <- result[order(result$x,decreasing = TRUE),];"
 				+ "colnames(result) <- c(\"词语\",\"词频\");"
-
 		);
 
 		if (!maxNumber.equals("不限定")) {
@@ -416,8 +434,11 @@ public class ExploreController {
 		}
 		script.append("write.csv(result,\"" + statPath + "\");");
 		script.append("result;");
-
-		return script.toString();
+		script.append("rm(list = ls())");
+		
+		String result = script.toString();
+		System.out.println(result);
+		return result;
 	}
 
 	@RequestMapping(value = "wordStat", method = RequestMethod.GET)
@@ -426,7 +447,13 @@ public class ExploreController {
 			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
 			HttpServletRequest request) throws NoSuchMethodException {
 		System.out.println("stat start~~~~~~~~~~~~");
-		
+		try {
+			field = new String(field.getBytes(request.getCharacterEncoding()), "UTF-8");
+			maxNumber = new String(maxNumber.getBytes(request.getCharacterEncoding()), "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+
 		String csvPath = getCurrentCSVPath(request);
 		String statPath = getStatPath(request, "word");
 		REngine lastEngine = REngine.getLastEngine();
@@ -440,7 +467,7 @@ public class ExploreController {
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
 		}
-		
+
 		System.out.println("wordstat sucess~~~~~~~~~~~~");
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
@@ -455,6 +482,14 @@ public class ExploreController {
 			@RequestParam(value = "maxNumber", defaultValue = "100") String maxNumber,
 			HttpServletRequest request) throws NoSuchMethodException {
 		System.out.println("cluster start~~~~~~~~~~~~");
+		
+		try {
+			field = new String(field.getBytes(request.getCharacterEncoding()), "UTF-8");
+			maxNumber = new String(maxNumber.getBytes(request.getCharacterEncoding()), "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		
 		String csvPath = getCurrentCSVPath(request);
 		String statPath = getStatPath(request, "cluster");
 		REngine lastEngine = REngine.getLastEngine();
@@ -469,10 +504,10 @@ public class ExploreController {
 			return jsonObject;
 		}
 		System.out.println("cluster sucess~~~~~~~~~~~~");
-		
+
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
-		
+
 		return toJson(repResult);
 
 	}
@@ -480,7 +515,7 @@ public class ExploreController {
 	@RequestMapping(value = "metadata", method = RequestMethod.GET)
 	public @ResponseBody JSONObject getMetaData(HttpServletRequest request)
 			throws NoSuchMethodException {
-		System.out.println("stat start~~~~~~~~~~~~");
+		System.out.println("meta start~~~~~~~~~~~~");
 		JSONObject jsonObject = new JSONObject();
 
 		HttpSession session = request.getSession();
@@ -496,9 +531,13 @@ public class ExploreController {
 		REXP repResult;
 		try {
 			System.out.println("获取元数据信息");
-			repResult = lastEngine.parseAndEval("data <- read.csv(\""
-					+ dataPath.toString().replace("\\", "/") + "\",fileEncoding = \"UTF-8\");"
-					+ "result.names <- colnames(data);result.names;");
+			String metaString = "data <- read.csv(\""
+					+ dataPath.toString().replace("\\", "/")
+					+ "\",fileEncoding = \"UTF-8\");"
+					+ "result.names <- colnames(data);result.names;"
+					+ "rm(list = ls());";
+			System.out.println(metaString);
+			repResult = lastEngine.parseAndEval(metaString);
 			String[] colNames = repResult.asStrings();
 			System.out.println(colNames[0]);
 			jsonObject.put(DATA, Arrays.asList(colNames));
@@ -531,12 +570,12 @@ public class ExploreController {
 		if (index.equals("发布时间")) {
 			field = "data[,3]";
 		}
-		script.append("t <- " + field + ";");
-		script.append("library(tm);library(rmmseg4j);");
+		script.append("t <- " + field + ";field <- t;");
+		script.append("library(tm);library(rmmseg4j);t <- mmseg4j(as.character(t));");
 		script.append("cluster.result <- data.frame(\""
 				+ index
-				+ "\"= t);"
-				+ "seg <- Corpus(DataframeSource(cluster.result));"
+				+ "\"= field);"
+				+ "seg <- Corpus(DataframeSource(data.frame(\"term\"=t)));"
 				+ "term <- TermDocumentMatrix(seg, control = list(stopwords = TRUE));"
 				+ "term <- t(as.matrix(term));"
 				+ "model.kmeans <- kmeans(term, 7);"
@@ -552,8 +591,11 @@ public class ExploreController {
 		}
 		script.append("write.csv(result,\"" + statPath + "\");");
 		script.append("result;");
+		script.append("rm(list = ls())");
 
-		return script.toString();
+		String result = script.toString();
+		System.out.println(result);
+		return result;
 	}
 
 	/**
