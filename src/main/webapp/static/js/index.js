@@ -131,6 +131,9 @@ require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'
 		}
 		initMenuTree();
 		
+		// huoqi
+		addRouter("/ae/explore/dataVisualization/sendmail");
+		
 		$('.left-menu').find("a[href*='#']").each(function() {
 			var path = this.hash.replace('#', '');
 			addRouter(path);
