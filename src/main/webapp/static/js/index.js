@@ -9,7 +9,7 @@ require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'
 		
 		func = func || function() {
 			var params = arguments						
-			initPage('static/pages' + truePath,params)
+			initPage('static/pages/ae' + truePath + truePath,params)
 			
 		}
 		
@@ -82,7 +82,7 @@ require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'
 				
 			}
 		});
-		require(['static/pages/ae/home/homePage.js'], function(module) {
+		require(['static/pages/ae/homePage/homePage.js'], function(module) {
 			app.baseModel.data.content = ko.observableArray([]);
 			ko.cleanNode($('.content')[0]);
 			
@@ -100,7 +100,7 @@ require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'
 			
 			//var liObj = $("<li class=''");
 			var liObj = $("<li class='' style='border-bottom:1px solid #FFFFFF'>");
-			var aObj = $("<a href='#/ae/home/homePage'> <i class='fa fa-file-text'>" +
+			var aObj = $("<a href='#/homePage'> <i class='fa fa-file-text'>" +
 					"</i> <span class='title'  style=\"color:#555;font-family: 微软雅黑,宋体; font-size: 0.9em\">首页</span> <span class='arrow glyphicon glyphicon-chevron-left'></span> </a>");
 			//var aObj = $("<a href='#/ae/home/homePage'> <i class='fa fa-file-text'>" +
 					//"</i> <span class='title'>首页</span> <span class='arrow glyphicon glyphicon-chevron-left'></span> </a>");
@@ -132,7 +132,7 @@ require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'
 		initMenuTree();
 		
 		// huoqi
-		addRouter("/ae/explore/dataVisualization/sendmail");
+		addRouter("/homePage");
 		
 		$('.left-menu').find("a[href*='#']").each(function() {
 			var path = this.hash.replace('#', '');
@@ -160,6 +160,7 @@ require(['jquery', 'knockout', 'u.base', 'u.ext', 'u.grid', 'u.tree', 'director'
 		
 		if (params.length == 1)
 			params = params[0]	
+		debugger;
 		require([module], function(module) {
 			app.baseModel.data.content = ko.observableArray([]);
 			ko.cleanNode($('.content')[0]);
