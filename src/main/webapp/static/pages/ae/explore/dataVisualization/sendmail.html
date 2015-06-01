@@ -1,5 +1,66 @@
-<div class="container-fixed">
+<html>
+	<head>
+		<meta content="text/html;charset=UTF-8" http-equiv="content-type">
+		<meta charset="utf-8">
+		
+		<title>分享到邮箱</title>
+		<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="stylesheet" href="/ecmgr/static/lib/uui/css/u.css">
+		<link rel="stylesheet" href="http://img.t.sinajs.cn/t4/appstyle/widget/css/weiboPublish/weiboPublisher.css?version=638b771a5b0d43e1">
+		<link rel="stylesheet" href="/ecmgr/static/css/index.css">
+		<script type="text/javascript" src="/ecmgr/static/lib/jQueryAlert/jquery.js"></script>
+		<script type="text/javascript" src="/ecmgr/static/lib/jQueryAlert/jquery.ui.draggable.js"></script>
+		<script type="text/javascript" src="/ecmgr/static/lib/jQueryAlert/jquery.alerts.js"></script>
+		<link media="screen" type="text/css" rel="stylesheet" href="/ecmgr/static/lib/jQueryAlert/jquery.alerts.css">
+		<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="jquery" src="./static/lib/jquery/jquery-1.11.2.js"></script>
+		<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="director" src="./static/lib/director/director.js"></script>
+		<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="u.base" src="./static/lib/uui/js/u.base.js"></script>
+		<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="u.ext" src="./static/lib/uui/js/u.ext.js"></script>
+		<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="u.grid" src="./static/lib/uui/js/u.grid.js"></script>
+		<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="u.tree" src="./static/lib/uui/js/u.tree.js"></script>
+		<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="text" src="./static/lib/requirejs/text.js"></script>
+		<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="css" src="./static/lib/requirejs/css.js"></script>
+		<script type="text/javascript" src="/ecmgr/static/pages/ae/explore/dataVisualization/sendmail.js"></script>
+	</head>
+	<body class="WB_widgets WB_UIbody WB_publisher">
+		<div id="pl_publish_publisherForWeb" class="WB_xline1 share_xline">
+        <div class="wwg_wrap">
+            <div class="wwg_head clearfix">
+                <h1 title="分享到邮箱">分享到邮箱</h1>
+            </div>
 
-sendmail.html
-
-</div>
+            <div class="WB_panel">
+              	<div class="wwg_body">
+                   	<div class="weibo_publisher">
+                        <div class="textarea_container">
+                        	<div class="form-group">
+							    <label class="col-sm-2 control-label">收件人</label>
+							    <div class="col-sm-10">
+							      <input type="text" placeholder="收件人" id="tolist" class="form-control">
+							    </div>
+							</div>
+							<div class="form-group">
+							    <label class="col-sm-2 control-label">标题</label>
+							    <div class="col-sm-10">
+							      <input type="text" placeholder="标题" id="title" class="form-control">
+							    </div>
+							</div>
+                        	内容简介
+                        	<textarea class="publisher_textarea WB_textarea" node-type="textEl" id="content">请填写内容</textarea>
+                        </div>
+                        <div class="publisher_bottom clearfix">
+                            <div class="publisher_submit">
+                                <a title="发布" id="submitMail" node-type="pub" class="btn_publish submit_btn"></a>
+                            </div>
+                    	</div>
+                    </div>
+                </div>
+                <div class="wwg_foot">
+                </div>
+           </div>
+        </div>
+    </div>
+	</body>
+</html>

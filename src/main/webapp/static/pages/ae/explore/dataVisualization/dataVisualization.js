@@ -3,8 +3,7 @@ define(
 				'text!static/pages/ae/explore/dataVisualization/dataVisualization.html','echarts', 'd3.cloud' ],
 		function($, ko, template) {
 			var dataViewModel = {
-					info : ko.observable(""),
-					mailinfo : ko.observable({})
+					info : ko.observable("")
 			}
 			
 			var inited = false;
@@ -16,7 +15,7 @@ define(
 				}else {
 					exportImage(dataUrl);
 				}
-				window.open("#/ae/explore/dataVisualization/sendmail", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no");
+				window.open("/ecmgr/static/pages/ae/explore/dataVisualization/sendmail.html", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no");
 			}
 			
 			dataViewModel.shareweibo = function(){
@@ -25,32 +24,6 @@ define(
 				}else {
 					exportImage(dataUrl);
 				}				
-			}
-			
-			dataViewModel.sendmail = function(){
-				if(this.mailinfo().toList == null || this.mailinfo().toList == ''){
-					jAlert("收件人未填写", "错误");
-					return;
-				}
-				var sendUrl = "ae/explore/sendmail";
-				$.ajax({
-					type : 'POST',
-					contentType : 'application/json',
-					url : sendUrl,
-					data : JSON.stringify(dataViewModel.mailinfo()),
-					dataType : 'json',
-					success : function(data) {
-						if (data == null || data.msg != 'success') {
-							jAlert("发送失败!", "错误");
-						}else{
-							jAlert("发送成功!", "提示");
-						}
-					},
-					error : function() {
-						jAlert("发送失败!", "错误");
-					}
-				});
-				
 			}
 			
 			function exportImage(dataurl){
@@ -280,10 +253,6 @@ define(
 			
 			
 			var init = function() {
-				var infoUrl = "/ae/explore/dataVisualization/sendmail";
-				// 添加详细信息页路由
-				addRouter(infoUrl);
-				
 				var datatype = "bar";
 				$("#sharemailPane").hide();
 				$("#checkZZ").attr('checked',true);

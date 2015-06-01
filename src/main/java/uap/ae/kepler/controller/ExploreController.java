@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -108,8 +109,12 @@ public class ExploreController {
 		JSONObject o = new JSONObject();
 		if (ArrayUtils.isEmpty(mailInfo.getToList())) {
 			o.put(MSG, MSG_ERROR);
+			return o;
 		}
-		// TODO 邮箱地址正则验证
+		if(Pattern.matches("/^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$/", mailInfo.getToList()[0])){
+			o.put(MSG, MSG_ERROR);
+			return o;
+		}
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
 		String saveDirectoryPath = curProjectPath + "/" + resultofImagefolder;
