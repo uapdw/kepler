@@ -1,5 +1,5 @@
 define(
-		[ 'jquery', 'knockout', 'text!static/pages/ae/home/homePage.html',
+		[ 'jquery', 'knockout', 'text!static/pages/ae/homePage/homePage.html',
 				'echarts', 'd3.v3.min' ],// ,'echarts.line'
 		function($, ko, template) {
 			var dm0 = [];
@@ -124,6 +124,7 @@ define(
 				});
 			}
 			var init = function() {
+				debugger;
 				getForceView();
 				$.ajax({
 							type : 'GET',

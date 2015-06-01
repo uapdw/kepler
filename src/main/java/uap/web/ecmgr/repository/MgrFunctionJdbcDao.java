@@ -40,7 +40,7 @@ public class MgrFunctionJdbcDao extends BaseJdbcDao<MgrFunction> {
 		dataSource.setFuncCode("dataSource");
 		dataSource.setFuncName("数据源");
 		dataSource.setFuncType("0");
-		dataSource.setFuncUrl("/ae/dataSource/dataSource");
+		dataSource.setFuncUrl("/dataSource");
 		dataSource.setChildren(new ArrayList<MgrFunction>());
 		list.add(dataSource);
 		
@@ -50,7 +50,7 @@ public class MgrFunctionJdbcDao extends BaseJdbcDao<MgrFunction> {
 		explore.setFuncCode("explore");
 		explore.setFuncName("探查");
 		explore.setFuncType("0");
-		explore.setFuncUrl("/ae/explore/explore");
+		explore.setFuncUrl("/explore");
 		explore.setChildren(new ArrayList<MgrFunction>());
 		list.add(explore);
 		
