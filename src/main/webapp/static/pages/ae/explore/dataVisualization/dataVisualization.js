@@ -3,42 +3,63 @@ define(
 				'text!static/pages/ae/explore/dataVisualization/dataVisualization.html','echarts', 'd3.cloud' ],
 		function($, ko, template) {
 			var dataViewModel = {
-					info : ko.observable(""),
-					mailinfo : ko.observable({})
+					info : ko.observable("")
 			}
 			
 			var inited = false;
+			var dataUrl = "";
 			
 			dataViewModel.sharemail = function(){
-				window.open("#/ae/explore/dataVisualization/sendmail", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no");
-			}
-			
-			dataViewModel.sendmail = function(){
-				if(this.mailinfo().toList == null || this.mailinfo().toList == ''){
-					jAlert("收件人未填写", "错误");
-					return;
+				if($("#checkCY").is(':checked')){
+					exportD3Image(dataUrl);
+				}else {
+					exportImage(dataUrl);
 				}
-				var sendUrl = "ae/explore/sendmail";
-				$.ajax({
-					type : 'POST',
-					contentType : 'application/json',
-					url : sendUrl,
-					data : JSON.stringify(dataViewModel.mailinfo()),
-					dataType : 'json',
-					success : function(data) {
-						if (data == null || data.msg != 'success') {
-							jAlert("发送失败!", "错误");
-						}else{
-							jAlert("发送成功!", "提示");
-						}
-					},
-					error : function() {
-						jAlert("发送失败!", "错误");
-					}
-				});
-				
+				window.open("/ecmgr/static/pages/ae/explore/dataVisualization/sendmail.html", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no");
 			}
 			
+			dataViewModel.shareweibo = function(){
+				if($("#checkCY").is(':checked')){
+					exportD3Image(dataUrl);
+				}else {
+					exportImage(dataUrl);
+				}				
+			}
+			
+			function exportImage(dataurl){
+			    var data = "a=" + dataurl;
+			    $.ajax({
+					type : 'POST',
+					url : 'ae/explore/saveAsImage',
+					data: {
+						data : data
+					},
+					ContentType: "application/x-www-form-urlencoded",
+					success : function(data) {
+						console.log(data);
+					},
+					error : function(XMLHttpRequest, textStatus, errorThrown) {
+						jAlert(errorThrown, "获取详细信息失败!")
+					}
+				}); 
+			}
+			
+			function exportD3Image(dataurl){			 
+				  $.ajax({
+						type : 'POST',
+						url : 'ae/explore/saveAsImageD3',
+						data: {
+							data : dataurl
+						},
+						ContentType: "application/x-www-form-urlencoded",
+						success : function(data) {
+							console.log(data);
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							jAlert(errorThrown, "获取详细信息失败!")
+						}
+				  }); 
+			}
 			//柱状图和折线图展示
 			function successGetView(datatype, data){
 				$("#newscharts div").remove();
@@ -65,6 +86,7 @@ define(
 					        }
 					    },
 					    calculable : true,
+					    animation: false,
 					    xAxis : [
 					        {
 					            type : 'category',
@@ -98,6 +120,7 @@ define(
 					    ]
 					};
 				newsChart.setOption(option);
+				return newsChart.getDataURL("png");
 			}
 			
 			//饼图展示
@@ -114,6 +137,7 @@ define(
 					        trigger: 'item',
 					        formatter: "{a} <br/>{b} : {c} ({d}%)"
 					    },
+					    animation: false,
 					    legend: {
 					        orient : 'vertical',
 					        x : 'left',
@@ -154,6 +178,8 @@ define(
 					    ]
 					};
 				newsChart.setOption(option);
+				return newsChart.getDataURL("png");
+				
 			}
 			
 			//词云图展示
@@ -191,6 +217,12 @@ define(
 				        })
 				        .text(function(d) { return d.text; });
 				  }
+				  
+				  var html = d3.select("svg")
+			        .attr("version", 1.1)
+			        .attr("xmlns", "http://www.w3.org/2000/svg")
+			        .node().parentNode.innerHTML;
+				  return html;
 			}
 			
 			//通过已选择的展示类型从后台获取相应的数据格式
@@ -203,11 +235,11 @@ define(
 					},
 					success : function(data) {
 						if(datatype == "line" ||datatype == "bar"){
-							successGetView(datatype, data[0]);	
+							dataUrl = successGetView(datatype, data[0]);	
 						}else if(datatype == "wordscloud"){
-							successGetWordsCloudView(datatype, data);
+							dataUrl = successGetWordsCloudView(datatype, data);
 						}else if(datatype == "pie"){
-							successGetPieView(datatype, data);
+							dataUrl = successGetPieView(datatype, data);
 						}else{
 							$("#newscharts div").remove();
 							$("#newscharts").append("<div style='height:500px'>数据不支持此图</div>")
@@ -221,10 +253,6 @@ define(
 			
 			
 			var init = function() {
-				var infoUrl = "/ae/explore/dataVisualization/sendmail";
-				// 添加详细信息页路由
-				addRouter(infoUrl);
-				
 				var datatype = "bar";
 				$("#sharemailPane").hide();
 				$("#checkZZ").attr('checked',true);

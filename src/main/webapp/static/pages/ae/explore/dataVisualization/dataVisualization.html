@@ -7,7 +7,7 @@
 <input name="dataview" type="checkbox" id="checkCY" />词云图&nbsp;&nbsp;&nbsp;&nbsp;
 <input name="dataview" type="checkbox" id="checkDT" />地图
 </form>
-	<div style="float:right;margin-top:-50px;">
+	<div style="float:right;margin-top:-50px;" data-bind="click:shareweibo">
 		<html xmlns:wb="http://open.weibo.com/wb">
 			<head>
 				<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
@@ -20,14 +20,6 @@
 	</div>
 	<div style="float:right;margin-top:-6px;">
 		<button style="width:111px; height:24px; background-color:green; color:white;" data-bind="click:sharemail">分享到邮件</button>
-	</div>
-	<div id="sharemailPane">
-		<br/>
-		收件人：<input value="" name="tolist" id="tolist" data-bind="value:mailinfo().toList" type="text"/><br/>
-		标&nbsp;题：<input value="" name="title" id="title" data-bind="value:mailinfo().title" type="text"/><br/>
-		内&nbsp;容：<br/>
-		<input value="" name="content" id="content" data-bind="value:mailinfo().content" type="textarea"/>
-		<button class="btn btn-primary" data-bind="click:sendmail">发送邮件</button>
 	</div>
 <br/><br/>
 <div id="newscharts" >
