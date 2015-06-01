@@ -1,10 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     <title>登录</title>
+    <link rel="shortcut icon" href="${ctx}/static/images/favicon_1.ico" type="image/x-icon" />
     <link rel="stylesheet" href="${ctx}/static/css/dl.css" />
    <link href="${ctx}/static/lib/uui/css/u.base.css" rel="stylesheet">
 </head>
-<!--<body style="background-image:url(&quot;${ctx}/static/images/logoin.jpg&quot;);color:black">-->
+<!--<body style="background-image:url(&quot;c&quot;);color:black">-->
 <body style="background-image:url(&quot;${ctx}/static/images/logoin.jpg&quot;);color:white">
 
 	<form  method="post" id="formlogin" action="${ctx}/login" autocomplete="off">

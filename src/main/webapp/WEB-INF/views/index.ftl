@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<meta content="" name="description" />
 		<meta content="" name="author" />
-
+		<link rel="shortcut icon" href="${ctx}/static/images/favicon_1.ico" type="image/x-icon" />
 		<link href="${ctx}/static/lib/uui/css/u.css" rel="stylesheet">
 		<link href="${ctx}/static/css/index.css" rel="stylesheet">
 		<script src="${ctx}/static/lib/jQueryAlert/jquery.js" type="text/javascript"></script>
