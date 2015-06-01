@@ -318,7 +318,6 @@ public class ExploreController {
 		}
 		script.append("write.csv(result,\"" + statPath + "\");");
 		script.append("result;");
-		script.append("rm(list = ls())");
 		
 		String result = script.toString();
 		System.out.println(result);
@@ -380,6 +379,7 @@ public class ExploreController {
 					statPath, field, maxNumber);
 			System.out.println(statRScript);
 			repResult = lastEngine.parseAndEval(statRScript);
+			lastEngine.parseAndEval("rm(list = ls());");
 		} catch (Exception e) {
 			System.out.println(e);
 			JSONObject jsonObject = new JSONObject();
@@ -434,7 +434,6 @@ public class ExploreController {
 		}
 		script.append("write.csv(result,\"" + statPath + "\");");
 		script.append("result;");
-		script.append("rm(list = ls())");
 		
 		String result = script.toString();
 		System.out.println(result);
@@ -461,6 +460,7 @@ public class ExploreController {
 		try {
 			repResult = lastEngine.parseAndEval(getWordRScript(csvPath,
 					statPath, field, maxNumber));
+			lastEngine.parseAndEval("rm(list = ls());");
 		} catch (Exception e) {
 			e.printStackTrace();
 			JSONObject jsonObject = new JSONObject();
@@ -497,6 +497,7 @@ public class ExploreController {
 		try {
 			repResult = lastEngine.parseAndEval(getClusterScript(csvPath,
 					statPath, field, maxNumber));
+			lastEngine.parseAndEval("rm(list = ls());");
 		} catch (Exception e) {
 			e.printStackTrace();
 			JSONObject jsonObject = new JSONObject();
@@ -534,10 +535,10 @@ public class ExploreController {
 			String metaString = "data <- read.csv(\""
 					+ dataPath.toString().replace("\\", "/")
 					+ "\",fileEncoding = \"UTF-8\");"
-					+ "result.names <- colnames(data);result.names;"
-					+ "rm(list = ls());";
+					+ "result.names <- colnames(data);result.names;";
 			System.out.println(metaString);
 			repResult = lastEngine.parseAndEval(metaString);
+			lastEngine.parseAndEval("rm(list = ls());");
 			String[] colNames = repResult.asStrings();
 			System.out.println(colNames[0]);
 			jsonObject.put(DATA, Arrays.asList(colNames));
@@ -550,6 +551,8 @@ public class ExploreController {
 			jsonObject.put(MSG, e.getMessage());
 			return jsonObject;
 		}
+		
+		
 
 		return jsonObject;
 	}
@@ -591,7 +594,6 @@ public class ExploreController {
 		}
 		script.append("write.csv(result,\"" + statPath + "\");");
 		script.append("result;");
-		script.append("rm(list = ls())");
 
 		String result = script.toString();
 		System.out.println(result);
