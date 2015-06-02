@@ -390,12 +390,8 @@ public class ExploreController {
 		
 		
 		try {
-			String charEncoding = request.getCharacterEncoding();
-			if(charEncoding == null || !charEncoding.equals("UTF-8")){
-				field = new String(field.getBytes("ISO-8859-1"), "UTF-8");
-				maxNumber = new String(maxNumber.getBytes("ISO-8859-1"), "UTF-8");
-			}
-			
+			field = new String(field.getBytes("ISO-8859-1"), "UTF-8");
+			maxNumber = new String(maxNumber.getBytes("ISO-8859-1"), "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
@@ -477,12 +473,8 @@ public class ExploreController {
 			HttpServletRequest request) throws NoSuchMethodException {
 		System.out.println("stat start~~~~~~~~~~~~");
 		try {
-			String charEncoding = request.getCharacterEncoding();
-			if(charEncoding == null || !charEncoding.equals("UTF-8")){
-				field = new String(field.getBytes("ISO-8859-1"), "UTF-8");
-				maxNumber = new String(maxNumber.getBytes("ISO-8859-1"), "UTF-8");
-			}
-			
+			field = new String(field.getBytes("ISO-8859-1"), "UTF-8");
+			maxNumber = new String(maxNumber.getBytes("ISO-8859-1"), "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
@@ -518,12 +510,8 @@ public class ExploreController {
 		System.out.println("cluster start~~~~~~~~~~~~");
 		
 		try {
-			String charEncoding = request.getCharacterEncoding();
-			if(charEncoding == null || !charEncoding.equals("UTF-8")){
-				field = new String(field.getBytes("ISO-8859-1"), "UTF-8");
-				maxNumber = new String(maxNumber.getBytes("ISO-8859-1"), "UTF-8");
-			}
-			
+			field = new String(field.getBytes("ISO-8859-1"), "UTF-8");
+			maxNumber = new String(maxNumber.getBytes("ISO-8859-1"), "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
