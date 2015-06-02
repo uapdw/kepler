@@ -191,7 +191,7 @@ public class ExploreController {
 		SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		String dateinfo, other_articles_sitename, other_articles_title;
 		Date other_articles_publishtime;
-		bw.write("标题,网站名称,发布时间");
+		bw.write("\"标题\",\"网站名称\",\"发布时间\"");
 		bw.newLine();
 		for (SolrDocument solrdoc : docList) {
 			other_articles_publishtime = (Date) solrdoc
@@ -203,8 +203,8 @@ public class ExploreController {
 					.getFieldValue("other_articles_title").toString();
 
 			// 添加新的数据行
-			bw.write(other_articles_title + "," + other_articles_sitename + ","
-					+ dateinfo);
+			bw.write("\""+other_articles_title + "\",\"" + other_articles_sitename + "\",\""
+					+ dateinfo+"\"");
 			bw.newLine();
 		}
 
@@ -636,14 +636,21 @@ public class ExploreController {
 	@RequestMapping(value = "getViewedData", method = RequestMethod.GET)
 	public @ResponseBody JSONArray getViewedData(HttpServletRequest request)
 			throws Exception {
-		String statPath = getStatPath(request, "");
+		//String statPath = getStatPath(request, "");
+		HttpSession session = request.getSession();
+		Object statPath = session.getAttribute(CURANAURL);
+		if (statPath == null) {
+			System.out.println("得不到当前数据文件，Session中不存在");
+			return null;
+		}
+		String dataPath = statPath.toString().replace("\\", "/");
 		String datatype = request.getParameter("data");
 		datatype = new String(datatype.getBytes("ISO-8859-1"), "UTF-8");
-		FileInputStream fileInputStream = new FileInputStream(statPath);
+		FileInputStream fileInputStream = new FileInputStream(dataPath);
 		InputStreamReader inputStreamReader = new InputStreamReader(
 				fileInputStream, "UTF-8");
 		BufferedReader reader = new BufferedReader(inputStreamReader);
-		String line = "";
+		String line = reader.readLine();
 		System.out.println(datatype);
 		if (datatype.equals("wordscloud")) {
 			JSONObject jsonObject = new JSONObject();
@@ -652,6 +659,8 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());
+				title = new String(title.getBytes("ISO-8859-1"), "UTF-8");
+				System.out.println("!!!!!!!!!!!"+title);
 				int freq = Integer.parseInt(words[2]);
 				jsonObject = new JSONObject();
 				jsonObject.put("text", title);
@@ -667,6 +676,7 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());
+				title = new String(title.getBytes("ISO-8859-1"), "UTF-8");
 				int freq = Integer.parseInt(words[2]);
 				jsonObject = new JSONObject();
 				jsonObject.put("value", freq);
@@ -684,6 +694,7 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());
+				title = new String(title.getBytes("ISO-8859-1"), "UTF-8");
 				int freq = Integer.parseInt(words[2]);
 				titleList.add(title);
 				freqList.add(freq);
