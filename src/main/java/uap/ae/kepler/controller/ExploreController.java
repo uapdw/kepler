@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
@@ -52,6 +54,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import sun.misc.BASE64Decoder;
+import uap.ae.kepler.entity.DataSources;
 import uap.ae.kepler.entity.MailInfo;
 import uap.ae.kepler.service.MailService;
 import uap.ae.kepler.solr.SolrService;
@@ -78,7 +81,7 @@ public class ExploreController {
 	/**
 	 * 此路径需与上传路径保持一致
 	 */
-	private static final String resultofImagefolder = "resultimgs";
+	private static final String savedImagesfolder = "savedImages";
 //	private static final String uploadFolderName = "uploads";
 	public static final String CURFILEURL = "curFileUrl";
 	public static final String CURANAURL = "anaFileUrl";
@@ -90,6 +93,8 @@ public class ExploreController {
 	private static final String MSG_ERROR = "error";
 	private static String SolrHost = "";
 
+	public static final String SHARE_PIC_ID = "share_pic_id";
+	
 	/**
 	 * 设置CloudSolrClient
 	 * 
@@ -117,15 +122,24 @@ public class ExploreController {
 		}
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
-		String saveDirectoryPath = curProjectPath + "/" + resultofImagefolder;
-		// TODO 暂时使用假img
-		// mailInfo.setFileUrl(saveDirectoryPath + "/" + mailInfo.getFileUrl);
-		mailInfo.setFileUrl(saveDirectoryPath + "/joy.jpg");
+		mailInfo.setFileUrl(curProjectPath + "/" + mailInfo.getFileUrl());
 		if (mailService.sendNotificationMail(mailInfo)) {
 			o.put(MSG, MSG_SUCCESS);
 		} else {
 			o.put(MSG, MSG_ERROR);
 		}
+		return o;
+	}
+	
+	@RequestMapping(value = "getid", method = RequestMethod.GET)
+	public @ResponseBody JSONObject getid(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		UUID uuid = UUID.randomUUID();
+		String fileId=uuid.toString();
+		session.setAttribute(SHARE_PIC_ID, savedImagesfolder + "/" + fileId + ".png");
+		JSONObject o = new JSONObject();
+		o.put(DATA, savedImagesfolder + "/" + fileId + ".png");
+		o.put(MSG, MSG_SUCCESS);
 		return o;
 	}
 
@@ -700,22 +714,29 @@ public class ExploreController {
 		String data = request.getParameter("data");
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
-		String sessionId = request.getRequestedSessionId();
-		String saveImagesPath = curProjectPath + "/savedImages/" + sessionId+ ".png";
-		    try {
-		        String[] url = data.split(",");
-		        String u = url[1];
-		        // Base64解码
-		        byte[] b = new BASE64Decoder().decodeBuffer(u);
-		        // 生成图片		        
-		        OutputStream out = new FileOutputStream(new File(saveImagesPath));
-		        out.write(b);
-		        out.flush();
-		        out.close();
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		    }
-		    return "save image ok";
+//		String sessionId = request.getRequestedSessionId();
+		String fileName = (String) session.getAttribute(SHARE_PIC_ID);
+		if(StringUtils.isEmpty(fileName)){
+			return "save image fail";
+		}
+		String saveImagesPath = curProjectPath + "/" + fileName;
+	    try {
+	        String[] url = data.split(",");
+	        if(ArrayUtils.isEmpty(url)){
+	        	return "save image fail";
+	        }
+	        String u = url[1];
+	        // Base64解码
+	        byte[] b = new BASE64Decoder().decodeBuffer(u);
+	        // 生成图片		        
+	        OutputStream out = new FileOutputStream(new File(saveImagesPath));
+	        out.write(b);
+	        out.flush();
+	        out.close();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return "save image ok";
 	}
 	
 	/**
@@ -780,8 +801,12 @@ public class ExploreController {
 		String svgdata = request.getParameter("data");
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
-		String sessionId = request.getRequestedSessionId();
-		String saveImagesPath = curProjectPath + "/savedImages/" + sessionId+ ".png";
+//		String sessionId = request.getRequestedSessionId();
+		String fileName = (String) session.getAttribute(SHARE_PIC_ID);
+		if(StringUtils.isEmpty(fileName)){
+			return "save image fail";
+		}
+		String saveImagesPath = curProjectPath + "/" + fileName;
 		convertToPng(svgdata, saveImagesPath);
 		return "save image ok";
 	}

@@ -3,7 +3,9 @@ define(
 				'text!static/pages/ae/explore/dataVisualization/dataVisualization.html','echarts', 'd3.cloud' ],
 		function($, ko, template) {
 			var dataViewModel = {
-					info : ko.observable("")
+					info : ko.observable(""),
+					oldfileurl : ko.observable(""),
+					newfileurl : ko.observable("")
 			}
 			
 			var inited = false;
@@ -15,7 +17,7 @@ define(
 				}else {
 					exportImage(dataUrl);
 				}
-				window.open("/ecmgr/static/pages/ae/explore/dataVisualization/sendmail.html", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no");
+				window.open("/ecmgr/static/pages/ae/explore/dataVisualization/sendmail.html?fileurl="+dataViewModel.oldfileurl(), "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no");
 			}
 			
 			dataViewModel.shareweibo = function(){
@@ -31,6 +33,7 @@ define(
 			    $.ajax({
 					type : 'POST',
 					url : 'ae/explore/saveAsImage',
+					async : false,
 					data: {
 						data : data
 					},
@@ -42,12 +45,15 @@ define(
 						jAlert(errorThrown, "获取详细信息失败!")
 					}
 				}); 
+				getId();
+				
 			}
 			
 			function exportD3Image(dataurl){			 
 				  $.ajax({
 						type : 'POST',
 						url : 'ae/explore/saveAsImageD3',
+						async : false,
 						data: {
 							data : dataurl
 						},
@@ -58,7 +64,9 @@ define(
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
 							jAlert(errorThrown, "获取详细信息失败!")
 						}
-				  }); 
+				  });
+				  getId();
+				   
 			}
 			//柱状图和折线图展示
 			function successGetView(datatype, data){
@@ -251,9 +259,36 @@ define(
 				});
 			}
 			
+			function getId(){
+				var infoUrl = 'ae/explore/getid';
+				$.ajax({
+					type : 'GET',
+					url : infoUrl,
+					async : false,
+					dataType : 'json',
+					success : function(data) {
+						if(data.msg == 'success'){
+							$("#weibopic").attr("default_image", window.location.host + "/ecmgr/" + data.data);
+							dataViewModel.oldfileurl(dataViewModel.newfileurl());
+							dataViewModel.newfileurl(data.data);
+						}else{
+							$("#weibopic").attr("default_image", window.location.host + "/ecmgr/savedImages/0.png");
+							dataViewModel.oldfileurl(dataViewModel.newfileurl());
+							dataViewModel.newfileurl("savedImages/0.png");
+						}
+						
+					},
+					error : function() {
+						$("#weibopic").attr("default_image", window.location.host + "/ecmgr/savedImages/0.png");
+						dataViewModel.oldfileurl(dataViewModel.newfileurl());
+						dataViewModel.newfileurl("savedImages/0.png");
+					}
+				});
+			}
 			
 			var init = function() {
 				var datatype = "bar";
+				getId();
 				$("#sharemailPane").hide();
 				$("#checkZZ").attr('checked',true);
 				getView(datatype);
