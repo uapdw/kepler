@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<meta content="" name="description" />
 		<meta content="" name="author" />
-		<link rel="shortcut icon" href="${ctx}/static/images/favicon_1.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="${ctx}/static/images/favicon_2.ico" type="image/x-icon" />
 		<link href="${ctx}/static/lib/uui/css/u.css" rel="stylesheet">
 		<link href="${ctx}/static/css/index.css" rel="stylesheet">
 		<script src="${ctx}/static/lib/jQueryAlert/jquery.js" type="text/javascript"></script>
@@ -45,10 +45,10 @@
 							<span class="glyphicon glyphicon-chevron-down"></span>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a href="#">系统配置</a></li>
+						<!--<li><a href="#">系统配置</a></li>
 							<li><a href="#">个性化</a></li>
 							<li><a href="${ctx}/register" target="_blank">注册店铺测试</a></li>
-							<!--
+							
 							<li><a href="#">mmm</a>
 							</li>
 							<li class="divider"></li>
