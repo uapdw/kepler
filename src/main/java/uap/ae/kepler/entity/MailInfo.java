@@ -2,11 +2,9 @@ package uap.ae.kepler.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-
-@Entity
 public class MailInfo implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private String toList;
 	private String title;
 	private String content;
