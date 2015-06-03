@@ -27,7 +27,7 @@ $(document).ready(function(){
 			jAlert("收件人邮箱格式不正确", "错误");
 			return;
 		}
-		var sendUrl = "/ecmgr/ae/explore/sendmail";
+		var sendUrl = "/kepler/ae/explore/sendmail";
 		var jsonData = {toList : $("#tolist").val(),title : $("#title").val(),content : $("#content").val(), fileUrl : GetArgs(window.location.href,"fileurl")};
 		$.ajax({
 			type : 'POST',

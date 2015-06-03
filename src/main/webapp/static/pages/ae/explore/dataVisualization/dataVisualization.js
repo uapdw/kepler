@@ -4,8 +4,7 @@ define(
 		function($, ko, template) {
 			var dataViewModel = {
 					info : ko.observable(""),
-					oldfileurl : ko.observable(""),
-					newfileurl : ko.observable("")
+					fileurl : ko.observable("")
 			}
 			
 			var inited = false;
@@ -17,7 +16,7 @@ define(
 				}else {
 					exportImage(dataUrl);
 				}
-				window.open("/ecmgr/static/pages/ae/explore/dataVisualization/sendmail.html?fileurl="+dataViewModel.oldfileurl(), "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no");
+				window.open(getlocalUrl() + "static/pages/ae/explore/dataVisualization/sendmail.html?fileurl="+dataViewModel.fileurl(), "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no, location=no");
 			}
 			
 			dataViewModel.shareweibo = function(){
@@ -25,7 +24,15 @@ define(
 					exportD3Image(dataUrl);
 				}else {
 					exportImage(dataUrl);
-				}				
+				}
+				window.open("http://widget.weibo.com/dialog/PublishWeb.php?default_text=请填写内容&default_image="+getlocalUrl()+dataViewModel.fileurl()+"&refer=y&language=zh_cn&app_src=5E4yWv&button=pubilish", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no, location=no");				
+			}
+			
+			function getlocalUrl(){
+				var url = window.location.href;
+				var index = url.indexOf("#");
+				var localurl = url.substring(0, index);
+			    return localurl;
 			}
 			
 			function exportImage(dataurl){
@@ -39,14 +46,13 @@ define(
 					},
 					ContentType: "application/x-www-form-urlencoded",
 					success : function(data) {
+						dataViewModel.fileurl(data);
 						console.log(data);
 					},
 					error : function(XMLHttpRequest, textStatus, errorThrown) {
 						jAlert(errorThrown, "获取详细信息失败!")
 					}
 				}); 
-				getId();
-				
 			}
 			
 			function exportD3Image(dataurl){			 
@@ -59,14 +65,13 @@ define(
 						},
 						ContentType: "application/x-www-form-urlencoded",
 						success : function(data) {
+							dataViewModel.fileurl(data);
 							console.log(data);
 						},
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
 							jAlert(errorThrown, "获取详细信息失败!")
 						}
 				  });
-				  getId();
-				   
 			}
 			//柱状图和折线图展示
 			function successGetView(datatype, data){
@@ -407,38 +412,9 @@ define(
 				});
 			}
 			
-			function getId(){
-				var infoUrl = 'ae/explore/getid';
-				$.ajax({
-					type : 'GET',
-					url : infoUrl,
-					async : false,
-					dataType : 'json',
-					success : function(data) {
-						if(data.msg == 'success'){
-							$("#weibopic").attr("default_image", window.location.host + "/ecmgr/" + data.data);
-							dataViewModel.oldfileurl(dataViewModel.newfileurl());
-							dataViewModel.newfileurl(data.data);
-						}else{
-							$("#weibopic").attr("default_image", window.location.host + "/ecmgr/savedImages/0.png");
-							dataViewModel.oldfileurl(dataViewModel.newfileurl());
-							dataViewModel.newfileurl("savedImages/0.png");
-						}
-						
-					},
-					error : function() {
-						$("#weibopic").attr("default_image", window.location.host + "/ecmgr/savedImages/0.png");
-						dataViewModel.oldfileurl(dataViewModel.newfileurl());
-						dataViewModel.newfileurl("savedImages/0.png");
-					}
-				});
-			}
-			
 			var init = function() {
 				inited = true;
 				var datatype = "bar";
-				getId();
-				$("#sharemailPane").hide();
 				$("#checkZZ").attr('checked',true);
 				getView(datatype);
 				$(':checkbox[name=dataview]').each(function(){ 
@@ -450,13 +426,15 @@ define(
 							}else if($("#checkZZ").is(':checked')){
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
-								datatype = "scatter";							
+								datatype = "scatter";
+								dataUrl = successGetSatterView(datatype);
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){
 								datatype = "pie";
 							}else{
-								datatype = "map";								
+								datatype = "map";
+								dataUrl = successGetMapView(datatype);
 							}
 							getView(datatype);
 						}else{

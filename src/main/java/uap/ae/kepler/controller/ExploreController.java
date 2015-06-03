@@ -92,9 +92,8 @@ public class ExploreController {
 	private static final String MSG = "msg";
 	private static final String MSG_ERROR = "error";
 	private static String SolrHost = "";
+	private static final String errorfile = savedImagesfolder + "/0.png";
 
-	public static final String SHARE_PIC_ID = "share_pic_id";
-	
 	/**
 	 * 设置CloudSolrClient
 	 * 
@@ -131,18 +130,6 @@ public class ExploreController {
 		return o;
 	}
 	
-	@RequestMapping(value = "getid", method = RequestMethod.GET)
-	public @ResponseBody JSONObject getid(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		UUID uuid = UUID.randomUUID();
-		String fileId=uuid.toString();
-		session.setAttribute(SHARE_PIC_ID, savedImagesfolder + "/" + fileId + ".png");
-		JSONObject o = new JSONObject();
-		o.put(DATA, savedImagesfolder + "/" + fileId + ".png");
-		o.put(MSG, MSG_SUCCESS);
-		return o;
-	}
-
 	/**
 	 * 查询索引
 	 * 
@@ -726,15 +713,16 @@ public class ExploreController {
 		String data = request.getParameter("data");
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
-		String fileName = (String) session.getAttribute(SHARE_PIC_ID);
+		UUID uuid = UUID.randomUUID();
+		String fileName = savedImagesfolder + "/" + uuid.toString() + ".png";
 		if(StringUtils.isEmpty(fileName)){
-			return "save image fail";
+			return errorfile;
 		}
 		String saveImagesPath = curProjectPath + "/" + fileName;
 	    try {
 	        String[] url = data.split(",");
-	        if(ArrayUtils.isEmpty(url)){
-	        	return "save image fail";
+	        if(ArrayUtils.isEmpty(url) || url.length < 2){
+	        	return errorfile;
 	        }
 	        String u = url[1];
 	        // Base64解码
@@ -747,7 +735,7 @@ public class ExploreController {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-	    return "save image ok";
+	    return fileName;
 	}
 	
 	/**
@@ -812,14 +800,14 @@ public class ExploreController {
 		String svgdata = request.getParameter("data");
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
-//		String sessionId = request.getRequestedSessionId();
-		String fileName = (String) session.getAttribute(SHARE_PIC_ID);
+		UUID uuid = UUID.randomUUID();
+		String fileName = savedImagesfolder + "/" + uuid.toString() + ".png";
 		if(StringUtils.isEmpty(fileName)){
-			return "save image fail";
+			return errorfile;
 		}
 		String saveImagesPath = curProjectPath + "/" + fileName;
 		convertToPng(svgdata, saveImagesPath);
-		return "save image ok";
+		return fileName;
 	}
 
 }

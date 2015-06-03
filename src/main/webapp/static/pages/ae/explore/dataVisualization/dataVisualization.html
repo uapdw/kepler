@@ -7,19 +7,11 @@
 <input name="dataview" type="checkbox" id="checkCY" />词云图&nbsp;&nbsp;&nbsp;&nbsp;
 <input name="dataview" type="checkbox" id="checkDT" />地图
 </form>
-	<div style="float:right;margin-top:-50px;" data-bind="click:shareweibo">
-		<html xmlns:wb="http://open.weibo.com/wb">
-			<head>
-				<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
-			</head>
-			<body>
-				<!-- TODO 图片地址需要绑定 --><br/>
-				<wb:publish action="pubilish" type="web" language="zh_cn" button_type="red" button_size="middle" button_text="分享到微博" refer="y" appkey="5E4yWv" default_text="请填写内容" default_image="" id="weibopic"></wb:publish>
-			</body>
-		</html>
-	</div>
 	<div style="float:right;margin-top:-6px;">
 		<button style="width:111px; height:24px; background-color:green; color:white;" data-bind="click:sharemail">分享到邮件</button>
+	</div>
+	<div style="float:right;margin-top:-6px;">
+		<button style="width:111px; height:24px; background-color:red; color:white;" data-bind="click:shareweibo">分享到微博</button>
 	</div>
 <br/><br/>
 <div id="newscharts" >
