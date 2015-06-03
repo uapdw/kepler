@@ -595,16 +595,16 @@ public class ExploreController {
 	public @ResponseBody JSONArray getViewedData(HttpServletRequest request)
 			throws Exception {
 		//String statPath = getStatPath(request, "");
-		/*HttpSession session = request.getSession();
+		HttpSession session = request.getSession();
 		Object statPath = session.getAttribute(CURANAURL);
 		if (statPath == null) {
 			System.out.println("得不到当前数据文件，Session中不存在");
-			//return null;
+			return null;
 		}
-		String dataPath = statPath.toString().replace("\\", "/");*/
+		String dataPath = statPath.toString().replace("\\", "/");
 		String datatype = request.getParameter("data");
 		datatype = new String(datatype.getBytes("ISO-8859-1"), "UTF-8");
-		FileInputStream fileInputStream = new FileInputStream("F:/kepler/csv/b.csv");
+		FileInputStream fileInputStream = new FileInputStream(dataPath);
 		InputStreamReader inputStreamReader = new InputStreamReader(
 				fileInputStream, "UTF-8");
 		BufferedReader reader = new BufferedReader(inputStreamReader);
