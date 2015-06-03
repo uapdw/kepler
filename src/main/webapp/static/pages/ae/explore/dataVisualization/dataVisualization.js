@@ -31,7 +31,14 @@ define(
 			function getlocalUrl(){
 				var url = window.location.href;
 				var index = url.indexOf("#");
-				var localurl = url.substring(0, index);
+				var localurl = url;
+				if(index > 0){
+					localurl = url.substring(0, index);
+				}
+				index = localurl.indexOf(";");
+				if(index > 0){
+					localurl = localurl.substring(0, index);
+				}
 			    return localurl;
 			}
 			
