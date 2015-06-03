@@ -321,17 +321,8 @@ public class ExploreController {
 		script.append("data <- read.csv(\"" + filePath
 				+ "\",fileEncoding = \"UTF-8\");");
 		script.append("field <- \"" + index + "\";");
-		String field = "";
-		if (index.equals("标题")) {
-			field = "data[,1]";
-		}
-		if (index.equals("网站名称")) {
-			field = "data[,2]";
-		}
-		if (index.equals("发布时间")) {
-			field = "data[,3]";
-		}
-		script.append("result <- aggregate(" + field + ",by=list(" + field
+		
+		script.append("result <- aggregate(data$" + index + ",by=list(data$" + index
 				+ "),length);");
 		script.append("colnames(result) <- c(field,\"数量\");");
 		script.append("result <- result[order(result$数量,decreasing = TRUE),];");
@@ -342,7 +333,7 @@ public class ExploreController {
 					+ "){maxnumber <- length(result[,1]);};");
 			script.append("result <- result[1:maxnumber,];");
 		}
-		script.append("write.csv(result,\"" + statPath + "\");");
+		script.append("write.csv(result,\"" + statPath + "\",fileEncoding=\"UTF-8\");");
 		script.append("result;");
 		
 		String result = script.toString();
@@ -426,17 +417,7 @@ public class ExploreController {
 		script.append("data <- read.csv(\"" + filePath
 				+ "\",fileEncoding = \"UTF-8\");");
 		script.append("field <- \"" + index + "\";");
-		String field = "";
-		if (index.equals("标题")) {
-			field = "data[,1]";
-		}
-		if (index.equals("网站名称")) {
-			field = "data[,2]";
-		}
-		if (index.equals("发布时间")) {
-			field = "data[,3]";
-		}
-		script.append("t <- " + field + ";");
+		script.append("t <- data$" + index + ";");
 		script.append("library(tm);library(rmmseg4j);");
 		script.append("temp <- paste(t,collapse=\" \");");
 		script.append("txt <- Corpus(VectorSource(temp));"
@@ -458,7 +439,7 @@ public class ExploreController {
 					+ "){maxnumber <- length(result[,1]);};");
 			script.append("result <- result[1:maxnumber,];");
 		}
-		script.append("write.csv(result,\"" + statPath + "\");");
+		script.append("write.csv(result,\"" + statPath + "\",fileEncoding=\"UTF-8\");");
 		script.append("result;");
 		
 		String result = script.toString();
@@ -589,17 +570,7 @@ public class ExploreController {
 		script.append("data <- read.csv(\"" + filePath
 				+ "\",fileEncoding = \"UTF-8\");");
 		script.append("field <- \"" + index + "\";");
-		String field = "";
-		if (index.equals("标题")) {
-			field = "data[,1]";
-		}
-		if (index.equals("网站名称")) {
-			field = "data[,2]";
-		}
-		if (index.equals("发布时间")) {
-			field = "data[,3]";
-		}
-		script.append("t <- " + field + ";field <- t;");
+		script.append("t <- data$" + index + ";field <- t;");
 		script.append("library(tm);library(rmmseg4j);t <- mmseg4j(as.character(t));");
 		script.append("cluster.result <- data.frame(\""
 				+ index
@@ -618,7 +589,7 @@ public class ExploreController {
 					+ "){maxnumber <- length(result[,1]);};");
 			script.append("result <- result[1:maxnumber,];");
 		}
-		script.append("write.csv(result,\"" + statPath + "\");");
+		script.append("write.csv(result,\"" + statPath + "\",fileEncoding=\"UTF-8\");");
 		script.append("result;");
 
 		String result = script.toString();
