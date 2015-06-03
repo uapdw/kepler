@@ -190,7 +190,7 @@ define(
 				
 			}
 			//散点图展示
-			function successGetSatterView(datatype){
+			function successGetSatterView(datatype, data){
 				$("#newscharts div").remove();
 				$("#newscharts").append("<div style='height:500px'></div>")
 				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
@@ -255,7 +255,7 @@ define(
 					        {
 					            name:'',
 					            type:'scatter',
-					            data: [],
+					            data: data.xydata,
 					            markPoint : {
 					                data : [
 					                    {type : 'max', name: '最大值'},
@@ -276,7 +276,7 @@ define(
 			}
 			
 			//地图展示
-			function successGetMapView(datatype){
+			function successGetMapView(datatype, data){
 				$("#newscharts div").remove();
 				$("#newscharts").append("<div style='height:500px'></div>")
 				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
@@ -321,7 +321,7 @@ define(
 					    },
 					    series : [
 					        {
-					            name: 'iphone3',
+					            name: '区域数量分布',
 					            type: 'map',
 					            mapType: 'china',
 					            roam: false,
@@ -329,27 +329,7 @@ define(
 					                normal:{label:{show:true}},
 					                emphasis:{label:{show:true}}
 					            },
-					            data:[]
-					        },
-					        {
-					            name: 'iphone4',
-					            type: 'map',
-					            mapType: 'china',
-					            itemStyle:{
-					                normal:{label:{show:true}},
-					                emphasis:{label:{show:true}}
-					            },
-					            data:[]
-					        },
-					        {
-					            name: '',
-					            type: 'map',
-					            mapType: 'china',
-					            itemStyle:{
-					                normal:{label:{show:true}},
-					                emphasis:{label:{show:true}}
-					            },
-					            data:[]
+					            data: data
 					        }
 					    ]
 					};					                    
@@ -415,10 +395,11 @@ define(
 							dataUrl = successGetWordsCloudView(datatype, data);
 						}else if(datatype == "pie"){
 							dataUrl = successGetPieView(datatype, data);
-						}/*else{
-							$("#newscharts div").remove();
-							$("#newscharts").append("<div style='height:500px'>数据不支持此图</div>")
-						}*/
+						}else if(datatype == "scatter"){
+							dataUrl = successGetSatterView(datatype, data[0]);
+						}else if(datatype == "map"){
+							dataUrl = successGetMapView(datatype, data);
+						}
 					},
 					error : function(XMLHttpRequest, textStatus, errorThrown) {
 						jAlert(errorThrown, "获取详细信息失败!")
@@ -454,6 +435,7 @@ define(
 			}
 			
 			var init = function() {
+				inited = true;
 				var datatype = "bar";
 				getId();
 				$("#sharemailPane").hide();
@@ -468,15 +450,13 @@ define(
 							}else if($("#checkZZ").is(':checked')){
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
-								datatype = "scatter";
-								dataUrl = successGetSatterView(datatype);
+								datatype = "scatter";							
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){
 								datatype = "pie";
 							}else{
-								datatype = "map";
-								dataUrl = successGetMapView(datatype);
+								datatype = "map";								
 							}
 							getView(datatype);
 						}else{
@@ -484,7 +464,7 @@ define(
 						}
 					}); 
 				});
-				inited = true;
+				
 			}
 			return {
 				'model' : dataViewModel,

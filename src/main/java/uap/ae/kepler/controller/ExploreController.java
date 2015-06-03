@@ -626,23 +626,27 @@ public class ExploreController {
 		if (datatype.equals("wordscloud")) {
 			JSONObject jsonObject = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
+			int i = 0;
 			while ((line = reader.readLine()) != null) {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());
 				title = new String(title.getBytes("ISO-8859-1"), "UTF-8");
-				System.out.println("!!!!!!!!!!!"+title);
 				int freq = Integer.parseInt(words[2]);
 				jsonObject = new JSONObject();
 				jsonObject.put("text", title);
 				jsonObject.put("size", freq);
 				jsonArray.add(jsonObject);
+				if(++i >= 10){
+					break;
+				}
 			}
 			reader.close();
 			return jsonArray;
 		} else if (datatype.equals("pie")) {
 			JSONObject jsonObject = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
+			int i = 0;
 			while ((line = reader.readLine()) != null) {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
@@ -653,14 +657,49 @@ public class ExploreController {
 				jsonObject.put("value", freq);
 				jsonObject.put("name", title);
 				jsonArray.add(jsonObject);
+				if(++i >= 10){
+					break;
+				}
 			}
 			reader.close();
 			return jsonArray;
-		} else {
+		} else if(datatype.equals("scatter")){
+			JSONObject jsonObject = new JSONObject();
+			JSONArray jsonArray = new JSONArray();
+			ArrayList<String> xyList = new ArrayList<String>();
+			while ((line = reader.readLine()) != null) {
+				String[] words = line.split(",");
+				int yaxis = Integer.parseInt(words[0]);
+				int xaxis = Integer.parseInt(words[1]);
+				String xy = "["+ yaxis + "," + xaxis +"]";
+				xyList.add(xy);
+			}
+			reader.close();
+			jsonObject.put("xydata", xyList);
+			jsonArray.add(jsonObject);			
+			return jsonArray;
+		} else if(datatype.equals("map")){
+			JSONObject jsonObject = new JSONObject();
+			JSONArray jsonArray = new JSONArray();
+			while ((line = reader.readLine()) != null) {
+				String[] words = line.split("\",");
+				String name = words[0].substring(words[1].indexOf("\"") + 1,
+						words[0].length());
+				name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
+				int num = Integer.parseInt(words[1]);
+				jsonObject = new JSONObject();
+				jsonObject.put("value", num);
+				jsonObject.put("name", name);
+				jsonArray.add(jsonObject);
+			}
+			reader.close();
+			return jsonArray;
+		} else{
 			JSONObject jsonObject = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
 			ArrayList<String> titleList = new ArrayList<String>();
 			ArrayList<Integer> freqList = new ArrayList<Integer>();
+			int i = 0;
 			while ((line = reader.readLine()) != null) {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
@@ -669,6 +708,9 @@ public class ExploreController {
 				int freq = Integer.parseInt(words[2]);
 				titleList.add(title);
 				freqList.add(freq);
+				if(++i >= 10){
+					break;
+				}
 			}
 			reader.close();
 			jsonObject.put("title", titleList);
@@ -684,7 +726,6 @@ public class ExploreController {
 		String data = request.getParameter("data");
 		HttpSession session = request.getSession();
 		String curProjectPath = session.getServletContext().getRealPath("/");
-//		String sessionId = request.getRequestedSessionId();
 		String fileName = (String) session.getAttribute(SHARE_PIC_ID);
 		if(StringUtils.isEmpty(fileName)){
 			return "save image fail";
