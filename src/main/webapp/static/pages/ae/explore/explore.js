@@ -134,6 +134,8 @@ define(
 					}
 					
 					require([ subJs ], function(module) {
+						ko.cleanNode(selectedDiv[0]);
+						
 						selectedDiv.html('');
 						selectedDiv.html(module.template);
 

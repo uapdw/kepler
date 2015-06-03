@@ -135,7 +135,7 @@ a:link, a:visited {
 }
 
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px rgb(82, 111, 125) inset
+  -webkit-box-shadow: 0 0 0px 1000px rgb(73, 73, 73) inset
 }
 
 

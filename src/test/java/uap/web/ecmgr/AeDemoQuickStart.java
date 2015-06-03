@@ -14,7 +14,7 @@ import org.springside.modules.test.spring.Profiles;
 public class AeDemoQuickStart {
 
 	public static final int PORT = 8088;
-	public static final String CONTEXT = "/ecmgr";
+	public static final String CONTEXT = "/kepler";
 	public static final String[] TLD_JAR_NAMES = new String[] { "spring-webmvc", "shiro-web",
 			"springside-core" };
 

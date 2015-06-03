@@ -189,6 +189,173 @@ define(
 				return newsChart.getDataURL("png");
 				
 			}
+			//散点图展示
+			function successGetSatterView(datatype){
+				$("#newscharts div").remove();
+				$("#newscharts").append("<div style='height:500px'></div>")
+				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
+				var option = {
+					    title : {},
+					    tooltip : {
+					        trigger: 'axis',
+					        showDelay : 0,
+					        formatter : function (params) {
+					            if (params.value.length > 1) {
+					                return params.seriesName + ' :<br/>'
+					                   + params.value[0] + 'cm ' 
+					                   + params.value[1] + 'kg ';
+					            }
+					            else {
+					                return params.seriesName + ' :<br/>'
+					                   + params.name + ' : '
+					                   + params.value + 'kg ';
+					            }
+					        },  
+					        axisPointer:{
+					            show: true,
+					            type : 'cross',
+					            lineStyle: {
+					                type : 'dashed',
+					                width : 1
+					            }
+					        }
+					    },
+					    legend: {
+					        data:[]
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            dataZoom : {show: true},
+					            dataView : {show: true, readOnly: false},
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    xAxis : [
+					        {
+					            type : 'value',
+					            scale:true,
+					            axisLabel : {
+					                formatter: '{value} cm'
+					            }
+					        }
+					    ],
+					    yAxis : [
+					        {
+					            type : 'value',
+					            scale:true,
+					            axisLabel : {
+					                formatter: '{value} kg'
+					            }
+					        }
+					    ],
+					    series : [
+					        {
+					            name:'',
+					            type:'scatter',
+					            data: [],
+					            markPoint : {
+					                data : [
+					                    {type : 'max', name: '最大值'},
+					                    {type : 'min', name: '最小值'}
+					                ]
+					            },
+					            markLine : {
+					                data : [
+					                    {type : 'average', name: '平均值'}
+					                ]
+					            }
+					        }
+					    ]
+					};
+				newsChart.setOption(option);
+				return newsChart.getDataURL("png");
+				
+			}
+			
+			//地图展示
+			function successGetMapView(datatype){
+				$("#newscharts div").remove();
+				$("#newscharts").append("<div style='height:500px'></div>")
+				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
+				var option = {
+					    title : {
+					        x:'center'
+					    },
+					    tooltip : {
+					        trigger: 'item'
+					    },
+					    legend: {
+					        orient: 'vertical',
+					        x:'left',
+					        data:[]
+					    },
+					    dataRange: {
+					        min: 0,
+					        max: 2500,
+					        x: 'left',
+					        y: 'bottom',
+					        text:['高','低'],           // 文本，默认为数值文本
+					        calculable : true
+					    },
+					    toolbox: {
+					        show: true,
+					        orient : 'vertical',
+					        x: 'right',
+					        y: 'center',
+					        feature : {
+					            mark : {show: true},
+					            dataView : {show: true, readOnly: false},
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    roamController: {
+					        show: true,
+					        x: 'right',
+					        mapTypeControl: {
+					            'china': true
+					        }
+					    },
+					    series : [
+					        {
+					            name: 'iphone3',
+					            type: 'map',
+					            mapType: 'china',
+					            roam: false,
+					            itemStyle:{
+					                normal:{label:{show:true}},
+					                emphasis:{label:{show:true}}
+					            },
+					            data:[]
+					        },
+					        {
+					            name: 'iphone4',
+					            type: 'map',
+					            mapType: 'china',
+					            itemStyle:{
+					                normal:{label:{show:true}},
+					                emphasis:{label:{show:true}}
+					            },
+					            data:[]
+					        },
+					        {
+					            name: '',
+					            type: 'map',
+					            mapType: 'china',
+					            itemStyle:{
+					                normal:{label:{show:true}},
+					                emphasis:{label:{show:true}}
+					            },
+					            data:[]
+					        }
+					    ]
+					};					                    
+				newsChart.setOption(option);
+				return newsChart.getDataURL("png");			
+			}
 			
 			//词云图展示
 			function successGetWordsCloudView(datatype, data){
@@ -248,10 +415,10 @@ define(
 							dataUrl = successGetWordsCloudView(datatype, data);
 						}else if(datatype == "pie"){
 							dataUrl = successGetPieView(datatype, data);
-						}else{
+						}/*else{
 							$("#newscharts div").remove();
 							$("#newscharts").append("<div style='height:500px'>数据不支持此图</div>")
-						}
+						}*/
 					},
 					error : function(XMLHttpRequest, textStatus, errorThrown) {
 						jAlert(errorThrown, "获取详细信息失败!")
@@ -302,12 +469,14 @@ define(
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
 								datatype = "scatter";
+								dataUrl = successGetSatterView(datatype);
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){
 								datatype = "pie";
 							}else{
 								datatype = "map";
+								dataUrl = successGetMapView(datatype);
 							}
 							getView(datatype);
 						}else{

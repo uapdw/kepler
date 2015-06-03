@@ -41,7 +41,7 @@
         </property>  
         <property name="freemarkerVariables">
   			<map>  
-            	<entry key="ctx" value="/ecmgr" />                
+            	<entry key="ctx" value="/kepler" />                
         	</map>        	
         </property>
     </bean>
