@@ -595,16 +595,16 @@ public class ExploreController {
 	public @ResponseBody JSONArray getViewedData(HttpServletRequest request)
 			throws Exception {
 		//String statPath = getStatPath(request, "");
-		HttpSession session = request.getSession();
+		/*HttpSession session = request.getSession();
 		Object statPath = session.getAttribute(CURANAURL);
 		if (statPath == null) {
 			System.out.println("得不到当前数据文件，Session中不存在");
-			return null;
+			//return null;
 		}
-		String dataPath = statPath.toString().replace("\\", "/");
+		String dataPath = statPath.toString().replace("\\", "/");*/
 		String datatype = request.getParameter("data");
 		datatype = new String(datatype.getBytes("ISO-8859-1"), "UTF-8");
-		FileInputStream fileInputStream = new FileInputStream(dataPath);
+		FileInputStream fileInputStream = new FileInputStream("F:/kepler/csv/b.csv");
 		InputStreamReader inputStreamReader = new InputStreamReader(
 				fileInputStream, "UTF-8");
 		BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -613,20 +613,15 @@ public class ExploreController {
 		if (datatype.equals("wordscloud")) {
 			JSONObject jsonObject = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
-			int i = 0;
 			while ((line = reader.readLine()) != null) {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());
-				title = new String(title.getBytes("ISO-8859-1"), "UTF-8");
 				int freq = Integer.parseInt(words[2]);
 				jsonObject = new JSONObject();
 				jsonObject.put("text", title);
 				jsonObject.put("size", freq);
 				jsonArray.add(jsonObject);
-				if(++i >= 10){
-					break;
-				}
 			}
 			reader.close();
 			return jsonArray;
@@ -638,7 +633,6 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());
-				title = new String(title.getBytes("ISO-8859-1"), "UTF-8");
 				int freq = Integer.parseInt(words[2]);
 				jsonObject = new JSONObject();
 				jsonObject.put("value", freq);
@@ -672,7 +666,6 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String name = words[0].substring(words[1].indexOf("\"") + 1,
 						words[0].length());
-				name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
 				int num = Integer.parseInt(words[1]);
 				jsonObject = new JSONObject();
 				jsonObject.put("value", num);
@@ -690,8 +683,7 @@ public class ExploreController {
 			while ((line = reader.readLine()) != null) {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
-						words[1].length());
-				title = new String(title.getBytes("ISO-8859-1"), "UTF-8");
+						words[1].length());	
 				int freq = Integer.parseInt(words[2]);
 				titleList.add(title);
 				freqList.add(freq);
