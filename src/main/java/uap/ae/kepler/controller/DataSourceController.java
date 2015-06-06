@@ -170,6 +170,7 @@ public class DataSourceController {
 			json.put(ROWNUM, rownum);
 			json.put(MSG, MSG_SUCCESS);
 			session.setAttribute(ExploreController.CURFILEURL, file.getPath()); //设置SESSION
+			session.setAttribute(ExploreController.LASTURL, file.getPath());
 		} catch (FileNotFoundException e) {
 			json.put(MSG, "文件不存在");
 		} catch (IOException e) {
