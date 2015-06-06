@@ -11,7 +11,7 @@ define(
 			var dataUrl = "";
 			
 			dataViewModel.sharemail = function(){
-				if($("#checkCY").is(':checked')){
+				if($("#checkCY").is(':checked') || $("#checkQP").is(':checked')){
 					exportD3Image(dataUrl);
 				}else {
 					exportImage(dataUrl);
@@ -20,7 +20,7 @@ define(
 			}
 			
 			dataViewModel.shareweibo = function(){
-				if($("#checkCY").is(':checked')){
+				if($("#checkCY").is(':checked') || $("#checkQP").is(':checked')){
 					exportD3Image(dataUrl);
 				}else {
 					exportImage(dataUrl);
@@ -381,6 +381,8 @@ define(
 							dataUrl = successGetPieView(datatype, data);
 						}else if(datatype == "scatter"){
 							//dataUrl = successGetSatterView(datatype, data[0]);
+						}else if(datatype == "bubble"){
+							//dataUrl = successGetSatterView(datatype, data[0]);
 						}else if(datatype == "map"){
 							dataUrl = successGetMapView(datatype, data);
 						}
@@ -405,12 +407,14 @@ define(
 							}else if($("#checkZZ").is(':checked')){
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
-								datatype = "scatter";
-								successGetBubbleView(datatype);
+								datatype = "scatter";					
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){
 								datatype = "pie";
+							}else if($("#checkQP").is(':checked')){
+								datatype = "bubble";
+								successGetBubbleView(datatype);
 							}else{
 								datatype = "map";
 								dataUrl = successGetMapView(datatype);

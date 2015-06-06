@@ -601,7 +601,7 @@ public class ExploreController {
 			throws Exception {
 		//String statPath = getStatPath(request, "");
 		HttpSession session = request.getSession();
-		Object statPath = session.getAttribute(CURANAURL);
+		Object statPath = session.getAttribute(LASTURL);
 		if (statPath == null) {
 			System.out.println("得不到当前数据文件，Session中不存在");
 			return null;
@@ -679,6 +679,28 @@ public class ExploreController {
 			}
 			reader.close();
 			return jsonArray;
+		} else if(datatype.equals("bubble")){
+			JSONObject jsonObject = new JSONObject();
+			JSONArray jsonArray = new JSONArray();
+			JSONArray jsonArrayAll = new JSONArray();
+			while ((line = reader.readLine()) != null) {
+				String[] words;
+				if(line.indexOf("\"")!=-1){
+					words = line.split("\",");
+				}else{
+					words = line.split(",");
+				}								
+				int num = Integer.parseInt(words[1]);
+				jsonObject = new JSONObject();
+				jsonObject.put("name", words[0]);
+				jsonObject.put("size", num);
+				jsonArray.add(jsonObject);
+			}
+			jsonObject.put("name", "ae");
+			jsonObject.put("children", jsonArray);
+			jsonArrayAll.add(jsonObject);
+			reader.close();
+			return jsonArrayAll;
 		} else{
 			JSONObject jsonObject = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
