@@ -85,6 +85,7 @@ public class ExploreController {
 //	private static final String uploadFolderName = "uploads";
 	public static final String CURFILEURL = "curFileUrl";
 	public static final String CURANAURL = "anaFileUrl";
+	public static final String LASTURL = "lastFileUrl";	//最终更新的地址
 	private static final String MSG_SUCCESS = "success";
 	private static final String DATA = "data";
 	private static final String COLNUM = "colnum";
@@ -260,6 +261,7 @@ public class ExploreController {
 			System.out.println(csv.getAbsolutePath());
 			CSVWriter(csv, docList);
 			session.setAttribute(CURFILEURL, csv.getPath());
+			session.setAttribute(LASTURL, csv.getPath());
 		} catch (FileNotFoundException e) {
 			// File对象的创建过程中的异常捕获
 			e.printStackTrace();
@@ -394,6 +396,7 @@ public class ExploreController {
 		System.out.println("stat sucess~~~~~~~~~~~~");
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
+		session.setAttribute(LASTURL, statPath);
 		return toJson(repResult);
 
 	}
@@ -465,6 +468,7 @@ public class ExploreController {
 		System.out.println("wordstat sucess~~~~~~~~~~~~");
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
+		session.setAttribute(LASTURL, statPath);
 
 		return toJson(repResult);
 
@@ -502,6 +506,7 @@ public class ExploreController {
 
 		HttpSession session = request.getSession();
 		session.setAttribute(CURANAURL, statPath);
+		session.setAttribute(LASTURL, statPath);
 
 		return toJson(repResult);
 
