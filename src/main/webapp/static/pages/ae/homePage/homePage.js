@@ -181,7 +181,7 @@ define(
 					  node.exit().remove();
 		
 					  var nodeEnter = node.enter().append("g")
-					      .attr("class", "node")
+					      .attr("class", "nodes")
 					      .on("click", click)	
 					      .call(force.drag);
 		

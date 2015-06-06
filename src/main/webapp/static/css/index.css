@@ -283,7 +283,7 @@ em.hlt1{
 }
 
 
-.node {
+.nodes {
   cursor: pointer;
   stroke: #3182bd;
   stroke-width: 1.5px;
@@ -296,7 +296,7 @@ em.hlt1{
 }
 
 .node text {
-  font: 4px sans-serif;
+  font: 10px sans-serif;
   pointer-events: none;
   text-anchor: middle;
 }

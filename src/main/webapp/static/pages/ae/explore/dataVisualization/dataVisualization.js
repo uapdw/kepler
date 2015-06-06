@@ -204,8 +204,8 @@ define(
 			//气泡图展示
 			function successGetBubbleView(datatype){
 				$("#newscharts div").remove();
-				$("#newscharts").append("<div style='height:600px'></div>")
-				var diameter = 600,
+				$("#newscharts").append("<div style='height:500px'></div>")
+				var diameter = 500,
 				    format = d3.format(",d"),
 				    color = d3.scale.category20c();
 				
@@ -253,10 +253,15 @@ define(
 				  return {children: classes};
 				}
 				
+				var html = d3.select("svg")
+			        .attr("version", 1.1)
+			        .attr("xmlns", "http://www.w3.org/2000/svg")
+			        .node().parentNode.innerHTML;
+				
 				d3.select(self.frameElement).style("height", diameter + "px");
 
-				//return newsChart.getDataURL("png");
-				
+				 alert(html);
+				  return html;				
 			}
 			
 			//地图展示
@@ -361,6 +366,7 @@ define(
 			        .attr("version", 1.1)
 			        .attr("xmlns", "http://www.w3.org/2000/svg")
 			        .node().parentNode.innerHTML;
+				  alert(html);
 				  return html;
 			}
 			
@@ -414,7 +420,7 @@ define(
 								datatype = "pie";
 							}else if($("#checkQP").is(':checked')){
 								datatype = "bubble";
-								successGetBubbleView(datatype);
+								dataUrl = successGetBubbleView(datatype);
 							}else{
 								datatype = "map";
 								dataUrl = successGetMapView(datatype);
