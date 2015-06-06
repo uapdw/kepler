@@ -74,6 +74,7 @@ define(
 			}
 
 			function getForceView(){
+				
 				var width = 850,
 			    height = 800;
 
@@ -123,9 +124,130 @@ define(
 				  });
 				});
 			}
+			
+			function getForceTreeView(){
+				var paonans = ["跑男官方微博", "邓超", "李晨", "Baby", "王宝强", "郑凯", "陈赫", "包贝尔", "王宝强", "王祖蓝"];
+				var width = 800,
+			    height = 700,
+			    root;
+
+				var force = d3.layout.force()
+				    .size([width, height])
+					.linkDistance(30)
+					.charge(-200)
+				    .gravity(.95)
+				    .on("tick", tick);
+	
+				var svg = d3.select("#weibo").append("svg")
+				    .attr("width", width)
+				    .attr("height", height);
+	
+				var link = svg.selectAll(".link"),
+				    node = svg.selectAll(".node");
+	
+				d3.json("static/json/wb_tree.json", function(json) {
+				  root = json;
+				  update();
+				});
+	
+				function update() {
+					  var nodes = flatten(root),
+					      links = d3.layout.tree().links(nodes);
+		
+					  // Restart the force layout.
+					  force
+					      .nodes(nodes)
+					      .links(links)
+					      .start();
+		
+					  // Update the links…
+					  link = link.data(links, function(d) { return d.target.id; });
+		
+					  // Exit any old links.
+					  link.exit().remove();
+		
+					  // Enter any new links.
+					  link.enter().insert("line", ".node")
+					      .attr("class", "link")
+					      .attr("x1", function(d) { return d.source.x; })
+					      .attr("y1", function(d) { return d.source.y; })
+					      .attr("x2", function(d) { return d.target.x; })
+					      .attr("y2", function(d) { return d.target.y; });
+		
+					  // Update the nodes…
+					  node = node.data(nodes, function(d) { return d.id; }).style("fill", color);
+		
+					  // Exit any old nodes.
+					  node.exit().remove();
+		
+					  var nodeEnter = node.enter().append("g")
+					      .attr("class", "node")
+					      .on("click", click)	
+					      .call(force.drag);
+		
+					  nodeEnter.append("circle")
+					      .attr("r", function(d) { if(d.name == "0" || d.name == "1" || d.name == "2" || d.name == "3" || d.name == "4"|| d.name == "5"|| d.name == "6"|| d.name == "7"|| d.name == "8" || d.name == "9"){
+							return Math.sqrt(d.size)/2 || 15;
+						  }else{
+							return Math.sqrt(d.size)/2 || 4.5; }
+						});
+		
+					  nodeEnter.append("text")
+					      .attr("dy", ".35em")
+					      .text(function(d) { 
+					    	  if(paonans.indexOf(d.name)!= -1) 
+					    		  return d.name; 
+					    	  });
+		
+					  node.select("circle")
+					      .style("fill", color);
+					}
+		
+					function tick() {
+					  link.attr("x1", function(d) { return d.source.x; })
+					      .attr("y1", function(d) { return d.source.y; })
+					      .attr("x2", function(d) { return d.target.x; })
+					      .attr("y2", function(d) { return d.target.y; });
+					  node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+					}
+		
+					// Color leaf nodes orange, and packages white or blue.
+					function color(d) {
+					  return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+					}
+		
+					// Toggle children on click.
+					function click(d) {
+					  if (!d3.event.defaultPrevented) {
+					    if (d.children) {
+					      d._children = d.children;
+					      d.children = null;
+					    } else {
+					      d.children = d._children;
+					      d._children = null;
+					    }
+					    update();
+					  }
+				}
+	
+				// Returns a list of all nodes under the root.
+				function flatten(root) {
+				  var nodes = [], i = 0;
+	
+				  function recurse(node) {
+				    if (node.children) node.children.forEach(recurse);
+				    if (!node.id) node.id = ++i;
+				    nodes.push(node);
+				  }
+	
+				  recurse(root);
+				  return nodes;
+				}
+			}
+			
 			var init = function() {
-				debugger;
-				getForceView();
+				//debugger;
+				getForceTreeView();
 				$.ajax({
 							type : 'GET',
 							dataType : 'json',

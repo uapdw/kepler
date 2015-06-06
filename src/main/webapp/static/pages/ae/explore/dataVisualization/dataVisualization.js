@@ -1,6 +1,6 @@
 define(
-		[ 'jquery', 'knockout',
-				'text!static/pages/ae/explore/dataVisualization/dataVisualization.html','echarts', 'd3.cloud' ],
+		[ 'jquery', 'knockout', 
+				'text!static/pages/ae/explore/dataVisualization/dataVisualization.html','echarts', 'd3.v3.min', 'd3.cloud' ],
 		function($, ko, template) {
 			var dataViewModel = {
 					info : ko.observable(""),
@@ -201,89 +201,61 @@ define(
 				return newsChart.getDataURL("png");
 				
 			}
-			//散点图展示
-			function successGetSatterView(datatype, data){
+			//气泡图展示
+			function successGetBubbleView(datatype){
 				$("#newscharts div").remove();
-				$("#newscharts").append("<div style='height:500px'></div>")
-				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
-				var option = {
-					    title : {},
-					    tooltip : {
-					        trigger: 'axis',
-					        showDelay : 0,
-					        formatter : function (params) {
-					            if (params.value.length > 1) {
-					                return params.seriesName + ' :<br/>'
-					                   + params.value[0] + 'cm ' 
-					                   + params.value[1] + 'kg ';
-					            }
-					            else {
-					                return params.seriesName + ' :<br/>'
-					                   + params.name + ' : '
-					                   + params.value + 'kg ';
-					            }
-					        },  
-					        axisPointer:{
-					            show: true,
-					            type : 'cross',
-					            lineStyle: {
-					                type : 'dashed',
-					                width : 1
-					            }
-					        }
-					    },
-					    legend: {
-					        data:[]
-					    },
-					    toolbox: {
-					        show : true,
-					        feature : {
-					            mark : {show: true},
-					            dataZoom : {show: true},
-					            dataView : {show: true, readOnly: false},
-					            restore : {show: true},
-					            saveAsImage : {show: true}
-					        }
-					    },
-					    xAxis : [
-					        {
-					            type : 'value',
-					            scale:true,
-					            axisLabel : {
-					                formatter: '{value} cm'
-					            }
-					        }
-					    ],
-					    yAxis : [
-					        {
-					            type : 'value',
-					            scale:true,
-					            axisLabel : {
-					                formatter: '{value} kg'
-					            }
-					        }
-					    ],
-					    series : [
-					        {
-					            name:'',
-					            type:'scatter',
-					            data: data.xydata,
-					            markPoint : {
-					                data : [
-					                    {type : 'max', name: '最大值'},
-					                    {type : 'min', name: '最小值'}
-					                ]
-					            },
-					            markLine : {
-					                data : [
-					                    {type : 'average', name: '平均值'}
-					                ]
-					            }
-					        }
-					    ]
-					};
-				newsChart.setOption(option);
-				return newsChart.getDataURL("png");
+				$("#newscharts").append("<div style='height:600px'></div>")
+				var diameter = 600,
+				    format = d3.format(",d"),
+				    color = d3.scale.category20c();
+				
+				var bubble = d3.layout.pack()
+				    .sort(null)
+				    .size([diameter, diameter])
+				    .padding(1.5);
+				
+				var svg = d3.select("#newscharts div").append("svg")
+				    .attr("width", diameter)
+				    .attr("height", diameter)
+				    .attr("class", "bubbles");
+				
+				d3.json("static/json/point.json", function(error, root) {
+				  var node = svg.selectAll(".node")
+				      .data(bubble.nodes(classes(root))
+				      .filter(function(d) { return !d.children; }))
+				    .enter().append("g")
+				      .attr("class", "node")
+				      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+				
+				  node.append("title")
+				      .text(function(d) { return d.className + ": " + format(d.value); });
+				
+				  node.append("circle")
+				      .attr("r", function(d) { return d.r; })
+				      .style("fill", function(d, i) { return color(i); });
+				
+				  node.append("text")
+				      .attr("dy", ".3em")
+				      .style("text-anchor", "middle")
+				      .text(function(d) { return d.className.substring(0, d.r / 3); });
+				});
+				
+				// Returns a flattened hierarchy containing all leaf nodes under the root.
+				function classes(root) {
+				  var classes = [];
+				
+				  function recurse(name, node) {
+				    if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
+				    else classes.push({packageName: name, className: node.name, value: node.size});
+				  }
+				
+				  recurse(null, root);
+				  return {children: classes};
+				}
+				
+				d3.select(self.frameElement).style("height", diameter + "px");
+
+				//return newsChart.getDataURL("png");
 				
 			}
 			
@@ -408,7 +380,7 @@ define(
 						}else if(datatype == "pie"){
 							dataUrl = successGetPieView(datatype, data);
 						}else if(datatype == "scatter"){
-							dataUrl = successGetSatterView(datatype, data[0]);
+							//dataUrl = successGetSatterView(datatype, data[0]);
 						}else if(datatype == "map"){
 							dataUrl = successGetMapView(datatype, data);
 						}
@@ -434,7 +406,7 @@ define(
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
 								datatype = "scatter";
-								dataUrl = successGetSatterView(datatype);
+								successGetBubbleView(datatype);
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){

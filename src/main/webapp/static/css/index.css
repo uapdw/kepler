@@ -282,12 +282,26 @@ em.hlt1{
   color:#008000;
 }
 
+
 .node {
-  stroke: #fff;
+  cursor: pointer;
+  stroke: #3182bd;
   stroke-width: 1.5px;
 }
 
 .link {
-  stroke: #999;
-  stroke-opacity: .6;
+  fill: none;
+  stroke: #9ecae1;
+  stroke-width: 2px;
+}
+
+.node text {
+  font: 4px sans-serif;
+  pointer-events: none;
+  text-anchor: middle;
+}
+
+svg.bubbles {
+	position: absolute;
+	left:30%;
 }
