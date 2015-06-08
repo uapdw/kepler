@@ -126,7 +126,8 @@ define(
 			}
 			
 			function getForceTreeView(){
-				var paonans = ["跑男官方微博", "邓超", "李晨", "Baby", "王宝强", "郑凯", "陈赫", "包贝尔", "王宝强", "王祖蓝"];
+				var paonans = ["跑男官方微博", "邓超", "李晨", "Baby", "王宝强", "郑凯", "陈赫", "包贝尔", "王宝强",
+				               "王祖蓝", "头条新闻","狂愛kuangaiTVB", "IGirl_baby", "左手年华右手花v", "蹦在岸上de鱼"];
 				var width = 800,
 			    height = 700,
 			    root;
@@ -186,17 +187,18 @@ define(
 					      .call(force.drag);
 		
 					  nodeEnter.append("circle")
-					      .attr("r", function(d) { if(d.name == "0" || d.name == "1" || d.name == "2" || d.name == "3" || d.name == "4"|| d.name == "5"|| d.name == "6"|| d.name == "7"|| d.name == "8" || d.name == "9"){
-							return Math.sqrt(d.size)/2 || 15;
-						  }else{
-							return Math.sqrt(d.size)/2 || 4.5; }
+					      .attr("r", function(d) { 
+							return Math.sqrt(d.size)/2 || 15; 
 						});
 		
 					  nodeEnter.append("text")
 					      .attr("dy", ".35em")
 					      .text(function(d) { 
-					    	  if(paonans.indexOf(d.name)!= -1) 
-					    		  return d.name; 
+					    	  if(d.name == "头条新闻") alert(d.size);
+					    	  if(paonans.indexOf(d.name)!= -1 || d.size>500){
+					    		  return d.name;
+					    	  }
+					    		   
 					    	  });
 		
 					  node.select("circle")

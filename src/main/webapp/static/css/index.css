@@ -295,7 +295,7 @@ em.hlt1{
   stroke-width: 2px;
 }
 
-.node text {
+.nodes text {
   font: 10px sans-serif;
   pointer-events: none;
   text-anchor: middle;

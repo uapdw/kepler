@@ -201,6 +201,113 @@ define(
 				return newsChart.getDataURL("png");
 				
 			}
+			
+			//饼图展示
+			function successGetScatterView(datatype){
+				$("#newscharts div").remove();
+				$("#newscharts").append("<div style='height:500px'></div>")
+				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
+				var option = {
+					    title : {
+					        text : '类目坐标散点图',
+					    },
+					    tooltip : {
+					        trigger: 'axis',
+					        axisPointer:{
+					            show: true,
+					            type : 'cross',
+					            lineStyle: {
+					                type : 'dashed',
+					                width : 1
+					            }
+					        }
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            dataView : {show: true, readOnly: false},
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    dataZoom: {
+					        show: true,
+					        start : 30,
+					        end : 70
+					    },
+					    dataRange: {
+					        min: 0,
+					        max: 100,
+					        orient: 'horizontal',
+					        y: 30,
+					        x: 'center',
+					        //text:['高','低'],           // 文本，默认为数值文本
+					        color:['lightgreen','orange'],
+					        splitNumber: 5
+					    },
+					    xAxis : [
+					        {
+					            type : 'category',
+					            axisLabel: {
+					                formatter : function(v) {
+					                    return '类目' + v
+					                }
+					            },
+					            data : function (){
+					                var list = [];
+					                var len = 0;
+					                while (len++ < 500) {
+					                    list.push(len);
+					                }
+					                return list;
+					            }()
+					        }
+					    ],
+					    yAxis : [
+					        {
+					            type : 'value'
+					        }
+					    ],
+					    animation: false,
+					    series : [
+					        {
+					            name:'series1',
+					            type:'scatter',
+					            tooltip : {
+					                trigger: 'item',
+					                formatter : function (params) {
+					                    return params.seriesName + ' （'  + '类目' + params.value[0] + '）<br/>'
+					                           + params.value[1] + ', ' 
+					                           + params.value[2]; 
+					                },
+					                axisPointer:{
+					                    show: true
+					                }
+					            },
+					            symbolSize: function (value){
+					                return Math.round(value[2]/5);
+					            },
+					            data: (function () {
+					                var d = [];
+					                var len = 0;
+					                var value;
+					                while (len++ < 500) {
+					                    d.push([
+					                        len,
+					                        (Math.random()*30).toFixed(2) - 0,
+					                        (Math.random()*100).toFixed(2) - 0
+					                    ]);
+					                }
+					                return d;
+					            })()
+					        }
+					    ]
+					};
+				newsChart.setOption(option);
+				return newsChart.getDataURL("png");
+				
+			}
 			//气泡图展示
 			function successGetBubbleView(datatype){
 				$("#newscharts div").remove();
@@ -217,9 +324,10 @@ define(
 				var svg = d3.select("#newscharts div").append("svg")
 				    .attr("width", diameter)
 				    .attr("height", diameter)
-				    .attr("class", "bubbles");
+				    .attr("class", "bubbles");	
 				
 				d3.json("static/json/point.json", function(error, root) {
+					
 				  var node = svg.selectAll(".node")
 				      .data(bubble.nodes(classes(root))
 				      .filter(function(d) { return !d.children; }))
@@ -237,7 +345,12 @@ define(
 				  node.append("text")
 				      .attr("dy", ".3em")
 				      .style("text-anchor", "middle")
-				      .text(function(d) { return d.className.substring(0, d.r / 3); });
+				      .text(function(d) { return d.className.substring(0, d.r / 4); });
+				  
+				  dataUrl = d3.select("svg")
+			        .attr("version", 1.1)
+			        .attr("xmlns", "http://www.w3.org/2000/svg")
+			        .node().parentNode.innerHTML;
 				});
 				
 				// Returns a flattened hierarchy containing all leaf nodes under the root.
@@ -253,15 +366,9 @@ define(
 				  return {children: classes};
 				}
 				
-				var html = d3.select("svg")
-			        .attr("version", 1.1)
-			        .attr("xmlns", "http://www.w3.org/2000/svg")
-			        .node().parentNode.innerHTML;
-				
 				d3.select(self.frameElement).style("height", diameter + "px");
 
-				 alert(html);
-				  return html;				
+				 return dataUrl;				
 			}
 			
 			//地图展示
@@ -366,7 +473,6 @@ define(
 			        .attr("version", 1.1)
 			        .attr("xmlns", "http://www.w3.org/2000/svg")
 			        .node().parentNode.innerHTML;
-				  alert(html);
 				  return html;
 			}
 			
@@ -386,7 +492,7 @@ define(
 						}else if(datatype == "pie"){
 							dataUrl = successGetPieView(datatype, data);
 						}else if(datatype == "scatter"){
-							//dataUrl = successGetSatterView(datatype, data[0]);
+							dataUrl = successGetScatterView(datatype, data[0]);
 						}else if(datatype == "bubble"){
 							//dataUrl = successGetSatterView(datatype, data[0]);
 						}else if(datatype == "map"){
@@ -413,7 +519,8 @@ define(
 							}else if($("#checkZZ").is(':checked')){
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
-								datatype = "scatter";					
+								datatype = "scatter";	
+								dataUrl = successGetScatterView(datatype);
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){
