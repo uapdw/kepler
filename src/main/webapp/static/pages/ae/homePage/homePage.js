@@ -194,7 +194,6 @@ define(
 					  nodeEnter.append("text")
 					      .attr("dy", ".35em")
 					      .text(function(d) { 
-					    	  if(d.name == "头条新闻") alert(d.size);
 					    	  if(paonans.indexOf(d.name)!= -1 || d.size>500){
 					    		  return d.name;
 					    	  }
