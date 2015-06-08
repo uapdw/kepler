@@ -21,8 +21,8 @@
 	</head>
 	<body style="background-color:#F1F1F1">
 		<!-- top -->
-		<div class="top navbar navbar-default" role="navigation" style="background-color:#464646;">
-		
+		<div class="top navbar navbar-default" role="navigation" style="background-color:#201F1B;">
+		  <div style="width:1180px;height:50px;margin:auto">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
 					<span class="sr-only">切换导航</span>
@@ -30,10 +30,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">演示环境</a>
+				<!--<a class="navbar-brand" href="#">演示环境</a>-->
+				<div style="width:105px;height:50px;float:left;padding-top:9px;margin-right:25px;padding-left: 20px"><img src="${ctx}/static/images/Kepler.png" style="width:80px;height:32px"></div>
 				<div type="button" id="show_side" class="navbar-brand glyphicon glyphicon-th-large"></div>
 			</div>
-			<div class="collapse navbar-collapse" id="example-navbar-collapse">
+			<div class="collapse navbar-collapse" id="example-navbar-collapse" style="width:300px;float:right">
 				<ul class="right-nav nav navbar-nav navbar-right">
 					<li>
 						<a href="#" class="glyphicon glyphicon-envelope"></a>
@@ -61,7 +62,8 @@
 					</li>
 				</ul>
 			</div>
-		</div>
+		  </div>	
+		</div> 
 		<!-- left -->
 		<!--<div class="leftpanel">-->
 		<div class="leftpanel" style="background-color:#E7E7E7;">
