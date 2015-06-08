@@ -4,6 +4,7 @@
 		<li style="border-right: 1px solid #FFFFFF"><a href="#tab2"
 			data-toggle="tab">词频统计</a></li>
 		<li><a href="#tab3" data-toggle="tab">文本聚类</a></li>
+		<li><a href="#tab4" data-toggle="tab">预置模型</a></li>
 	</ul>
 	<div class="tab-content">
 		<div class="tab-pane active" id="tab1">
@@ -68,6 +69,41 @@
 				</div>
 			</div>
 
+		</div>
+		<div class="tab-pane" id="tab4">
+			<div id="modelList">
+				<table id="contentTable"
+					class="table table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th width="20%">模型名称</th>
+							<th width="10%">模型类型</th>
+							<th width="10%">创建者</th>
+							<th width="15%">创建时间</th>
+							<th width="10%">修改者</th>
+							<th width="15%">修改时间</th>
+							<th>备注</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: dmModelInfo.content">
+						<tr>
+							<td style="display: none" data-bind="text:pkDmModel"></td>
+							<td data-bind="text:modelName"></td>
+							<td data-bind="text:modelType"></td>
+							<td data-bind="text:creator"></td>
+							<td data-bind="text:createTime"></td>
+							<td data-bind="text:modifier"></td>
+							<td data-bind="text:modifyTime"></td>
+							<td data-bind="text:comments"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="modelPreviewBtn" style="float:right">
+				<button class="btn btn-default" style="width:120px" id="modelPreview">预览</button>
+			</div>
+			<div id="execResult" style="border-color:black;width:500px;height: 200px">
+			</div>
 		</div>
 	</div>
 </div>

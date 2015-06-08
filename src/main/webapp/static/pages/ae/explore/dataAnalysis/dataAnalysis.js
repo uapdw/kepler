@@ -2,12 +2,13 @@ define(
 		[ 'jquery', 'knockout',
 				'text!static/pages/ae/explore/dataAnalysis/dataAnalysis.html' ],
 		function($, ko, template) {
-			var analysisViewModel = {}
+			var analysisViewModel = {
+				dmModelInfo : {
+					content : ko.observableArray([]),
+				}
+			}
 
 			var inited = false;
-
-			// 定义窗体对象
-			
 
 			var loadData = function() {
 				var infoUrl = 'ae/explore/metadata';
@@ -236,6 +237,46 @@ define(
 
 								});
 
+				$(".container-fixed .nav li").click(function() {
+						if ($(this).index() == 3) {
+							$.ajax({
+								type : 'POST',
+								dataType : 'json',
+								url : 'ae/explore/getAllDmModels',
+								data : {},
+								success : function(data) {
+									analysisViewModel.dmModelInfo
+											.content(data);
+									
+									$("#modelList table tbody tr").click(function() {
+										$("#modelList table tbody tr").removeClass("active");
+										$(this).addClass("active");
+									});
+								},
+								error : function(XMLHttpRequest,
+										textStatus, errorThrown) {
+									jAlert("获取详细信息失败!", "错误");
+								},
+							});
+						}
+				});
+				
+				$("#modelPreview").click(function() {
+					var pkModel = $("#modelList table tbody .active:first").children("td:first").html();
+					$.ajax({
+						type : 'POST',
+						dataType : 'json',
+						url : 'ae/explore/getDmModelByPk',
+						data : {pkDmModel:pkModel},
+						success : function(data) {
+							alert(data.modelName);
+						},
+						error : function(XMLHttpRequest,
+								textStatus, errorThrown) {
+							jAlert("获取详细信息失败!", "错误");
+						},
+					});
+				});
 			}
 			return {
 				'model' : analysisViewModel,

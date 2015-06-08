@@ -54,8 +54,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import sun.misc.BASE64Decoder;
-import uap.ae.kepler.entity.DataSources;
+import uap.ae.kepler.entity.DmModel;
 import uap.ae.kepler.entity.MailInfo;
+import uap.ae.kepler.service.DmModelService;
 import uap.ae.kepler.service.MailService;
 import uap.ae.kepler.solr.SolrService;
 
@@ -70,6 +71,9 @@ import uap.ae.kepler.solr.SolrService;
 public class ExploreController {
 	@Autowired
 	private SolrService solrService;
+	
+	@Autowired
+	private DmModelService dmModelService;
 
 	final String defaultCollection = "other_articles";
 	final int zkClientTimeout = 20000;
@@ -829,4 +833,23 @@ public class ExploreController {
 		return fileName;
 	}
 
+	@RequestMapping(value = "getAllDmModels", method = RequestMethod.POST)
+	public @ResponseBody DmModel[] getAllDmModels(HttpServletRequest request) throws Exception{
+		List<DmModel> list = dmModelService.loadAllDmModels();
+		if (list == null) {
+			return null;
+		}
+		return list.toArray(new DmModel[list.size()]);
+	}
+	
+	@RequestMapping(value = "getDmModelByPk", method = RequestMethod.POST)
+	public @ResponseBody DmModel getDmModelByPk(
+			@RequestParam(value = "pkDmModel", defaultValue = "1") String pkDmModel,
+			HttpServletRequest request) throws Exception {
+		List<DmModel> list = dmModelService.loadDmModelByPk(pkDmModel);
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+		return list.get(0);
+	}
 }
