@@ -7,9 +7,9 @@
 	
 	<!-- 邮件发送器 -->
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="smtp.126.com" />
-		<property name="username" value="ecmgradmin@126.com" />
-		<property name="password" value="emalladmin" />
+		<property name="host" value="smtp.163.com" />
+		<property name="username" value="yykepler@163.com" />
+		<property name="password" value="jlqvlxcwkwyanpbk" />
 		<property name="defaultEncoding" value="UTF-8"/>
 		<property name="javaMailProperties">
 			<props>

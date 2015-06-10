@@ -38,7 +38,7 @@ public class MailService {
 		try {
 			MimeMessage msg = mailSender.createMimeMessage();
 			MimeMessageHelper messHelper = new MimeMessageHelper(msg, true);
-			messHelper.setFrom("ecmgradmin@126.com");
+			messHelper.setFrom("yykepler@163.com");
 			messHelper.setTo(mailInfo.getToList());
 			messHelper.setSubject(mailInfo.getTitle());
 			String content = String.format("<html><body>%s<br/><img src='cid:attachment1'></body></html>", mailInfo.getContent());
