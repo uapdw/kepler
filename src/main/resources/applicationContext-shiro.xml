@@ -30,7 +30,7 @@
 				/jaxrs/** = anon
 				/register/** = anon
 				/emall/payment/** = anon
-				/savedImages/**\.png = anon
+				/savedImages/** = anon
 				/** = authc 
 			</value>
 		</property>

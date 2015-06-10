@@ -25,7 +25,7 @@ define(
 				}else {
 					exportImage(dataUrl);
 				}
-				window.open("http://widget.weibo.com/dialog/PublishWeb.php?default_text=请填写内容&default_image="+getlocalUrl()+dataViewModel.fileurl()+"&refer=y&language=zh_cn&app_src=5E4yWv&button=pubilish", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no, location=no");				
+				window.open("http://widget.weibo.com/dialog/PublishWeb.php?default_text=请填写内容&default_image="+getlocalUrl()+dataViewModel.fileurl()+"&refer=y&language=zh_cn&app_src=3740976264&button=pubilish", "newwindow", "height=500, width=600, toolbar=no, menubar=no, scrollbars=no, location=no");				
 			}
 			
 			function getlocalUrl(){
