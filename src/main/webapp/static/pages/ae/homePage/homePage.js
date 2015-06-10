@@ -128,7 +128,7 @@ define(
 			function getForceTreeView(){
 				var paonans = ["跑男官方微博", "邓超", "李晨", "Baby", "王宝强", "郑凯", "陈赫", "包贝尔", "王宝强",
 				               "王祖蓝", "头条新闻","狂愛kuangaiTVB", "IGirl_baby", "左手年华右手花v", "蹦在岸上de鱼"];
-				var width = 1700,
+				var width = 1400,
 			    height = 800,
 			    root;
 

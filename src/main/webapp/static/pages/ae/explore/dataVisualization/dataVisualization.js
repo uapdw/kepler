@@ -450,10 +450,10 @@ define(
 
 				  function draw(words) {
 				    d3.select("#newscharts div").append("svg")
-				        .attr("width", 1700)
+				        .attr("width", 1500)
 				        .attr("height", 500)
 				      .append("g")
-				        .attr("transform", "translate(850,250)")
+				        .attr("transform", "translate(680,250)")
 				      .selectAll("text")
 				        .data(words)
 				      .enter().append("text")
@@ -466,8 +466,7 @@ define(
 				          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
 				        })
 				        .text(function(d) { return d.text; });
-				  }
-				  
+				  }			  
 				  var html = d3.select("svg")
 			        .attr("version", 1.1)
 			        .attr("xmlns", "http://www.w3.org/2000/svg")
@@ -519,14 +518,12 @@ define(
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
 								datatype = "scatter";	
-								//dataUrl = successGetScatterView(datatype);
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){
 								datatype = "pie";
 							}else if($("#checkQP").is(':checked')){
 								datatype = "bubble";
-								//dataUrl = successGetBubbleView(datatype);
 							}else{
 								datatype = "map";
 								dataUrl = successGetMapView(datatype);
