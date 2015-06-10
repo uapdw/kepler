@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -633,105 +634,122 @@ public class ExploreController {
 	}
 	
 	private JSONArray getScatterData(String dataPath) throws Exception{
-		FileInputStream fileInputStream = new FileInputStream(dataPath);
-		InputStreamReader inputStreamReader = new InputStreamReader(
-				fileInputStream, "UTF-8");
-		BufferedReader reader = new BufferedReader(inputStreamReader);
-		ArrayList<String> job = new ArrayList<String>();
-		ArrayList<String> pay = new ArrayList<String>();
-		ArrayList<String> city = new ArrayList<String>();
-		ArrayList<String> num = new ArrayList<String>();
-		HashSet<String> jobSet = new HashSet<String>();
-		String line = reader.readLine();
 		JSONArray jsonArray = new JSONArray();
-		while ((line = reader.readLine()) != null) {
-			String[] words = line.split("\",");
-			for(int k =0; k<words.length; k++){
-				if(words[k].indexOf("\"")!=-1){
-					words[k] = words[k].substring(1,words[k].length());
+		try{
+			FileInputStream fileInputStream = new FileInputStream(dataPath);
+			InputStreamReader inputStreamReader = new InputStreamReader(
+					fileInputStream, "UTF-8");
+			BufferedReader reader = new BufferedReader(inputStreamReader);
+			ArrayList<String> job = new ArrayList<String>();
+			ArrayList<String> pay = new ArrayList<String>();
+			ArrayList<String> num = new ArrayList<String>();
+			HashSet<String> jobSet = new HashSet<String>();
+			String line = reader.readLine();			
+			while ((line = reader.readLine()) != null) {
+				String[] words = line.split("\",");
+				if(words[2].indexOf("不显示职位月薪范围")!=-1) continue;
+				for(int k =0; k<words.length; k++){
+					if(words[k].indexOf("\"")!=-1){
+						words[k] = words[k].substring(1,words[k].length());
+					}
+				}
+				if(words[2].indexOf("2001")!=-1){
+					words[2] = "3000";
+				}else if(words[2].indexOf("4001")!=-1){
+					words[2] = "5000";
+				}else if(words[2].indexOf("6001")!=-1){
+					words[2] = "7000";
+				}else if(words[2].indexOf("8001")!=-1){
+					words[2] = "9000";
+				}else if(words[2].indexOf("10001")!=-1){
+					words[2] = "13000";
+				}else if(words[2].indexOf("15000")!=-1){
+					words[2] = "20000";
+				}else if(words[2].indexOf("25000")!=-1){
+					words[2] = "27000";
+				}
+				if(isNumeric(words[3]) && Integer.parseInt(words[3])>1){
+					jobSet.add(words[1]);
+					job.add(words[1]);
+					pay.add(words[2]);
+					num.add(words[3]);
 				}
 			}
-			if(words[2].indexOf("2001")!=-1){
-				words[2] = "3000";
-			}else if(words[2].indexOf("4001")!=-1){
-				words[2] = "5000";
-			}else if(words[2].indexOf("6001")!=-1){
-				words[2] = "7000";
-			}else if(words[2].indexOf("8001")!=-1){
-				words[2] = "9000";
-			}else if(words[2].indexOf("10001")!=-1){
-				words[2] = "13000";
-			}else if(words[2].indexOf("15000")!=-1){
-				words[2] = "20000";
-			}else if(words[2].indexOf("25000")!=-1){
-				words[2] = "27000";
-			}
-			if(Integer.parseInt(words[4])>1){
-				jobSet.add(words[1]);
-				job.add(words[1]);
-				pay.add(words[2]);
-				city.add(words[3]);
-				num.add(words[4]);
-			}
-		}
-		reader.close();
-		ArrayList<String> jobOnly = new ArrayList<String>();
-		ArrayList<String> jobNew = new ArrayList<String>(job);
-		Iterator<String> it = jobSet.iterator();
-		int s = 0;
-		while(it.hasNext()){
-			String jobname = it.next();
-			for(int l=0;l<job.size();l++){
-				if(job.get(l).equals(jobname)){
-					jobNew.remove(l);
-					jobNew.add(l, String.valueOf(s));
+			reader.close();
+			ArrayList<String> jobOnly = new ArrayList<String>();
+			ArrayList<String> jobNew = new ArrayList<String>(job);
+			Iterator<String> it = jobSet.iterator();
+			int s = 0;
+			while(it.hasNext()){
+				String jobname = it.next();
+				for(int l=0;l<job.size();l++){
+					if(job.get(l).equals(jobname)){
+						jobNew.remove(l);
+						jobNew.add(l, String.valueOf(s));
+					}
 				}
+				s++;
+				jobOnly.add(jobname);
 			}
-			s++;
-			jobOnly.add(jobname);
-		}
-		System.out.println(jobSet.size());
-		//System.out.println(jobOnly+"\n"+job+"\n"+jobNew);
-		jsonArray.add(jobOnly);
-		jsonArray.add(jobNew);
-		jsonArray.add(pay);
-		jsonArray.add(city);
-		jsonArray.add(num);		
+			jsonArray.add(jobOnly);
+			jsonArray.add(jobNew);
+			jsonArray.add(pay);
+			jsonArray.add(num);	
+		} catch (Exception e) {
+	        e.printStackTrace();
+	    }
 		return jsonArray;
 	}
 	
-	private JSONArray getBubbleData(String dataPath) throws Exception{
-		FileInputStream fileInputStream = new FileInputStream(dataPath);
-		InputStreamReader inputStreamReader = new InputStreamReader(
-				fileInputStream, "UTF-8");
-		BufferedReader reader = new BufferedReader(inputStreamReader);		
-		String line = reader.readLine();
-		JSONArray jsonArray = new JSONArray();
-		JSONObject jsonObject = new JSONObject();
+	private JSONArray getBubbleData(String dataPath) {
 		JSONArray jsonArrayAll = new JSONArray();
-		while ((line = reader.readLine()) != null) {
-			String[] words;
-			if(line.indexOf("\"")!=-1){
-				words = line.split("\",");
-			}else{
-				words = line.split(",");
-			}
-			for(int k =0; k<words.length; k++){
-				if(words[k].indexOf("\"")!=-1){
-					words[k] = words[k].substring(1,words[k].length());
+		try{
+			FileInputStream fileInputStream = new FileInputStream(dataPath);
+			InputStreamReader inputStreamReader = new InputStreamReader(
+					fileInputStream, "UTF-8");
+			BufferedReader reader = new BufferedReader(inputStreamReader);		
+			String line = reader.readLine();
+			JSONArray jsonArray = new JSONArray();
+			JSONObject jsonObject = new JSONObject();	
+			while ((line = reader.readLine()) != null) {
+				String[] words;
+				if(line.indexOf("\"")!=-1){
+					words = line.split("\",");
+				}else{
+					words = line.split(",");
 				}
+				for(int k =0; k<words.length; k++){
+					if(words[k].indexOf("\"")!=-1){
+						words[k] = words[k].substring(1,words[k].length());
+					}
+				}
+				if(isNumeric(words[1])){
+					int num = Integer.parseInt(words[1]);
+					jsonObject = new JSONObject();
+					jsonObject.put("name", words[0]);
+					jsonObject.put("size", num);
+					jsonArray.add(jsonObject);
+				}	
 			}
-			int num = Integer.parseInt(words[1]);
-			jsonObject = new JSONObject();
-			jsonObject.put("name", words[0]);
-			jsonObject.put("size", num);
-			jsonArray.add(jsonObject);
-		}
-		jsonObject.put("name", "ae");
-		jsonObject.put("children", jsonArray);
-		jsonArrayAll.add(jsonObject);
-		reader.close();				
+			jsonObject.put("name", "ae");
+			jsonObject.put("children", jsonArray);
+			jsonArrayAll.add(jsonObject);
+			reader.close();	
+		} catch (Exception e) {			
+	        e.printStackTrace();
+	    }
 		return jsonArrayAll;
+		
+	}
+	
+	public boolean isNumeric(String str){ 
+		   Pattern pattern = Pattern.compile("[0-9]*"); 
+		   Matcher isNum = pattern.matcher(str);
+		   if( !isNum.matches() ){
+		       return false; 
+		   } 
+		   return true; 
+		
 	}
 	/**
 	 * 处理用于可视化的数据
@@ -766,11 +784,13 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());
-				int freq = Integer.parseInt(words[2]);
-				jsonObject = new JSONObject();
-				jsonObject.put("text", title);
-				jsonObject.put("size", freq);
-				jsonArray.add(jsonObject);
+				if(isNumeric(words[2])){
+					int freq = Integer.parseInt(words[2]);
+					jsonObject = new JSONObject();
+					jsonObject.put("text", title);
+					jsonObject.put("size", freq);
+					jsonArray.add(jsonObject);
+				}			
 			}
 			reader.close();
 			return jsonArray;
@@ -782,11 +802,13 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());
-				int freq = Integer.parseInt(words[2]);
-				jsonObject = new JSONObject();
-				jsonObject.put("value", freq);
-				jsonObject.put("name", title);
-				jsonArray.add(jsonObject);
+				if(isNumeric(words[2])){
+					int freq = Integer.parseInt(words[2]);
+					jsonObject = new JSONObject();
+					jsonObject.put("value", freq);
+					jsonObject.put("name", title);
+					jsonArray.add(jsonObject);
+				}			
 				if(++i >= 10){
 					break;
 				}
@@ -795,7 +817,7 @@ public class ExploreController {
 			return jsonArray;
 		} else if(datatype.equals("scatter")){
 			reader.close();	
-			return getScatterData(dataPath);
+			return getScatterData(dataPath);		
 		} else if(datatype.equals("map")){
 			JSONObject jsonObject = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
@@ -803,16 +825,18 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String name = words[0].substring(words[1].indexOf("\"") + 1,
 						words[0].length());
-				int num = Integer.parseInt(words[1]);
-				jsonObject = new JSONObject();
-				jsonObject.put("value", num);
-				jsonObject.put("name", name);
-				jsonArray.add(jsonObject);
+				if(isNumeric(words[1])){
+					int num = Integer.parseInt(words[1]);
+					jsonObject = new JSONObject();
+					jsonObject.put("value", num);
+					jsonObject.put("name", name);
+					jsonArray.add(jsonObject);
+				}
 			}
 			reader.close();
 			return jsonArray;
 		} else if(datatype.equals("bubble")){			
-			reader.close();
+			reader.close();			
 			return getBubbleData(dataPath);
 		} else{
 			JSONObject jsonObject = new JSONObject();
@@ -824,9 +848,12 @@ public class ExploreController {
 				String[] words = line.split("\",");
 				String title = words[1].substring(words[1].indexOf("\"") + 1,
 						words[1].length());	
-				int freq = Integer.parseInt(words[2]);
-				titleList.add(title);
-				freqList.add(freq);
+				
+				if(isNumeric(words[2])){
+					int freq = Integer.parseInt(words[2]);
+					titleList.add(title);
+					freqList.add(freq);
+				}							
 				if(++i >= 10){
 					break;
 				}
