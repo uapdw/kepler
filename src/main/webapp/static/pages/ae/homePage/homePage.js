@@ -128,15 +128,15 @@ define(
 			function getForceTreeView(){
 				var paonans = ["跑男官方微博", "邓超", "李晨", "Baby", "王宝强", "郑凯", "陈赫", "包贝尔", "王宝强",
 				               "王祖蓝", "头条新闻","狂愛kuangaiTVB", "IGirl_baby", "左手年华右手花v", "蹦在岸上de鱼"];
-				var width = 800,
-			    height = 700,
+				var width = 1700,
+			    height = 800,
 			    root;
 
 				var force = d3.layout.force()
 				    .size([width, height])
 					.linkDistance(30)
-					.charge(-200)
-				    .gravity(.95)
+					.charge(-250)
+				    .gravity(.9)
 				    .on("tick", tick);
 	
 				var svg = d3.select("#weibo").append("svg")
@@ -194,7 +194,7 @@ define(
 					  nodeEnter.append("text")
 					      .attr("dy", ".35em")
 					      .text(function(d) { 
-					    	  if(paonans.indexOf(d.name)!= -1 || d.size>500){
+					    	  if(paonans.indexOf(d.name)!= -1 || d.size>600){
 					    		  return d.name;
 					    	  }
 					    		   
