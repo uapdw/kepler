@@ -51,6 +51,8 @@ public class DataSourceController {
 	private static final String ROWNUM = "rownum";
 	private static final String MSG = "msg";
 	
+	private static final int MAX_DISPLAY_LINENUM = 100;
+	
 	/** 允许上传的扩展名*/
 	private static final String [] extensionPermit = {"txt", "xls", "csv", "xlsx"};
 	
@@ -113,7 +115,7 @@ public class DataSourceController {
 			int rownum = 0;
 			int colnum = -1;
 			CsvReader csvReader = new CsvReader(reader);
-			while(csvReader.readRecord()){
+			while(csvReader.readRecord() && rownum <= MAX_DISPLAY_LINENUM){
 				colnum = (colnum < csvReader.getColumnCount())? csvReader.getColumnCount() : colnum;
 				datalist.add(csvReader.getValues());
 				rownum++;
@@ -160,7 +162,7 @@ public class DataSourceController {
 			int colnum = -1;
 			int rownum = 0;
 			CsvReader csvReader = new CsvReader(reader);
-			while(csvReader.readRecord()){
+			while(csvReader.readRecord() && rownum <= MAX_DISPLAY_LINENUM){
 				colnum = (colnum < csvReader.getColumnCount())? csvReader.getColumnCount() : colnum;
 				datalist.add(csvReader.getValues());
 				rownum++;
