@@ -2,9 +2,12 @@ package uap.ae.kepler.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +21,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.assertj.core.api.InputStreamAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -107,14 +111,16 @@ public class DataSourceController {
 			return json;
 		}
 		
-		BufferedReader reader = null;
+//		BufferedReader reader = null;
+		InputStream is = null;
 		try {
 			File file = new File(saveDirectory, fileName);
-			reader = new BufferedReader(new FileReader(file));
+//			reader = new BufferedReader(new FileReader(file));
+			is = new FileInputStream(file);
 			List<String[]> datalist = new ArrayList();
 			int rownum = 0;
 			int colnum = -1;
-			CsvReader csvReader = new CsvReader(reader);
+			CsvReader csvReader = new CsvReader(is, Charset.forName("UTF-8"));
 			while(csvReader.readRecord() && rownum <= MAX_DISPLAY_LINENUM){
 				colnum = (colnum < csvReader.getColumnCount())? csvReader.getColumnCount() : colnum;
 				datalist.add(csvReader.getValues());
@@ -129,9 +135,9 @@ public class DataSourceController {
 		} catch (IOException e) {
 			json.put(MSG, "IO错误");
 		} finally{
-			if(reader != null){
+			if(is != null){
 				try {
-					reader.close();
+					is.close();
 				} catch (IOException e) {
 					json.put(MSG, "IO错误");
 				}
@@ -154,14 +160,16 @@ public class DataSourceController {
 			return json;
 		}
 		
-		BufferedReader reader = null;
+//		BufferedReader reader = null;
+		InputStream is = null;
 		try {
 			File file = new File(saveDirectory, fileName);
-			reader = new BufferedReader(new FileReader(file));
+//			reader = new BufferedReader(new FileReader(file));
+			is = new FileInputStream(file);
 			List<String[]> datalist = new ArrayList();
 			int colnum = -1;
 			int rownum = 0;
-			CsvReader csvReader = new CsvReader(reader);
+			CsvReader csvReader = new CsvReader(is, Charset.forName("UTF-8"));
 			while(csvReader.readRecord() && rownum <= MAX_DISPLAY_LINENUM){
 				colnum = (colnum < csvReader.getColumnCount())? csvReader.getColumnCount() : colnum;
 				datalist.add(csvReader.getValues());
@@ -178,9 +186,9 @@ public class DataSourceController {
 		} catch (IOException e) {
 			json.put(MSG, "IO错误");
 		} finally{
-			if(reader != null){
+			if(is != null){
 				try {
-					reader.close();
+					is.close();
 				} catch (IOException e) {
 					json.put(MSG, "IO错误");
 				}
