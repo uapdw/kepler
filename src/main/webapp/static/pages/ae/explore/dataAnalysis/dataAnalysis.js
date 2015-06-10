@@ -266,10 +266,42 @@ define(
 					$.ajax({
 						type : 'POST',
 						dataType : 'json',
-						url : 'ae/explore/getDmModelByPk',
+						url : 'ae/explore/model',
 						data : {pkDmModel:pkModel},
 						success : function(data) {
-							alert(data.modelName);
+							var detailContent = "<div class=\"table-responsive\"><table class=\"table table-bordered table-condensed table-hover\">";
+							// header
+							detailContent += "<thead><tr>";
+							for (var i = 0; i < data.colnum; i++) {
+								detailContent += "<th style='background-color:#51A2A2'>";
+								if (data.data[0][i]) {
+									detailContent += data.data[0][i];
+								} else {
+									detailContent += "#null";
+								}
+								detailContent += "</th>";
+							}
+							detailContent += "</tr></thead>";
+							// body
+							detailContent += "<tbody>";
+							for (var i = 1; i < data.rownum; i++) {
+								detailContent += "<tr>";
+								for (var j = 0; j < data.colnum; j++) {
+									detailContent += "<td>";
+									if (data.data[i][j]) {
+										detailContent += data.data[i][j];
+									} else {
+										detailContent += "#null";
+									}
+									detailContent += "</td>"
+								}
+								detailContent += "</tr>";
+							}
+							detailContent += "</tbody>";
+							detailContent += "</table></div>";
+
+							$("#execResult").html(
+									detailContent);
 						},
 						error : function(XMLHttpRequest,
 								textStatus, errorThrown) {

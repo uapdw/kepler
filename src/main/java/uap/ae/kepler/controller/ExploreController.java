@@ -344,12 +344,17 @@ public class ExploreController {
 			String[] keys = asList.keys();
 			colnum = keys.length;
 			List<String[]> datalist = new ArrayList<String[]>();
-			datalist.add(new String[] { keys[0], keys[1] });
+			datalist.add(keys);
 			String[] targetStr = asList.at(0).asStrings();
 			String[] numberStr = asList.at(1).asStrings();
 			rownum = targetStr.length;
+			
 			for (int i = 0; i < rownum; i++) {
-				String[] rowData = new String[] { targetStr[i], numberStr[i] };
+				List<String> row = new ArrayList<String>();
+				for(int j=0;j < colnum; j++){
+					row.add(asList.at(j).asStrings()[i]);
+				}
+				String[] rowData = row.toArray(new String[0]);
 				datalist.add(rowData);
 			}
 
@@ -514,6 +519,33 @@ public class ExploreController {
 
 		return toJson(repResult);
 
+	}
+	
+	@RequestMapping(value = "model", method = RequestMethod.POST)
+	public @ResponseBody JSONObject model(
+			@RequestParam(value = "pkDmModel", defaultValue = "1") String pkDmModel,
+			HttpServletRequest request) throws NoSuchMethodException {
+		System.out.println("model start~~~~~~~~~~~~");
+		try {
+			DmModel model = getDmModelByPk(pkDmModel, request);
+			String rScript = model.getModel();
+			String csvPath = getCurrentCSVPath(request);
+			String statPath = getStatPath(request, "hr");
+			
+			String totalScript = "rm(list=ls());data <- read.csv(\"" + csvPath
+				+ "\",fileEncoding = \"UTF-8\");" +rScript+ "write.csv(result,\"" + statPath + "\",fileEncoding=\"UTF-8\");result;";
+			System.out.println(totalScript);
+			totalScript = totalScript.replace("\r\n", "");
+			REXP repResult = REngine.getLastEngine().parseAndEval(totalScript);
+			
+			System.out.println("model sucess~~~~~~~~~~~~");
+			return toJson(repResult);
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@RequestMapping(value = "metadata", method = RequestMethod.GET)
