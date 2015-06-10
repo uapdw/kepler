@@ -634,13 +634,13 @@ public class ExploreController {
 		BufferedReader reader = new BufferedReader(inputStreamReader);
 		ArrayList<String> job = new ArrayList<String>();
 		ArrayList<String> pay = new ArrayList<String>();
-		ArrayList<String> city = new ArrayList<String>();
 		ArrayList<String> num = new ArrayList<String>();
 		HashSet<String> jobSet = new HashSet<String>();
 		String line = reader.readLine();
 		JSONArray jsonArray = new JSONArray();
 		while ((line = reader.readLine()) != null) {
 			String[] words = line.split("\",");
+			if(words[2].indexOf("不显示职位月薪范围")!=-1) continue;
 			for(int k =0; k<words.length; k++){
 				if(words[k].indexOf("\"")!=-1){
 					words[k] = words[k].substring(1,words[k].length());
@@ -661,12 +661,11 @@ public class ExploreController {
 			}else if(words[2].indexOf("25000")!=-1){
 				words[2] = "27000";
 			}
-			if(Integer.parseInt(words[4])>1){
+			if(Integer.parseInt(words[3])>1){
 				jobSet.add(words[1]);
 				job.add(words[1]);
 				pay.add(words[2]);
-				city.add(words[3]);
-				num.add(words[4]);
+				num.add(words[3]);
 			}
 		}
 		reader.close();
@@ -685,12 +684,9 @@ public class ExploreController {
 			s++;
 			jobOnly.add(jobname);
 		}
-		System.out.println(jobSet.size());
-		//System.out.println(jobOnly+"\n"+job+"\n"+jobNew);
 		jsonArray.add(jobOnly);
 		jsonArray.add(jobNew);
 		jsonArray.add(pay);
-		jsonArray.add(city);
 		jsonArray.add(num);		
 		return jsonArray;
 	}

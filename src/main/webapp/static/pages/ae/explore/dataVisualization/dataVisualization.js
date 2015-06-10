@@ -296,7 +296,7 @@ define(
 					                while (len < data[1].length) {				                	
 					                	d.push([    
 					                        parseInt(data[1][len]),
-					                	    parseInt(data[4][len]),
+					                	    parseInt(data[3][len]),
 					                        parseInt(data[2][len])					                       
 					                    ]);
 					                    len++;				                    
