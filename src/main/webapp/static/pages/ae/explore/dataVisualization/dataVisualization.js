@@ -203,13 +203,13 @@ define(
 			}
 			
 			//饼图展示
-			function successGetScatterView(datatype){
+			function successGetScatterView(datatype, data){
 				$("#newscharts div").remove();
 				$("#newscharts").append("<div style='height:500px'></div>")
 				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
 				var option = {
 					    title : {
-					        text : '类目坐标散点图',
+					        text : '招聘数据散点图',
 					    },
 					    tooltip : {
 					        trigger: 'axis',
@@ -238,27 +238,28 @@ define(
 					    },
 					    dataRange: {
 					        min: 0,
-					        max: 100,
+					        max: 30000,
 					        orient: 'horizontal',
 					        y: 30,
 					        x: 'center',
-					        //text:['高','低'],           // 文本，默认为数值文本
-					        color:['lightgreen','orange'],
-					        splitNumber: 5
+					        //text:['30000元/月','0元/月'],           // 文本，默认为数值文本				       
+					        color:['#ff3333','lightgreen','orange','yellow', 'aqua'],
+					        splitNumber: 6
 					    },
 					    xAxis : [
 					        {
 					            type : 'category',
 					            axisLabel: {
 					                formatter : function(v) {
-					                    return '类目' + v
+					                    return data[0][v];
 					                }
 					            },
 					            data : function (){
 					                var list = [];
-					                var len = 0;
-					                while (len++ < 500) {
-					                    list.push(len);
+					                var len = 0;	
+					                while (len < data[0].length) {
+					                    list.push(len);   
+					                    len++;
 					                }
 					                return list;
 					            }()
@@ -277,27 +278,28 @@ define(
 					            tooltip : {
 					                trigger: 'item',
 					                formatter : function (params) {
-					                    return params.seriesName + ' （'  + '类目' + params.value[0] + '）<br/>'
-					                           + params.value[1] + ', ' 
-					                           + params.value[2]; 
+					                    return '职位： ' + data[0][params.value[0]] +'<br/>'
+					                           + '薪资水平：'+(params.value[2]-1000)+'-'+(params.value[2]+1000) + '元/月<br/>' 
+					                           + '招聘人数：'+params.value[1]; 
 					                },
 					                axisPointer:{
 					                    show: true
 					                }
 					            },
 					            symbolSize: function (value){
-					                return Math.round(value[2]/5);
+					                return Math.round(value[2]/1000);
 					            },
 					            data: (function () {
 					                var d = [];
 					                var len = 0;
-					                var value;
-					                while (len++ < 500) {
-					                    d.push([
-					                        len,
-					                        (Math.random()*30).toFixed(2) - 0,
-					                        (Math.random()*100).toFixed(2) - 0
+					                var s = 0;
+					                while (len < data[1].length) {				                	
+					                	d.push([    
+					                        parseInt(data[1][len]),
+					                	    parseInt(data[4][len]),
+					                        parseInt(data[2][len])					                       
 					                    ]);
+					                    len++;				                    
 					                }
 					                return d;
 					            })()
@@ -309,7 +311,7 @@ define(
 				
 			}
 			//气泡图展示
-			function successGetBubbleView(datatype){
+			function successGetBubbleView(datatype, data){
 				$("#newscharts div").remove();
 				$("#newscharts").append("<div style='height:500px'></div>")
 				var diameter = 500,
@@ -326,10 +328,8 @@ define(
 				    .attr("height", diameter)
 				    .attr("class", "bubbles");	
 				
-				d3.json("static/json/point.json", function(error, root) {
-					
-				  var node = svg.selectAll(".node")
-				      .data(bubble.nodes(classes(root))
+				var node = svg.selectAll(".node")
+				      .data(bubble.nodes(classes(data))
 				      .filter(function(d) { return !d.children; }))
 				    .enter().append("g")
 				      .attr("class", "node")
@@ -345,14 +345,13 @@ define(
 				  node.append("text")
 				      .attr("dy", ".3em")
 				      .style("text-anchor", "middle")
-				      .text(function(d) { return d.className.substring(0, d.r / 4); });
+				      .text(function(d) { return d.className.substring(0, d.r / 5); });
 				  
 				  dataUrl = d3.select("svg")
 			        .attr("version", 1.1)
 			        .attr("xmlns", "http://www.w3.org/2000/svg")
 			        .node().parentNode.innerHTML;
-				});
-				
+				  
 				// Returns a flattened hierarchy containing all leaf nodes under the root.
 				function classes(root) {
 				  var classes = [];
@@ -443,7 +442,7 @@ define(
 				        return {text: d.text, size:d.size>10? d.size:(d.size+20)};
 				      }))
 				      .padding(0)
-				      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+				      .rotate(function() { return ~~(Math.random() * 2) * 60; })
 				      .font("Impact")
 				      .fontSize(function(d) { return d.size; })
 				      .on("end", draw)
@@ -451,14 +450,14 @@ define(
 
 				  function draw(words) {
 				    d3.select("#newscharts div").append("svg")
-				        .attr("width", 1500)
+				        .attr("width", 1700)
 				        .attr("height", 500)
 				      .append("g")
-				        .attr("transform", "translate(680,250)")
+				        .attr("transform", "translate(850,250)")
 				      .selectAll("text")
 				        .data(words)
 				      .enter().append("text")
-				        .style("font-size", function(d) { return d.size*0.9 + "px"; })
+				        .style("font-size", function(d) { return d.size + "px"; })
 				        .style("font-family", "Courier")
 				        .style("font-weight", "bold")
 				        .style("fill", function(d, i) { return fill(i); })
@@ -492,9 +491,9 @@ define(
 						}else if(datatype == "pie"){
 							dataUrl = successGetPieView(datatype, data);
 						}else if(datatype == "scatter"){
-							dataUrl = successGetScatterView(datatype, data[0]);
+							dataUrl = successGetScatterView(datatype, data);
 						}else if(datatype == "bubble"){
-							//dataUrl = successGetSatterView(datatype, data[0]);
+							dataUrl = successGetBubbleView(datatype, data[0]);
 						}else if(datatype == "map"){
 							dataUrl = successGetMapView(datatype, data);
 						}
@@ -520,14 +519,14 @@ define(
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
 								datatype = "scatter";	
-								dataUrl = successGetScatterView(datatype);
+								//dataUrl = successGetScatterView(datatype);
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){
 								datatype = "pie";
 							}else if($("#checkQP").is(':checked')){
 								datatype = "bubble";
-								dataUrl = successGetBubbleView(datatype);
+								//dataUrl = successGetBubbleView(datatype);
 							}else{
 								datatype = "map";
 								dataUrl = successGetMapView(datatype);
