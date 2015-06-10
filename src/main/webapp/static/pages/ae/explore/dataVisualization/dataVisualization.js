@@ -203,13 +203,13 @@ define(
 			}
 			
 			//饼图展示
-			function successGetScatterView(datatype){
+			function successGetScatterView(datatype, data){
 				$("#newscharts div").remove();
 				$("#newscharts").append("<div style='height:500px'></div>")
 				var newsChart = echarts.init($("#newscharts div")[0],'macarons');
 				var option = {
 					    title : {
-					        text : '类目坐标散点图',
+					        text : '招聘数据散点图',
 					    },
 					    tooltip : {
 					        trigger: 'axis',
@@ -238,27 +238,29 @@ define(
 					    },
 					    dataRange: {
 					        min: 0,
-					        max: 100,
+					        max: 30000,
 					        orient: 'horizontal',
 					        y: 30,
 					        x: 'center',
-					        //text:['高','低'],           // 文本，默认为数值文本
-					        color:['lightgreen','orange'],
-					        splitNumber: 5
+					        //text:['30000元/月','0元/月'],           // 文本，默认为数值文本				       
+					        color:['#ff3333','lightgreen','orange','yellow', 'aqua'],
+					        splitNumber: 6
 					    },
 					    xAxis : [
 					        {
 					            type : 'category',
 					            axisLabel: {
 					                formatter : function(v) {
-					                    return '类目' + v
+					                	//alert(v);
+					                    return v
 					                }
 					            },
 					            data : function (){
 					                var list = [];
-					                var len = 0;
-					                while (len++ < 500) {
-					                    list.push(len);
+					                var len = 0;					                
+					                while (len < data[0].length) {
+					                    list.push(data[0][len]);   
+					                    len++
 					                }
 					                return list;
 					            }()
@@ -277,7 +279,7 @@ define(
 					            tooltip : {
 					                trigger: 'item',
 					                formatter : function (params) {
-					                    return params.seriesName + ' （'  + '类目' + params.value[0] + '）<br/>'
+					                    return params.seriesName + ' （' + params.value[0] +'）<br/>'
 					                           + params.value[1] + ', ' 
 					                           + params.value[2]; 
 					                },
@@ -286,19 +288,24 @@ define(
 					                }
 					            },
 					            symbolSize: function (value){
-					                return Math.round(value[2]/5);
+					                return Math.round(value[2]/1000);
 					            },
 					            data: (function () {
 					                var d = [];
 					                var len = 0;
-					                var value;
-					                while (len++ < 500) {
-					                    d.push([
-					                        len,
-					                        (Math.random()*30).toFixed(2) - 0,
-					                        (Math.random()*100).toFixed(2) - 0
+					                var s = 0;
+					                while (len < data[1].length) {				                	
+					                	d.push([
+					                	     data[0][data[1][len]],     
+					                       // parseInt(data[1][len]),
+					                	    parseInt(data[4][len]),
+					                        parseInt(data[2][len])
+					                       
 					                    ]);
+					                    //alert(data[1][len]+ " "+parseInt(data[2][len])+ " "+parseInt(data[4][len]))
+					                    len++;				                    
 					                }
+					                //alert(d);
 					                return d;
 					            })()
 					        }
@@ -492,7 +499,7 @@ define(
 						}else if(datatype == "pie"){
 							dataUrl = successGetPieView(datatype, data);
 						}else if(datatype == "scatter"){
-							dataUrl = successGetScatterView(datatype, data[0]);
+							dataUrl = successGetScatterView(datatype, data);
 						}else if(datatype == "bubble"){
 							//dataUrl = successGetSatterView(datatype, data[0]);
 						}else if(datatype == "map"){
@@ -520,7 +527,7 @@ define(
 								datatype = "bar";
 							}else if($("#checkSD").is(':checked')){
 								datatype = "scatter";	
-								dataUrl = successGetScatterView(datatype);
+								//dataUrl = successGetScatterView(datatype);
 							}else if($("#checkCY").is(':checked')){
 								datatype = "wordscloud";
 							}else if($("#checkBT").is(':checked')){

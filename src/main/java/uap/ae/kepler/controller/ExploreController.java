@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -592,7 +594,73 @@ public class ExploreController {
 		System.out.println(result);
 		return result;
 	}
-
+	
+	private JSONArray getScatterData(String dataPath) throws Exception{
+		FileInputStream fileInputStream = new FileInputStream(dataPath);
+		InputStreamReader inputStreamReader = new InputStreamReader(
+				fileInputStream, "UTF-8");
+		BufferedReader reader = new BufferedReader(inputStreamReader);
+		ArrayList<String> job = new ArrayList<String>();
+		ArrayList<String> pay = new ArrayList<String>();
+		ArrayList<String> city = new ArrayList<String>();
+		ArrayList<String> num = new ArrayList<String>();
+		HashSet<String> jobSet = new HashSet<String>();
+		String line = reader.readLine();
+		JSONArray jsonArray = new JSONArray();
+		while ((line = reader.readLine()) != null) {
+			String[] words = line.split("\",");
+			for(int k =0; k<words.length; k++){
+				if(words[k].indexOf("\"")!=-1){
+					words[k] = words[k].substring(1,words[k].length());
+				}
+			}
+			if(words[2].indexOf("2001")!=-1){
+				words[2] = "3000";
+			}else if(words[2].indexOf("4001")!=-1){
+				words[2] = "5000";
+			}else if(words[2].indexOf("6001")!=-1){
+				words[2] = "7000";
+			}else if(words[2].indexOf("8001")!=-1){
+				words[2] = "9000";
+			}else if(words[2].indexOf("10001")!=-1){
+				words[2] = "13000";
+			}else if(words[2].indexOf("15000")!=-1){
+				words[2] = "20000";
+			}else if(words[2].indexOf("25000")!=-1){
+				words[2] = "27000";
+			}
+			if(Integer.parseInt(words[4])>2){
+				jobSet.add(words[1]);
+				job.add(words[1]);
+				pay.add(words[2]);
+				city.add(words[3]);
+				num.add(words[4]);
+			}
+		}
+		reader.close();
+		ArrayList<String> jobOnly = new ArrayList<String>();
+		ArrayList<String> jobNew = new ArrayList<String>(job);
+		Iterator<String> it = jobSet.iterator();
+		int s = 0;
+		while(it.hasNext()){
+			String jobname = it.next();
+			for(int l=0;l<job.size();l++){
+				if(job.get(l).equals(jobname)){
+					jobNew.remove(l);
+					jobNew.add(l, String.valueOf(s));
+				}
+			}
+			s++;
+			jobOnly.add(jobname);
+		}
+		System.out.println(jobOnly+"\n"+job+"\n"+jobNew);
+		jsonArray.add(jobOnly);
+		jsonArray.add(jobNew);
+		jsonArray.add(pay);
+		jsonArray.add(city);
+		jsonArray.add(num);		
+		return jsonArray;
+	}
 	/**
 	 * 处理用于可视化的数据
 	 * 
@@ -654,20 +722,8 @@ public class ExploreController {
 			reader.close();
 			return jsonArray;
 		} else if(datatype.equals("scatter")){
-			JSONObject jsonObject = new JSONObject();
-			JSONArray jsonArray = new JSONArray();
-			ArrayList<String> xyList = new ArrayList<String>();
-			while ((line = reader.readLine()) != null) {
-				String[] words = line.split(",");
-				int yaxis = Integer.parseInt(words[0]);
-				int xaxis = Integer.parseInt(words[1]);
-				String xy = "["+ yaxis + "," + xaxis +"]";
-				xyList.add(xy);
-			}
-			reader.close();
-			jsonObject.put("xydata", xyList);
-			jsonArray.add(jsonObject);			
-			return jsonArray;
+			reader.close();	
+			return getScatterData(dataPath);
 		} else if(datatype.equals("map")){
 			JSONObject jsonObject = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
