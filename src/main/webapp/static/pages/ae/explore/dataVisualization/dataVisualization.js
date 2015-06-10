@@ -251,16 +251,15 @@ define(
 					            type : 'category',
 					            axisLabel: {
 					                formatter : function(v) {
-					                	//alert(v);
-					                    return v
+					                    return data[0][v];
 					                }
 					            },
 					            data : function (){
 					                var list = [];
-					                var len = 0;					                
+					                var len = 0;	
 					                while (len < data[0].length) {
-					                    list.push(data[0][len]);   
-					                    len++
+					                    list.push(len);   
+					                    len++;
 					                }
 					                return list;
 					            }()
@@ -279,9 +278,9 @@ define(
 					            tooltip : {
 					                trigger: 'item',
 					                formatter : function (params) {
-					                    return params.seriesName + ' （' + params.value[0] +'）<br/>'
-					                           + params.value[1] + ', ' 
-					                           + params.value[2]; 
+					                    return '职位： ' + data[0][params.value[0]] +'<br/>'
+					                           + '薪资水平：'+(params.value[2]-1000)+'-'+(params.value[2]+1000) + '元/月<br/>' 
+					                           + '招聘人数：'+params.value[1]; 
 					                },
 					                axisPointer:{
 					                    show: true
@@ -295,17 +294,13 @@ define(
 					                var len = 0;
 					                var s = 0;
 					                while (len < data[1].length) {				                	
-					                	d.push([
-					                	     data[0][data[1][len]],     
-					                       // parseInt(data[1][len]),
+					                	d.push([    
+					                        parseInt(data[1][len]),
 					                	    parseInt(data[4][len]),
-					                        parseInt(data[2][len])
-					                       
+					                        parseInt(data[2][len])					                       
 					                    ]);
-					                    //alert(data[1][len]+ " "+parseInt(data[2][len])+ " "+parseInt(data[4][len]))
 					                    len++;				                    
 					                }
-					                //alert(d);
 					                return d;
 					            })()
 					        }
@@ -316,7 +311,7 @@ define(
 				
 			}
 			//气泡图展示
-			function successGetBubbleView(datatype){
+			function successGetBubbleView(datatype, data){
 				$("#newscharts div").remove();
 				$("#newscharts").append("<div style='height:500px'></div>")
 				var diameter = 500,
@@ -333,10 +328,8 @@ define(
 				    .attr("height", diameter)
 				    .attr("class", "bubbles");	
 				
-				d3.json("static/json/point.json", function(error, root) {
-					
-				  var node = svg.selectAll(".node")
-				      .data(bubble.nodes(classes(root))
+				var node = svg.selectAll(".node")
+				      .data(bubble.nodes(classes(data))
 				      .filter(function(d) { return !d.children; }))
 				    .enter().append("g")
 				      .attr("class", "node")
@@ -352,14 +345,13 @@ define(
 				  node.append("text")
 				      .attr("dy", ".3em")
 				      .style("text-anchor", "middle")
-				      .text(function(d) { return d.className.substring(0, d.r / 4); });
+				      .text(function(d) { return d.className.substring(0, d.r / 5); });
 				  
 				  dataUrl = d3.select("svg")
 			        .attr("version", 1.1)
 			        .attr("xmlns", "http://www.w3.org/2000/svg")
 			        .node().parentNode.innerHTML;
-				});
-				
+				  
 				// Returns a flattened hierarchy containing all leaf nodes under the root.
 				function classes(root) {
 				  var classes = [];
@@ -450,7 +442,7 @@ define(
 				        return {text: d.text, size:d.size>10? d.size:(d.size+20)};
 				      }))
 				      .padding(0)
-				      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+				      .rotate(function() { return ~~(Math.random() * 2) * 60; })
 				      .font("Impact")
 				      .fontSize(function(d) { return d.size; })
 				      .on("end", draw)
@@ -458,14 +450,14 @@ define(
 
 				  function draw(words) {
 				    d3.select("#newscharts div").append("svg")
-				        .attr("width", 1500)
+				        .attr("width", 1700)
 				        .attr("height", 500)
 				      .append("g")
-				        .attr("transform", "translate(680,250)")
+				        .attr("transform", "translate(850,250)")
 				      .selectAll("text")
 				        .data(words)
 				      .enter().append("text")
-				        .style("font-size", function(d) { return d.size*0.9 + "px"; })
+				        .style("font-size", function(d) { return d.size + "px"; })
 				        .style("font-family", "Courier")
 				        .style("font-weight", "bold")
 				        .style("fill", function(d, i) { return fill(i); })
@@ -501,7 +493,7 @@ define(
 						}else if(datatype == "scatter"){
 							dataUrl = successGetScatterView(datatype, data);
 						}else if(datatype == "bubble"){
-							//dataUrl = successGetSatterView(datatype, data[0]);
+							dataUrl = successGetBubbleView(datatype, data[0]);
 						}else if(datatype == "map"){
 							dataUrl = successGetMapView(datatype, data);
 						}
@@ -534,7 +526,7 @@ define(
 								datatype = "pie";
 							}else if($("#checkQP").is(':checked')){
 								datatype = "bubble";
-								dataUrl = successGetBubbleView(datatype);
+								//dataUrl = successGetBubbleView(datatype);
 							}else{
 								datatype = "map";
 								dataUrl = successGetMapView(datatype);

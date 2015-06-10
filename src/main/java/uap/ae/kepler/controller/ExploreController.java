@@ -629,7 +629,7 @@ public class ExploreController {
 			}else if(words[2].indexOf("25000")!=-1){
 				words[2] = "27000";
 			}
-			if(Integer.parseInt(words[4])>2){
+			if(Integer.parseInt(words[4])>1){
 				jobSet.add(words[1]);
 				job.add(words[1]);
 				pay.add(words[2]);
@@ -653,13 +653,48 @@ public class ExploreController {
 			s++;
 			jobOnly.add(jobname);
 		}
-		System.out.println(jobOnly+"\n"+job+"\n"+jobNew);
+		System.out.println(jobSet.size());
+		//System.out.println(jobOnly+"\n"+job+"\n"+jobNew);
 		jsonArray.add(jobOnly);
 		jsonArray.add(jobNew);
 		jsonArray.add(pay);
 		jsonArray.add(city);
 		jsonArray.add(num);		
 		return jsonArray;
+	}
+	
+	private JSONArray getBubbleData(String dataPath) throws Exception{
+		FileInputStream fileInputStream = new FileInputStream(dataPath);
+		InputStreamReader inputStreamReader = new InputStreamReader(
+				fileInputStream, "UTF-8");
+		BufferedReader reader = new BufferedReader(inputStreamReader);		
+		String line = reader.readLine();
+		JSONArray jsonArray = new JSONArray();
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonArrayAll = new JSONArray();
+		while ((line = reader.readLine()) != null) {
+			String[] words;
+			if(line.indexOf("\"")!=-1){
+				words = line.split("\",");
+			}else{
+				words = line.split(",");
+			}
+			for(int k =0; k<words.length; k++){
+				if(words[k].indexOf("\"")!=-1){
+					words[k] = words[k].substring(1,words[k].length());
+				}
+			}
+			int num = Integer.parseInt(words[1]);
+			jsonObject = new JSONObject();
+			jsonObject.put("name", words[0]);
+			jsonObject.put("size", num);
+			jsonArray.add(jsonObject);
+		}
+		jsonObject.put("name", "ae");
+		jsonObject.put("children", jsonArray);
+		jsonArrayAll.add(jsonObject);
+		reader.close();				
+		return jsonArrayAll;
 	}
 	/**
 	 * 处理用于可视化的数据
@@ -739,28 +774,9 @@ public class ExploreController {
 			}
 			reader.close();
 			return jsonArray;
-		} else if(datatype.equals("bubble")){
-			JSONObject jsonObject = new JSONObject();
-			JSONArray jsonArray = new JSONArray();
-			JSONArray jsonArrayAll = new JSONArray();
-			while ((line = reader.readLine()) != null) {
-				String[] words;
-				if(line.indexOf("\"")!=-1){
-					words = line.split("\",");
-				}else{
-					words = line.split(",");
-				}								
-				int num = Integer.parseInt(words[1]);
-				jsonObject = new JSONObject();
-				jsonObject.put("name", words[0]);
-				jsonObject.put("size", num);
-				jsonArray.add(jsonObject);
-			}
-			jsonObject.put("name", "ae");
-			jsonObject.put("children", jsonArray);
-			jsonArrayAll.add(jsonObject);
+		} else if(datatype.equals("bubble")){			
 			reader.close();
-			return jsonArrayAll;
+			return getBubbleData(dataPath);
 		} else{
 			JSONObject jsonObject = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
